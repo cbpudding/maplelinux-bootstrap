@@ -1,0 +1,81 @@
+digraph {
+    label = "Maple Linux"
+    node [shape = "box"]
+
+    autoconf [label = "Autoconf"]
+    automake [label = "Automake"]
+    bison
+    busybox [label = "BusyBox", style = "bold"]
+    cmake
+    curl
+    diffutils
+    dosfstools
+    findutils
+    flex
+    greetd [style = "bold"]
+    kbd
+    libbsd
+    libelf
+    libffi
+    libmd
+    libressl [label = "LibreSSL", style = "bold"]
+    limine [label = "Limine", style = "bold"]
+    linux [label = "Linux", style = "bold"]
+    linux_pam [label = "Linux PAM"]
+    llvm [label = "LLVM", style = "bold"]
+    m4
+    make
+    meson [label = "Meson"]
+    musl [style = "bold"]
+    nano
+    nasm
+    ncurses
+    ninja [label = "Ninja"]
+    openrc [label = "OpenRC", style = "bold"]
+    perl [label = "Perl"]
+    pkgconf
+    python [label = "Python"]
+    rustc [label = "Rust"]
+    shadow
+    tinyramfs
+    zlib
+    zstd
+
+    autoconf -> {m4, perl}
+    automake -> {autoconf, perl}
+    bison -> {m4, musl}
+    busybox -> linux
+    cmake -> {curl, musl, ninja, zlib}
+    curl -> {libressl, musl, zlib}
+    diffutils -> musl
+    dosfstools -> musl
+    findutils -> musl
+    flex -> {m4, musl}
+    greetd -> {busybox, musl, openrc, linux_pam}
+    kbd -> musl
+    libbsd -> {musl, libmd}
+    libelf -> {musl, zlib, zstd}
+    libffi -> musl
+    libmd -> musl
+    libressl -> musl
+    limine -> {busybox, musl}
+    llvm -> {musl, zstd}
+    m4 -> musl
+    make -> musl
+    meson -> {ninja, python}
+    musl -> linux
+    nano -> {musl, ncurses}
+    nasm -> musl
+    ncurses -> musl
+    ninja -> {busybox, llvm, musl}
+    openrc -> {busybox, dosfstools, kbd, linux_pam, musl}
+    linux_pam -> musl
+    perl -> {musl, zlib}
+    pkgconf -> musl
+    python -> {libffi, musl, zlib}
+    rustc -> {llvm, musl}
+    shadow -> {busybox, libbsd, linux_pam, musl}
+    tinyramfs -> busybox
+    zlib -> musl
+    zstd -> musl
+}
