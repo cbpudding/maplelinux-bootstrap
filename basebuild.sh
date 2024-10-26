@@ -189,22 +189,32 @@ python3 setup.py build
 python3 setup.py install
 cd ..
 
-tar xf Linux-PAM-*.tar.*
-cd Linux-PAM-*
-./configure --disable-audit --disable-nls --without-systemdunitdir
-make -j $(nproc) -l $(($(nproc) + 1))
-make install
-# FIXME: PAM hard-codes its library paths under /lib64, but we want them under
-#        /lib so we can properly link applications later on. ~ahill
-mv /lib64/* /lib/
-rm -rf /lib64
-ln -s /lib /lib64
-cd ..
-
 tar xf ninja-*.tar.*
 cd ninja-*
 ./configure.py --bootstrap
 cp ./ninja /usr/bin/
+cd ..
+
+tar xf pkgconf-*.tar.*
+cd pkgconf-*
+./configure --enable-year2038 --prefix=/usr
+make -j $(nproc) -l $(($(nproc) + 1))
+make install
+ln -s pkgconf /usr/bin/pkg-config
+cd ..
+
+tar xf Linux-PAM-*.tar.*
+cd Linux-PAM-*
+# TODO: Does this replace the --without-systemdunitdir from the old ./configure
+#       script, or does this simply assume systemd exists? ~ahill
+LDFLAGS="-fuse-ld=lld" meson setup --prefix=/usr build
+# FIXME: Ugly hack to fix the version script for PAM. ld.lld will not link this
+#        otherwise, even with --allow-shlib-undefined. With that said, this MUST
+#        be fixed at some point, as symbols that should not be global are now
+#        global. ~ahill
+echo -e "{\n  global:\n    pam_sm_*;\n  local: *;\n};" > modules/modules.map
+meson compile -C build
+meson install -C build
 cd ..
 
 tar xf openrc-*.tar.*
@@ -234,14 +244,6 @@ cd libbsd-*
 ./configure --enable-year2038 --prefix=/usr
 make -j $(nproc) -l $(($(nproc) + 1))
 make install
-cd ..
-
-tar xf pkgconf-*.tar.*
-cd pkgconf-*
-./configure --enable-year2038 --prefix=/usr
-make -j $(nproc) -l $(($(nproc) + 1))
-make install
-ln -s pkgconf /usr/bin/pkg-config
 cd ..
 
 tar xf shadow-*.tar.*
@@ -281,7 +283,7 @@ ln -s libunwind.so.1.0 /usr/lib/libgcc_s.so.1
 # FIXME: Rust attempts to link with libgcc_s later on, even though it isn't
 #        valid for Maple Linux. Does Maple Linux need its own target triple?
 #        x86_64-maple-linux-musl? ~ahill
-#rm libgcc_s.so*
+#rm /usr/lib/libgcc_s.so*
 cd ..
 
 tar xf greetd-*.tar.*
@@ -292,3 +294,52 @@ RUSTFLAGS="-C target-feature=-crt-static -L /lib" cargo \
     --config http.cainfo=\"/etc/ssl/certs/cacert.pem\" \
     build \
     --release
+# ...
+cd ..
+
+tar xf lua-*.tar.*
+cd lua-*
+# NOTE: Lua hard codes the C compiler as gcc, meaning clang cannot be used
+#       without modifying the Makefile. ~ahill
+sed "s/^CC=.*/CC=clang/" -i src/Makefile
+# NOTE: Lua builds a static library rather than a shared library. The Makefile
+#       needs to be modified to address this. Not sure how stable this patch
+#       will be over time, but this will insert a line right after the static
+#       library has been indexed by ranlib. ~ahill
+sed "/\$(RANLIB) \$@/a \\$(echo -en "\t")\$(CC) -shared -ldl -Wl,-soname,liblua.so -o liblua.so \$? -lm" -i src/Makefile
+# NOTE: Lua attempts to find modules under /usr/local initially, even though it
+#       doesn't exist. To remedy this, we will need to change LUA_ROOT under
+#       src/luaconf.h. ~ahill
+sed "s|#define LUA_ROOT.*|#define LUA_ROOT \"/usr/\"|" -i src/luaconf.h
+make -C src -j $(nproc) -l $(($(nproc) + 1)) MYCFLAGS=-fPIC
+make install INSTALL_TOP=/usr
+cp src/liblua.so /usr/lib/liblua.so.5.4
+cd ..
+
+tar xf lzlib-*.tar.*
+cd lzlib-*
+cmake -DCMAKE_INSTALL_PREFIX=/usr CMakeLists.txt
+make -j $(nproc) -l $(($(nproc) + 1))
+# NOTE: make install does not place the files in a path the Lua interpreter will
+#       search. Therefore, a manual install is required. ~ahill
+install -Dm755 zlib.so /usr/lib/lua/5.4/zlib.so
+install -Dm644 gzip.lua /usr/share/lua/5.4/gzip.lua
+cd ..
+
+tar xf scdoc-*.tar.*
+cd scdoc-*
+make -j $(nproc) -l $(($(nproc) + 1)) PREFIX=/usr
+make install PREFIX=/usr
+cd ..
+
+tar xf apk-tools-*.tar.*
+cd apk-tools-*
+# NOTE: apk-tools hard codes the C compiler as gcc, meaning clang cannot be used
+#       without modifying the Makefile. ~ahill
+sed "s/^CC\s*:=.*/CC := \$(CROSS_COMPILE)clang/" -i Make.rules
+# NOTE: The Makefile is unable to find Lua as-is, so we pass the LUA environment
+#       variable to help it out. A patch by necessary to prevent it from
+#       complaining about the absence of Lua 5.3. ~ahill
+LUA=$(which lua) make -j $(nproc) -l $(($(nproc) + 1))
+LUA=$(which lua) make install
+cd ..

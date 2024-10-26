@@ -3,6 +3,7 @@ mkdir -p sources
 cd sources
 
 # A
+wget https://gitlab.alpinelinux.org/alpine/apk-tools/-/archive/v2.14.4/apk-tools-v2.14.4.tar.bz2
 wget https://ftpmirror.gnu.org/gnu/autoconf/autoconf-2.72.tar.xz
 wget https://ftpmirror.gnu.org/gnu/automake/automake-1.17.tar.xz
 
@@ -35,15 +36,17 @@ wget https://github.com/arachsys/libelf/archive/refs/tags/v0.192.1.tar.gz -O lib
 wget https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-3.4.6.tar.gz
 wget https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz
 wget https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-3.8.0.tar.gz
-wget https://github.com/limine-bootloader/limine/releases/download/v8.1.2/limine-8.1.2.tar.xz
-wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.11.4.tar.xz
-wget https://github.com/linux-pam/linux-pam/releases/download/v1.6.1/Linux-PAM-1.6.1.tar.xz
+wget https://github.com/limine-bootloader/limine/releases/download/v8.2.0/limine-8.2.0.tar.xz
+wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.11.5.tar.xz
+wget https://github.com/linux-pam/linux-pam/releases/download/v1.7.0/Linux-PAM-1.7.0.tar.xz
 wget https://github.com/llvm/llvm-project/releases/download/llvmorg-19.1.2/llvm-project-19.1.2.src.tar.xz
+wget https://lua.org/ftp/lua-5.4.7.tar.gz
+wget https://github.com/LuaDist/lzlib/archive/refs/tags/0.4.3.tar.gz -O lzlib-0.4.3.tar.gz
 
 # M
 wget https://ftpmirror.gnu.org/gnu/m4/m4-1.4.19.tar.xz
-wget https://ftpmirror.gnu.org/gnu/make/make-4.4.1.tar.lz
-wget https://github.com/mesonbuild/meson/releases/download/1.5.2/meson-1.5.2.tar.gz
+wget https://ftpmirror.gnu.org/gnu/make/make-4.4.1.tar.gz
+wget https://github.com/mesonbuild/meson/releases/download/1.6.0/meson-1.6.0.tar.gz
 wget https://musl.libc.org/releases/musl-1.2.5.tar.gz
 
 # N
@@ -64,6 +67,7 @@ wget https://www.python.org/ftp/python/3.9.20/Python-3.9.20.tar.xz
 wget https://static.rust-lang.org/dist/rustc-1.82.0-src.tar.xz
 
 # S
+wget https://git.sr.ht/~sircmpwn/scdoc/archive/1.11.3.tar.gz -O scdoc-1.11.3.tar.gz
 wget https://github.com/shadow-maint/shadow/releases/download/4.16.0/shadow-4.16.0.tar.xz
 
 # Z

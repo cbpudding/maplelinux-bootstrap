@@ -2,6 +2,7 @@ digraph {
     label = "Maple Linux"
     node [shape = "box"]
 
+    apk_tools [label = "apk", style = "bold"]
     autoconf [label = "Autoconf"]
     automake [label = "Automake"]
     bison
@@ -22,7 +23,9 @@ digraph {
     limine [label = "Limine", style = "bold"]
     linux [label = "Linux", style = "bold"]
     linux_pam [label = "Linux PAM"]
+    lua [label = "Lua"]
     llvm [label = "LLVM", style = "bold"]
+    lzlib [label = "lzlib"]
     m4
     make
     meson [label = "Meson"]
@@ -36,11 +39,12 @@ digraph {
     pkgconf
     python [label = "Python"]
     rustc [label = "Rust"]
+    scdoc
     shadow
-    tinyramfs
     zlib
     zstd
 
+    apk_tools -> {libressl, musl, zlib}
     autoconf -> {m4, perl}
     automake -> {autoconf, perl}
     bison -> {m4, musl}
@@ -59,7 +63,9 @@ digraph {
     libmd -> musl
     libressl -> musl
     limine -> {busybox, musl}
+    lua -> musl
     llvm -> {musl, zstd}
+    lzlib -> {lua, zlib}
     m4 -> musl
     make -> musl
     meson -> {ninja, python}
@@ -74,8 +80,8 @@ digraph {
     pkgconf -> musl
     python -> {libffi, musl, zlib}
     rustc -> {llvm, musl}
+    scdoc -> {musl, pkgconf}
     shadow -> {busybox, libbsd, linux_pam, musl}
-    tinyramfs -> busybox
     zlib -> musl
     zstd -> musl
 }
