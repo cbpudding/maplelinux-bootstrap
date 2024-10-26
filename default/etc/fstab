@@ -1,0 +1,2 @@
+PARTUUID=   /       ext4    defaults    0 1
+PARTUUID=   /boot   fat32   defaults    0 2

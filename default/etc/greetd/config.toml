@@ -1,0 +1,8 @@
+[terminal]
+vt = 7
+
+[default_session]
+command = "agreety --cmd /bin/sh"
+# FIXME: root is risky, but functional. A user for the greeter will be used in
+#        the future. ~ahill
+user = "root"

@@ -338,7 +338,7 @@ cd apk-tools-*
 #       without modifying the Makefile. ~ahill
 sed "s/^CC\s*:=.*/CC := \$(CROSS_COMPILE)clang/" -i Make.rules
 # NOTE: The Makefile is unable to find Lua as-is, so we pass the LUA environment
-#       variable to help it out. A patch by necessary to prevent it from
+#       variable to help it out. A patch may be necessary to prevent it from
 #       complaining about the absence of Lua 5.3. ~ahill
 LUA=$(which lua) make -j $(nproc) -l $(($(nproc) + 1))
 LUA=$(which lua) make install

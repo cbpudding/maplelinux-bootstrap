@@ -1,0 +1,5 @@
+#!/sbin/openrc-run
+name=$RC_SVCNAME
+description="Greeter daemon"
+supervisor="supervise-daemon"
+command="greetd"
