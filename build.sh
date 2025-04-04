@@ -12,7 +12,7 @@ mkdir -p $MAPLE/bin
 mkdir -p $MAPLE/boot
 mkdir -p $MAPLE/dev
 mkdir -p $MAPLE/etc
-mkdir -p $MAPLE/home
+mkdir -p $MAPLE/home/root
 mkdir -p $MAPLE/lib
 # TODO: Does it make sense to have this long-term? Anything that depends on
 #       libc++ fails to link without it, but this should be fixed via a
@@ -68,7 +68,8 @@ cmake -B build -G Ninja -S llvm \
 	-DLLVM_HOST_TRIPLE=$HOST \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON
+	-DLLVM_LINK_LLVM_DYLIB=ON \
+	-DLLVM_TARGETS_TO_BUILD=X86
 cmake --build build
 cmake --install build
 cd ..
@@ -362,4 +363,47 @@ cmake -B build -G Ninja \
 	-DCMAKE_USE_OPENSSL=OFF
 cmake --build build
 cmake --install build
+cd ..
+
+# Samurai Build
+tar xf ../sources/samurai-*.tar*
+cd samurai-*/
+# NOTE: Unfortunately, there is no way to change the prefix without modifying
+#       the Makefile. ~ahill
+sed -i "s/^PREFIX=.*/PREFIX=\/usr/" Makefile
+make -j $THREADS
+make -j $THREADS install DESTDIR=$MAPLE
+cd ..
+
+# Muon Build
+tar xf ../sources/muon-*.tar*
+cd muon-*/
+# TODO: Am I doing this right? ~ahill
+echo "[host_machine]" > cross-maple.txt
+echo "cpu_family='x86_64'" >> cross-maple.txt
+echo "cpu='skylake'" >> cross-maple.txt
+echo "endian='little'" >> cross-maple.txt
+echo "system='linux'" >> cross-maple.txt
+echo "" >> cross-maple.txt
+echo "[properties]" >> cross-maple.txt
+echo "sys_root='$MAPLE'" >> cross-maple.txt
+# FIXME: Alpine doesn't package Muon so we're using Meson instead. ~ahill
+meson setup build --prefix /usr --cross-file cross-maple.txt
+meson compile -C build
+DESTDIR=$MAPLE meson install -C build
+cd ..
+
+# Gawk Build
+tar xf ../sources/gawk-*.tar*
+cd gawk-*/
+./configure \
+	--disable-mpfr \
+	--disable-nls \
+	--exec-prefix="" \
+	--libexecdir=/bin \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install DESTDIR=$MAPLE
 cd ..
