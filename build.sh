@@ -18,6 +18,7 @@ mkdir -p $MAPLE/lib
 #       libc++ fails to link without it, but this should be fixed via a
 #       configuration change in LLVM. ~ahill
 ln -s . $MAPLE/lib/$HOST
+mkdir -p $MAPLE/maple/sources
 mkdir -p $MAPLE/mnt
 mkdir -p $MAPLE/proc
 ln -s home/root $MAPLE/root
@@ -48,7 +49,7 @@ tar xf ../sources/llvm-project-*.tar*
 cd llvm-project-*/
 cmake -B build -G Ninja -S llvm \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_INSTALL_PREFIX=$MAPLE/tools \
+	-DCMAKE_INSTALL_PREFIX=$MAPLE/maple/tools \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
 	-DCLANG_DEFAULT_RTLIB=compiler-rt \
 	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
@@ -74,10 +75,10 @@ cmake --build build
 cmake --install build
 cd ..
 
-export CC=$MAPLE/tools/bin/clang
-export CXX=$MAPLE/tools/bin/clang++
-export LD=$MAPLE/tools/bin/ld.lld
-export PATH="$MAPLE/tools/bin:$PATH"
+export CC=$MAPLE/maple/tools/bin/clang
+export CXX=$MAPLE/maple/tools/bin/clang++
+export LD=$MAPLE/maple/tools/bin/ld.lld
+export PATH="$MAPLE/maple/tools/bin:$PATH"
 
 # Linux Headers
 tar xf ../sources/linux-*.tar*
@@ -139,19 +140,6 @@ cd ncurses-*/
 	--without-ada \
 	--without-manpages \
 	--without-normal
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# zsh Build
-tar xf ../sources/zsh-*.tar*
-cd zsh-*/
-./configure \
-	--disable-locale \
-	--enable-libc-musl \
-	--exec-prefix="" \
-	--libexecdir=/usr/bin \
-	--prefix=/usr
 make -j $THREADS
 make -j $THREADS install DESTDIR=$MAPLE
 cd ..
