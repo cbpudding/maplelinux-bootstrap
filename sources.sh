@@ -4,9 +4,13 @@ cd sources
 cat ../sources.list | while read line; do
     URL=$(echo $line | cut -d"," -f1)
     CANONICAL=$(echo $line | cut -d"," -f2)
+    HASH=$(echo $line | cut -d"," -f3)
     if [ -z "$CANONICAL" ]; then
-        curl $URL -o $(basename $URL)
+        OUTPUT=$(basename $URL)
     else
-        curl $URL -o $CANONICAL
+        OUTPUT=$CANONICAL
     fi
+    echo $OUTPUT
+    curl -L $URL -o $OUTPUT
+    echo "$HASH  $OUTPUT" | sha256sum -c -
 done
