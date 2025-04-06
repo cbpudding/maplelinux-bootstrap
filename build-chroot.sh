@@ -56,6 +56,9 @@ cd pkgconf-*/
 	--sysconfdir=/etc
 make -j $THREADS
 make -j $THREADS install
+# NOTE: pkg-config is a requirement for muon since it doesn't link with pkgconf
+#       during the bootstrap process.
+ln -s pkgconf /bin/pkg-config
 cd ..
 
 # ncurses Build
@@ -105,6 +108,45 @@ cd libcap-*/
 # NOTE: For some reason, libcap hardcodes gcc as the compiler, so we need to
 #       modify the Makefile to set it to clang. ~ahill
 sed -i "s/CC :=.*/CC := clang/" Make.Rules
+# NOTE: When trying to figure out where to put libraries, libcap attempts to
+#       invoke ldd, which is not a valid command at this point. As a result, it
+#       dumps the libraries into the root of the filesystem. ~ahill
+sed -i "s/^lib=.*/lib=\/lib/" Make.Rules
+# FIXME: libcap's pkgconf file claims to be installed under / rather than /lib. ~ahill
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# OpenRC Build
+#tar xf ../sources/openrc-*.tar*
+#cd openrc-*/
+#muon setup build
+# TODO: Build is currently unsuccessful due to an inability to find libcap.
+#       Discussing with #muon via Libera Chat. ~ahill
+
+# nasm Build
+tar xf ../sources/nasm-*.tar*
+cd nasm-*/
+./configure \
+	--exec-prefix="" \
+	--libexecdir=/bin \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Limine Build
+tar xf ../sources/limine-*.tar*
+cd limine-*/
+./configure \
+	--enable-uefi-x86-64 \
+	--exec-prefix="" \
+	--libexecdir=/bin \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
 make -j $THREADS
 make -j $THREADS install
 cd ..

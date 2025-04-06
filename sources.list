@@ -9,6 +9,7 @@ f8c3486509de705192138b00ef2c00bbbdd0e84c30d5c07d23fc73a9dc4cc9cc,https://ftp.gnu
 ed8b5732e4cd6e30fae909fb945cad8ff9cb7be5c6cdaa3944ec96e4a200c04c,https://libarchive.org/downloads/libarchive-3.7.9.tar.xz,
 de4e7e064c9ba451d5234dd46e897d7c71c96a9ebf9a0c445bc04f4742d83632,https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.75.tar.xz,
 4d841955f0acc3dfc71d0e3dd35f283af461222350e26843fea9731c0246a1e4,https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.0.0.tar.gz,
+47460e776a45bd4f54f14b7a6f6c1302d06b2df668b4a13033fdb0b2c8e4a9e0,https://github.com/limine-bootloader/limine/releases/download/v9.2.2/limine-9.2.2.tar.xz,
 a294b683e7b161bb0517bb32ec7ed1d2ea7603dfbabad135170ed12d00c47670,https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.tar.xz,
 f0a4a240aabc9b056142d14d5478bb6d962aeac549cbd75b809f5499240a8b38,https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.2/llvm-project-20.1.2.src.tar.xz,
 63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96,https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz,
@@ -17,6 +18,7 @@ c2ce8302e886b2d3534ec38896a824dc83f43698d085d57bb19a751611d94e86,https://git.sr.
 a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4,https://musl.libc.org/releases/musl-1.2.5.tar.gz,
 1412a1c760bbd05db026b6c0d1657affd6631cd0a63cddb6f73cc6d4aa616148,https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz,
 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059,https://invisible-island.net/datafiles/release/ncurses.tar.gz,ncurses-6.3.tar.gz
+a56bfc25c86620c6d04ee3037fbeb7f3cc508f6d0040ca006dea34b8ad2696e9,https://github.com/OpenRC/openrc/archive/refs/tags/0.61.tar.gz,openrc-0.61.tar.gz
 51203d99ed573fa7344bf07ca626f10c7cc094e0846ac4aa0023bd0c83c25a41,https://distfiles.ariadne.space/pkgconf/pkgconf-2.4.3.tar.xz,
 3b8cf51548dfc49b7efe035e191ff5e1963ebc4fe8f6064a5eefc5343eaf78a5,https://github.com/michaelforney/samurai/releases/download/1.2/samurai-1.2.tar.gz,
 6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181,https://ftp.gnu.org/gnu/sed/sed-4.9.tar.xz,
