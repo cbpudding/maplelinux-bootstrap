@@ -110,7 +110,7 @@ cd dash-*/
 	--datarootdir=/usr/share \
 	--exec-prefix="" \
 	--includedir=/usr/include \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--prefix="" \
 	--sharedstatedir=/usr/com
 make -j $THREADS
@@ -126,7 +126,7 @@ cd m4-*/
 	--disable-nls \
 	--enable-c++ \
 	--includedir=/usr/include \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--prefix="" \
 	--sharedstatedir=/usr/com
 make -j $THREADS
@@ -140,7 +140,7 @@ cd coreutils-*/
 	--datarootdir=/usr/share \
 	--disable-nls \
 	--includedir=/usr/include \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--prefix="" \
 	--sharedstatedir=/usr/com
 make -j $THREADS
@@ -153,7 +153,7 @@ cd diffutils-*/
 ./configure \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -168,7 +168,7 @@ cd findutils-*/
 	--datarootdir=/usr/share \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -183,7 +183,7 @@ cd grep-*/
 	--datarootdir=/usr/share \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -197,7 +197,7 @@ cd gzip-*/
 ./configure \
 	--datarootdir=/usr/share \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -213,7 +213,7 @@ cd make-*/
 	--disable-nls \
 	--enable-year2038 \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -229,7 +229,7 @@ cd sed-*/
 	--disable-i18n \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -244,7 +244,7 @@ cd tar-*/
 	--datarootdir=/usr/share \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -262,7 +262,7 @@ cd xz-*/
 	--disable-static \
 	--enable-year2038 \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -378,7 +378,7 @@ cd gawk-*/
 	--disable-mpfr \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc

@@ -21,7 +21,7 @@ cd libressl-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -35,7 +35,7 @@ cd libarchive-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -50,7 +50,7 @@ cd pkgconf-*/
 	--disable-static \
 	--enable-year2038 \
 	--exec-prefix="" \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -68,7 +68,7 @@ cd ncurses-*/
 	--enable-ext-colors \
 	--enable-widec \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--prefix=/usr \
 	--with-shared \
 	--with-cxx-binding \
@@ -93,7 +93,7 @@ CFLAGS="-Wno-implicit-int" ./configure \
 	--enable-libc-musl \
 	--enable-multibyte \
 	--exec-prefix="" \
-	--libexecdir=/usr/bin \
+	--libexecdir=/lib \
 	--prefix=/usr
 make -j $THREADS
 make -j $THREADS install
@@ -129,7 +129,7 @@ tar xf ../sources/nasm-*.tar*
 cd nasm-*/
 ./configure \
 	--exec-prefix="" \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -143,7 +143,7 @@ cd limine-*/
 ./configure \
 	--enable-uefi-x86-64 \
 	--exec-prefix="" \
-	--libexecdir=/bin \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
