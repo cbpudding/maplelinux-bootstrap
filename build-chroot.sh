@@ -59,7 +59,7 @@ make -j $THREADS install
 cd ..
 
 # ncurses Build
-tar xf ../sources/ncurses.tar.gz
+tar xf ../sources/ncurses-*.tar*
 cd ncurses-*/
 ./configure \
 	--enable-ext-colors \
