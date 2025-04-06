@@ -93,6 +93,14 @@ cd musl-*/
 ./configure --disable-static --includedir=/usr/include --prefix=""
 make -j $THREADS
 make -j $THREADS install DESTDIR=$MAPLE
+# NOTE: musl provides static libraries for POSIX libraries such as libm, but
+#       fails to provide shared versions which will breaks builds later on.
+#       Granted, they are useless since libc.so contains all the functionality
+#       we need, but it is needed for compatibility. As of April 5th, 2025, zsh
+#       is known to be misconfigured as a result of missing libraries. ~ahill
+for lib in $(grep "EMPTY_LIB_NAMES =" Makefile | sed "s/EMPTY_LIB_NAMES = //"); do
+	ln -s libc.so $MAPLE/lib/lib$lib.so
+done
 cd ..
 
 # dash Build
@@ -121,25 +129,6 @@ cd m4-*/
 	--libexecdir=/usr/bin \
 	--prefix="" \
 	--sharedstatedir=/usr/com
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# ncurses Build
-tar xf ../sources/ncurses.tar.gz
-cd ncurses-*/
-./configure \
-	--enable-ext-colors \
-	--enable-widec \
-	--exec-prefix="" \
-	--libexecdir=/usr/bin \
-	--prefix=/usr \
-	--with-shared \
-	--with-cxx-binding \
-	--with-cxx-shared \
-	--without-ada \
-	--without-manpages \
-	--without-normal
 make -j $THREADS
 make -j $THREADS install DESTDIR=$MAPLE
 cd ..
@@ -333,6 +322,7 @@ cmake -B build -G Ninja -S llvm \
 cmake --build build
 cmake --install build
 ln -s clang $MAPLE/bin/cc
+ln -s clang++ $MAPLE/bin/c++
 ln -s ld.lld $MAPLE/bin/ld
 cd ..
 
