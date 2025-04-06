@@ -2,9 +2,9 @@
 mkdir -p sources
 cd sources
 cat ../sources.list | while read line; do
-    URL=$(echo $line | cut -d"," -f1)
-    CANONICAL=$(echo $line | cut -d"," -f2)
-    HASH=$(echo $line | cut -d"," -f3)
+    HASH=$(echo $line | cut -d"," -f1)
+    URL=$(echo $line | cut -d"," -f2)
+    CANONICAL=$(echo $line | cut -d"," -f3)
     if [ -z "$CANONICAL" ]; then
         OUTPUT=$(basename $URL)
     else
