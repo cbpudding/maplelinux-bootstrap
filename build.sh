@@ -343,34 +343,6 @@ cmake --build build
 cmake --install build
 cd ..
 
-# Samurai Build
-tar xf ../sources/samurai-*.tar*
-cd samurai-*/
-# NOTE: Unfortunately, there is no way to change the prefix without modifying
-#       the Makefile. ~ahill
-sed -i "s/^PREFIX=.*/PREFIX=\/usr/" Makefile
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# Muon Build
-tar xf ../sources/muon-*.tar*
-cd muon-*/
-# TODO: Am I doing this right? ~ahill
-echo "[host_machine]" > cross-maple.txt
-echo "cpu_family='x86_64'" >> cross-maple.txt
-echo "cpu='skylake'" >> cross-maple.txt
-echo "endian='little'" >> cross-maple.txt
-echo "system='linux'" >> cross-maple.txt
-echo "" >> cross-maple.txt
-echo "[properties]" >> cross-maple.txt
-echo "sys_root='$MAPLE'" >> cross-maple.txt
-# FIXME: Alpine doesn't package Muon so we're using Meson instead. ~ahill
-meson setup build --prefix /usr --cross-file cross-maple.txt
-meson compile -C build
-DESTDIR=$MAPLE meson install -C build
-cd ..
-
 # Gawk Build
 tar xf ../sources/gawk-*.tar*
 cd gawk-*/

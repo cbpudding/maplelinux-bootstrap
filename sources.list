@@ -1,5 +1,6 @@
 ddc54ad63b87e153cf50be450a6580f1b17b4881de8941da963ff56991a4083b,https://github.com/Kitware/CMake/releases/download/v4.0.0/cmake-4.0.0.tar.gz,
 7a0124327b398fd9eb1a6abde583389821422c744ffa10734b24f557610d3283,https://ftp.gnu.org/gnu/coreutils/coreutils-9.6.tar.xz,
+c261a4db579b289a7501565497658bbd52d3138fdbaccf1490fa918129ab45bc,https://curl.se/download/curl-8.13.0.tar.gz,
 a0d845af4bfc1e11ff67986cf9684ac9d158b75c04b20433f1f213d2053680be,https://salsa.debian.org/debian/dash/-/archive/debian/0.5.12-11/dash-debian-0.5.12-11.tar.gz,
 a73ef05fe37dd585f7d87068e4a0639760419f810138bd75c61ddaa1f9e2131e,https://ftp.gnu.org/gnu/diffutils/diffutils-3.11.tar.xz,
 1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5,https://ftp.gnu.org/gnu/findutils/findutils-4.10.0.tar.xz,
@@ -11,6 +12,7 @@ de4e7e064c9ba451d5234dd46e897d7c71c96a9ebf9a0c445bc04f4742d83632,https://www.ker
 4d841955f0acc3dfc71d0e3dd35f283af461222350e26843fea9731c0246a1e4,https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.0.0.tar.gz,
 47460e776a45bd4f54f14b7a6f6c1302d06b2df668b4a13033fdb0b2c8e4a9e0,https://github.com/limine-bootloader/limine/releases/download/v9.2.2/limine-9.2.2.tar.xz,
 a294b683e7b161bb0517bb32ec7ed1d2ea7603dfbabad135170ed12d00c47670,https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.tar.xz,
+57dcd7a6b966ecd5bbd95e1d11173734691e16b68692fa59661cdae9b13b1697,https://github.com/linux-pam/linux-pam/releases/download/v1.7.0/Linux-PAM-1.7.0.tar.xz,
 f0a4a240aabc9b056142d14d5478bb6d962aeac549cbd75b809f5499240a8b38,https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.2/llvm-project-20.1.2.src.tar.xz,
 63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96,https://ftp.gnu.org/gnu/m4/m4-1.4.19.tar.xz,
 dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3,https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz,
@@ -19,6 +21,7 @@ a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4,https://musl.li
 1412a1c760bbd05db026b6c0d1657affd6631cd0a63cddb6f73cc6d4aa616148,https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz,
 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059,https://invisible-island.net/datafiles/release/ncurses.tar.gz,ncurses-6.3.tar.gz
 a56bfc25c86620c6d04ee3037fbeb7f3cc508f6d0040ca006dea34b8ad2696e9,https://github.com/OpenRC/openrc/archive/refs/tags/0.61.tar.gz,openrc-0.61.tar.gz
+02f8c45bb379ed0c3de7514fad48c714fd46be8f0b536bfd5320050165a1ee26,https://www.cpan.org/src/5.0/perl-5.40.1.tar.gz,
 51203d99ed573fa7344bf07ca626f10c7cc094e0846ac4aa0023bd0c83c25a41,https://distfiles.ariadne.space/pkgconf/pkgconf-2.4.3.tar.xz,
 3b8cf51548dfc49b7efe035e191ff5e1963ebc4fe8f6064a5eefc5343eaf78a5,https://github.com/michaelforney/samurai/releases/download/1.2/samurai-1.2.tar.gz,
 6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181,https://ftp.gnu.org/gnu/sed/sed-4.9.tar.xz,

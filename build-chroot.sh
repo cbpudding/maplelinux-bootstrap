@@ -56,9 +56,69 @@ cd pkgconf-*/
 	--sysconfdir=/etc
 make -j $THREADS
 make -j $THREADS install
-# NOTE: pkg-config is a requirement for muon since it doesn't link with pkgconf
-#       during the bootstrap process.
-ln -s pkgconf /bin/pkg-config
+cd ..
+
+# Perl Build
+tar xf ../sources/perl-*.tar*
+cd perl-*/
+# NOTE: d_eaccess is manually undefined because of undeclared function use in
+#       pp_sys.c ~ahill
+./Configure -des \
+	-Dprefix=/usr \
+	-Dvendorprefix=/usr \
+	-Duseshrplib \
+	-Dusethreads \
+	-Ud_eaccess
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# cURL Build
+tar xf ../sources/curl-*.tar*
+cd curl-*/
+./configure \
+	--disable-ntlm \
+	--disable-static \
+	--enable-ipv6 \
+	--enable-optimize \
+	--enable-unix-sockets \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--with-ca-bundle=/etc/ssl/cert.pem \
+	--with-ca-path=/etc/ssl/certs \
+	--with-openssl \
+	--with-zlib \
+	--with-zsh-functions-dir \
+	--without-libpsl
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Samurai Build
+tar xf ../sources/samurai-*.tar*
+cd samurai-*/
+# NOTE: Unfortunately, there is no way to change the prefix without modifying
+#       the Makefile. ~ahill
+sed -i "s/^PREFIX=.*/PREFIX=\/usr/" Makefile
+# NOTE: CC is manually defined due to the use of the c99 command. ~ahill
+make -j $THREADS CC=clang
+make -j $THREADS install
+cd ..
+
+# muon Build
+tar xf ../sources/muon-*.tar*
+cd muon-*/
+# NOTE: Muon's bootstrap script requires the "c99" command, which doesn't exist
+#       on Maple Linux. Using sed to rewrite the command to clang -std=c99
+#       instead. ~ahill
+sed -i "s/c99/clang -std=c99/" bootstrap.sh
+CFLAGS="-DBOOTSTRAP_NO_SAMU" ./bootstrap.sh build
+./build/muon-bootstrap setup -Dprefix=/usr build
+samu -C build
+./build/muon-bootstrap -C build install
 cd ..
 
 # ncurses Build
@@ -117,12 +177,19 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# Linux PAM Build
+#tar xf ../sources/Linux-PAM-*.tar*
+#cd Linux-PAM-*/
+#muon setup build
+# ...
+#cd ..
+
 # OpenRC Build
 #tar xf ../sources/openrc-*.tar*
 #cd openrc-*/
 #muon setup build
-# TODO: Build is currently unsuccessful due to an inability to find libcap.
-#       Discussing with #muon via Libera Chat. ~ahill
+# ...
+#cd ..
 
 # nasm Build
 tar xf ../sources/nasm-*.tar*
