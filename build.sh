@@ -45,7 +45,9 @@ mkdir -p build
 cd build
 
 # LLVM Build
-tar xf ../sources/llvm-project-*.tar*
+mkdir -p llvm-stage1
+cd llvm-stage1
+tar xf ../../sources/llvm-project-*.tar*
 cd llvm-project-*/
 cmake -B build -G Ninja -S llvm \
 	-DCMAKE_BUILD_TYPE=Release \
@@ -63,20 +65,20 @@ cmake -B build -G Ninja -S llvm \
 	-DLIBUNWIND_USE_COMPILER_RT=ON \
 	-DLLVM_BUILD_LLVM_DYLIB=ON \
 	-DLLVM_ENABLE_LIBCXX=ON \
-	-DLLVM_ENABLE_LLD=ON \
 	-DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
 	-DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
 	-DLLVM_HOST_TRIPLE=$HOST \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
 	-DLLVM_LINK_LLVM_DYLIB=ON \
-	-DLLVM_TARGETS_TO_BUILD=X86
+	-DLLVM_TARGETS_TO_BUILD=X86 \
+	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
 cmake --build build
 cmake --install build
-cd ..
+cd ../..
 
-export CC=$MAPLE/maple/tools/bin/clang
-export CXX=$MAPLE/maple/tools/bin/clang++
+export CC="$MAPLE/maple/tools/bin/clang --sysroot=$MAPLE"
+export CXX="$MAPLE/maple/tools/bin/clang++ --sysroot=$MAPLE"
 export LD=$MAPLE/maple/tools/bin/ld.lld
 export PATH="$MAPLE/maple/tools/bin:$PATH"
 
@@ -270,9 +272,13 @@ make -j $THREAD
 make -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
+export CC="$MAPLE/maple/tools/bin/clang"
+export CXX="$MAPLE/maple/tools/bin/clang++"
+
 # LLVM Build (Stage 2)
-rm -rf llvm-project-*/
-tar xf ../sources/llvm-project-*.tar*
+mkdir -p llvm-stage2
+cd llvm-stage2
+tar xf ../../sources/llvm-project-*.tar*
 cd llvm-project-*/
 TOOLCHAIN_FILE=$HOST-maple-clang.cmake
 # NOTE: First time doing this. Did I do it right? ~ahill
@@ -318,13 +324,15 @@ cmake -B build -G Ninja -S llvm \
 	-DLLVM_HOST_TRIPLE=$HOST \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON
+	-DLLVM_LINK_LLVM_DYLIB=ON \
+	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
 cmake --build build
 cmake --install build
 ln -s clang $MAPLE/bin/cc
 ln -s clang++ $MAPLE/bin/c++
 ln -s ld.lld $MAPLE/bin/ld
-cd ..
+cd ../..
 
 # CMake Build
 tar xf ../sources/cmake-*.tar*
