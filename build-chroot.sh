@@ -165,13 +165,9 @@ cd ..
 # libcap Build
 tar xf ../sources/libcap-*.tar*
 cd libcap-*/
-# NOTE: When trying to figure out where to put libraries, libcap attempts to
-#       invoke ldd, which is not a valid command at this point. As a result, it
-#       dumps the libraries into the root of the filesystem. ~ahill
-sed -i "s/^lib=.*/lib=\/lib/" Make.Rules
-# FIXME: libcap's pkgconf file claims to be installed under / rather than /lib. ~ahill
-make CC=clang -j $THREADS
-make -j $THREADS install
+# NOTE: Review additional prefix settings for correctness
+make CC=clang prefix=/usr lib=lib -j $THREADS
+make prefix=/usr lib=lib -j $THREADS install
 cd ..
 
 # Linux PAM Build
