@@ -47,7 +47,7 @@ cd build
 # LLVM Build
 tar xf ../sources/llvm-project-*.tar*
 cd llvm-project-*/
-cmake -B build -G Ninja -S llvm \
+cmake -B stage1 -G Ninja -S llvm \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$MAPLE/maple/tools \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
@@ -63,20 +63,22 @@ cmake -B build -G Ninja -S llvm \
 	-DLIBUNWIND_USE_COMPILER_RT=ON \
 	-DLLVM_BUILD_LLVM_DYLIB=ON \
 	-DLLVM_ENABLE_LIBCXX=ON \
-	-DLLVM_ENABLE_LLD=ON \
 	-DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
 	-DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
 	-DLLVM_HOST_TRIPLE=$HOST \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
 	-DLLVM_LINK_LLVM_DYLIB=ON \
-	-DLLVM_TARGETS_TO_BUILD=X86
-cmake --build build
-cmake --install build
+	-DLLVM_TARGETS_TO_BUILD=X86 \
+	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+cmake --build stage1
+cmake --install stage1
 cd ..
 
-export CC=$MAPLE/maple/tools/bin/clang
-export CXX=$MAPLE/maple/tools/bin/clang++
+export CC="$MAPLE/maple/tools/bin/clang"
+export CXX="$MAPLE/maple/tools/bin/clang++"
+export CFLAGS="--sysroot=$MAPLE"
+export CXXFLAGS="$CFLAGS"
 export LD=$MAPLE/maple/tools/bin/ld.lld
 export PATH="$MAPLE/maple/tools/bin:$PATH"
 
@@ -275,8 +277,11 @@ make -j $THREAD
 make -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
+# Clear compiler flags to avoid potentially issues with the LLVM build
+export CFLAGS=""
+export CXXFLAGS=""
+
 # LLVM Build (Stage 2)
-rm -rf llvm-project-*/
 tar xf ../sources/llvm-project-*.tar*
 cd llvm-project-*/
 TOOLCHAIN_FILE=$HOST-maple-clang.cmake
@@ -298,7 +303,7 @@ echo "set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)" >> $TOOLCHAIN_FILE
 # NOTE: compiler-rt fails to build on musl because execinfo.h is missing.
 #       Disabling COMPILER_RT_BUILD_GWP_ASAN works. ~ahill
 # See also: https://github.com/llvm/llvm-project/issues/60687
-cmake -B build -G Ninja -S llvm \
+cmake -B stage2 -G Ninja -S llvm \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
 	-DCMAKE_TOOLCHAIN_FILE=$(pwd)/$TOOLCHAIN_FILE \
@@ -323,9 +328,11 @@ cmake -B build -G Ninja -S llvm \
 	-DLLVM_HOST_TRIPLE=$HOST \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON
-cmake --build build
-cmake --install build
+	-DLLVM_LINK_LLVM_DYLIB=ON \
+	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+cmake --build stage2
+cmake --install stage2
 ln -s clang $MAPLE/bin/cc
 ln -s clang++ $MAPLE/bin/c++
 ln -s ld.lld $MAPLE/bin/ld
