@@ -101,6 +101,11 @@ make -j $THREADS install DESTDIR=$MAPLE
 for lib in $(grep "EMPTY_LIB_NAMES =" Makefile | sed "s/EMPTY_LIB_NAMES = //"); do
 	ln -s libc.so $MAPLE/lib/lib$lib.so
 done
+# NOTE: musl has some witchcraft associated with it that allows it to function
+#       as an implementation of ldd. Honestly, the idea of a library with as an
+#       entry point is something I have never thought of before, but I'm
+#       interested in exploring the possibilities. ~ahill
+ln -s /lib/ld-musl-x86_64.so.1 $MAPLE/bin/ldd
 cd ..
 
 # dash Build

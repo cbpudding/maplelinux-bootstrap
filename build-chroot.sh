@@ -43,6 +43,20 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# libexpat Build
+tar xf ../sources/expat-*.tar*
+cd expat-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # pkgconf Build
 tar xf ../sources/pkgconf-*.tar*
 cd pkgconf-*/
@@ -106,6 +120,19 @@ sed -i "s/^PREFIX=.*/PREFIX=\/usr/" Makefile
 # NOTE: CC is manually defined due to the use of the c99 command. ~ahill
 make -j $THREADS CC=clang
 make -j $THREADS install
+cd ..
+
+# git Build
+tar xf ../sources/git-*.tar*
+cd git-*/
+# NOTE: musl doesn't support REG_STARTEND, which git requires. Therefore, we
+#       pass NO_REGEX=NeedsStartEnd so git will use its own implementation
+#       instead. ~ahill
+# NOTE: Passing NO_TCLTK disables the GUI and passing NO_GETTEXT disables locale
+#       generation... unless it attempts to build the GUI, where it will attempt
+#       to generate the locales anyways. ~ahill
+make -j $THREADS all prefix=/usr NO_GETTEXT=YesUnfortunately NO_REGEX=NeedsStartEnd NO_TCLTK=YesPlease
+make -j $THREADS install prefix=/usr NO_GETTEXT=YesUnfortunately NO_REGEX=NeedsStartEnd NO_TCLTK=YesPlease
 cd ..
 
 # muon Build
@@ -178,18 +205,34 @@ make -j $THREADS install
 cd ..
 
 # Linux PAM Build
-#tar xf ../sources/Linux-PAM-*.tar*
-#cd Linux-PAM-*/
-#muon setup build
-# ...
-#cd ..
+tar xf ../sources/Linux-PAM-*.tar*
+cd Linux-PAM-*/
+# FIXME: Muon has an issue with system dependencies that lack a pkgconfig file.
+#        We change the method we use for resolving dependencies as a workaround.
+#        ~ahill
+sed -i "s/^libdl = dependency('dl')/libdl = dependency('dl', method : 'system')/" meson.build
+# NOTE: The version script associated with PAM attempts to modify symbols that
+#       don't exist, so it fails to compile on LLVM. Passing
+#       -Wl,--undefined-version fixes the problem. ~ahill
+LDFLAGS="-Wl,--undefined-version" muon setup build
+# NOTE: We are using Samurai directly because we don't have the ability to reach
+#       the Internet to download meson's tests in our current state. ~ahill
+samu -C build
+muon -C build install
+cd ..
 
 # OpenRC Build
-#tar xf ../sources/openrc-*.tar*
-#cd openrc-*/
-#muon setup build
-# ...
-#cd ..
+tar xf ../sources/openrc-*.tar*
+cd openrc-*/
+muon setup build
+samu -C build
+# NOTE: build/src/shared/version is never generated, which causes an error with
+#       the install process. Deleting the last line as a workaround. ~ahill
+sed -i "/^install.*\/src\/shared\/version\".*/d" ./tools/meson_final.sh
+# NOTE: One of the shell scripts OpenRC uses to install requires a DESTDIR, so
+#       we simply say the root is / in this case. ~ahill
+DESTDIR=/ muon -C build install
+cd ..
 
 # nasm Build
 tar xf ../sources/nasm-*.tar*
