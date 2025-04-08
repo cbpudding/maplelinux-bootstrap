@@ -272,6 +272,7 @@ make -j $THREAD
 make -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
+# Clear compiler flags to avoid potentially issues with the LLVM build
 export CFLAGS=""
 export CXXFLAGS=""
 
