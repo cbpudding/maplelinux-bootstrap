@@ -266,4 +266,43 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# bison Build
+tar xf ../sources/bison-*
+cd bison-*/
+./configure \
+	--prefix=/usr \
+	--libexecdir=/usr/lib \
+	--sbindir=/usr/bin
+
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# flex Build
+tar xf ../sources/flex-*
+cd flex-*/
+./configure \
+	--prefix=/usr \
+	--libexecdir=/usr/lib \
+	--sbindir=/usr/bin
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# util-linux Build
+tar xf ../sources/util-linux-*
+cd util-linux-*
+# lastlog2 depends on sqlite, which we don't have
+./configure \
+	--prefix=/usr \
+	--libexecdir=/usr/lib \
+	--sbindir=/usr/bin \
+	--without-python \
+	--disable-liblastlog2 \
+	--disable-pam-lastlog2 \
+	--without-systemd
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 cd ..
