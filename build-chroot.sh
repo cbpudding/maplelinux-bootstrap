@@ -306,6 +306,48 @@ cd util-linux-*
 	--without-systemd
 make -j $THREADS
 make -j $THREADS install
+
+# bzip2 Build
+tar xf ../sources/bzip2-*.tar.gz
+cd bzip2-*/
+make CC=clang
+make install CC=clang PREFIX=/usr
+cd ..
+
+# libinih Build (required by xfsprogs)
+tar xf ../sources/libinih-*.tar.gz
+cd inih-*/
+muon setup \
+	-Dprefix=/usr \
+	-Ddefault_library=shared \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# liburcu Build
+tar xf ../sources/userspace-rcu-*.tar.bz2
+cd userspace-rcu-*/
+./configure \
+	--prefix=/usr
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# xfsprogs Build
+tar xf ../sources/xfsprogs-*.tar.xz
+cd xfsprogs-*/
+# Overriding system statx fixes an issue with musl compatability.
+# Gentoo bugzilla for reference: https://bugs.gentoo.org/948468
+./configure \
+	--enable-gettext=no \
+	--exec-prefix=/usr \
+	--prefix=/usr \
+	--sbindir=/usr/bin \
+	--libexecdir=/usr/lib \
+	CFLAGS=-DOVERRIDE_SYSTEM_STATX
+make -j $THREADS
+make -j $THREADS install
 cd ..
 
 cd ..
