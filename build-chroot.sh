@@ -350,4 +350,20 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# bc Build
+tar xf ../sources/bc-*.tar.xz
+cd bc-*/
+./configure \
+	--exec-prefix=/usr \
+	--prefix=/usr \
+	--sbindir=/usr/bin \
+	--libexecdir=/usr/lib
+# NOTE: Documentation is not properly built here,
+# MAKEINFO=true replaces the makeinfo executable (which we don't have)
+# with `/usr/bin/true`. This is fine for the bootstrap, but should
+# not be done when properly packaged. ~nmcdaniel
+make MAKEINFO=true -j $THREADS
+make MAKEINFO=true -j $THREADS install
+cd ..
+
 cd ..
