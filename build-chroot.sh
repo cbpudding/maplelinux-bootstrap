@@ -254,4 +254,16 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# dosfstools Build
+tar xf ../sources/dosfstools-*.tar.gz
+cd dosfstools-*/
+./configure
+	--prefix=/usr \
+	--libexecdir=/usr/lib \
+	--sbindir=/usr/bin \
+	--mandir=/usr/share/man \
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 cd ..
