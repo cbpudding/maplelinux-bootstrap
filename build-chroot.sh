@@ -293,6 +293,7 @@ cd ..
 tar xf ../sources/util-linux-*
 cd util-linux-*
 # lastlog2 depends on sqlite, which we don't have
+# groups and chown are disabled as we don't have either at this point
 ./configure \
 	--prefix=/usr \
 	--libexecdir=/usr/lib \
@@ -300,6 +301,8 @@ cd util-linux-*
 	--without-python \
 	--disable-liblastlog2 \
 	--disable-pam-lastlog2 \
+	--disable-use-tty-group \
+	--disable-makeinstall-chown \
 	--without-systemd
 make -j $THREADS
 make -j $THREADS install
