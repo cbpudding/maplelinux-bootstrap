@@ -78,7 +78,7 @@ cd ..
 
 export CC="$MAPLE/maple/tools/bin/clang"
 export CXX="$MAPLE/maple/tools/bin/clang++"
-export CFLAGS="--sysroot=$MAPLE"
+export CFLAGS="-O3 -march=skylake -pipe --sysroot=$MAPLE"
 export CXXFLAGS="$CFLAGS"
 export LD=$MAPLE/maple/tools/bin/ld.lld
 export PATH="$MAPLE/maple/tools/bin:$PATH"
@@ -278,11 +278,43 @@ make -j $THREAD
 make -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
-# Clear compiler flags to avoid potentially issues with the LLVM build
-export CFLAGS=""
-export CXXFLAGS=""
+# CMake Build
+tar xf ../sources/cmake-*.tar*
+cd cmake-*/
+# NOTE: Tests are disabled because they attempt to run on the system responsible
+#       for the build, not the system being built. ~ahill
+cmake -B build -G Ninja \
+	-DBUILD_TESTING=OFF \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_COMPILER=$CC \
+	-DCMAKE_CXX_COMPILER=$CXX \
+	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
+	-DCMAKE_SYSROOT=$MAPLE \
+	-DCMAKE_USE_OPENSSL=OFF
+cmake --build build
+cmake --install build
+cd ..
+
+# Gawk Build
+tar xf ../sources/gawk-*.tar*
+cd gawk-*/
+./configure \
+	--disable-mpfr \
+	--disable-nls \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install DESTDIR=$MAPLE
+cd ..
 
 # LLVM Build (Stage 2)
+# NOTE: We are removing the sysroot option from CFLAGS and CXXFLAGS to prevent a
+#       potential conflict with CMake. Adapted from Nick's contribution. ~ahill
+export CFLAGS=$(echo $CFLAGS | sed "s/--sysroot=\S*//")
+export CXXFLAGS=$(echo $CXXFLAGS | sed "s/--sysroot=\S*//")
 tar xf ../sources/llvm-project-*.tar*
 cd llvm-project-*/
 TOOLCHAIN_FILE=$HOST-maple-clang.cmake
@@ -337,36 +369,4 @@ cmake --install stage2
 ln -s clang $MAPLE/bin/cc
 ln -s clang++ $MAPLE/bin/c++
 ln -s ld.lld $MAPLE/bin/ld
-cd ..
-
-# CMake Build
-tar xf ../sources/cmake-*.tar*
-cd cmake-*/
-# NOTE: Tests are disabled because they attempt to run on the system responsible
-#       for the build, not the system being built. ~ahill
-cmake -B build -G Ninja \
-	-DBUILD_TESTING=OFF \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_C_COMPILER=$CC \
-	-DCMAKE_CXX_COMPILER=$CXX \
-	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
-	-DCMAKE_SYSROOT=$MAPLE \
-	-DCMAKE_USE_OPENSSL=OFF
-cmake --build build
-cmake --install build
-cd ..
-
-# Gawk Build
-tar xf ../sources/gawk-*.tar*
-cd gawk-*/
-./configure \
-	--disable-mpfr \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
 cd ..
