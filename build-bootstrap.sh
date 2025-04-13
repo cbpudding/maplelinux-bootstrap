@@ -10,6 +10,7 @@ export HOST=x86_64-unknown-linux-musl
 # TODO: Where does /usr/com fit into all of this (shared state directory)? ~ahill
 mkdir -p $MAPLE/bin
 mkdir -p $MAPLE/boot
+mkdir -p $MAPLE/boot/EFI/BOOT/
 mkdir -p $MAPLE/dev
 mkdir -p $MAPLE/etc
 mkdir -p $MAPLE/home/root
@@ -370,3 +371,8 @@ ln -s clang $MAPLE/bin/cc
 ln -s clang++ $MAPLE/bin/c++
 ln -s ld.lld $MAPLE/bin/ld
 cd ..
+
+cd ..
+
+# Copy the necessary configuration files to the bootstrap
+cp limine.conf $MAPLE/boot/EFI/BOOT/

@@ -172,6 +172,11 @@ cd ncurses-*/
 	--without-normal
 make -j $THREADS
 make -j $THREADS install
+# NOTE: These symbolic links are for backwards compatibility. Specifically, for
+#       fixing "make menuconfig" for the Linux kernel, since it looks for the
+#       non-wide version of the library. ~ahill
+ln -s libncursesw.so /lib/libncurses.so
+ln -s libncurses++w.so /lib/libncurses++.so
 cd ..
 
 # zsh Build
@@ -412,5 +417,8 @@ LLVM=1 make -j $THREADS defconfig
 LLVM=1 make -j $THREADS
 LLVM=1 make -j $THREADS install
 cd ..
+
+# Finally, make the image bootable.
+cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 
 cd ..
