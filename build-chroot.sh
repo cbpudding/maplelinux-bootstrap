@@ -428,7 +428,7 @@ cd linux-*/
 # NOTE: LLVM=1 is required for the Linux kernel Makefile. Otherwise, things will
 #       not build properly. ~ahill
 LLVM=1 make -j $THREADS mrproper
-LLVM=1 make -j $THREADS defconfig
+cp /maple/linux.$(uname -m).config .config
 LLVM=1 make -j $THREADS
 LLVM=1 make -j $THREADS install
 cd ..
