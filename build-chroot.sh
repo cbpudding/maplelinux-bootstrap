@@ -77,6 +77,7 @@ cd pkgconf-*/
 	--sysconfdir=/etc
 make -j $THREADS
 make -j $THREADS install
+ln -s pkgconf /bin/pkg-config
 cd ..
 
 # Perl Build
@@ -416,6 +417,28 @@ LLVM=1 make -j $THREADS mrproper
 LLVM=1 make -j $THREADS defconfig
 LLVM=1 make -j $THREADS
 LLVM=1 make -j $THREADS install
+cd ..
+
+# kmod Build
+tar xf ../sources/kmod-*.tar*
+cd kmod-*/
+# NOTE: Might enable zstd later, but I want to make sure that the lack of
+#       Facebook's software doesn't negatively impact the open source world.
+#       ~ahill
+# TODO: Is this the correct zsh directory to use? ~ahill
+muon setup \
+	-Dbashcompletiondir=no \
+	-Dfishcompletiondir=no \
+	-Dmanpages=false \
+	-Dzstd=disabled \
+	build
+muon samu -C build
+# FIXME: kmod's meson script attempts to invoke sh via the add_install_script
+#        and confuses muon, so it starts searching for sh in the current
+#        directory. As a workaround, we will tweak the invocation to point
+#        directly to /bin/sh. ~ahill
+sed -i "s/add_install_script('sh'/add_install_script('\/bin\/sh'/" meson.build
+muon -C build install
 cd ..
 
 # Finally, make the image bootable.
