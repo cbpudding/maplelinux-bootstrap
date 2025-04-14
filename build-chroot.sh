@@ -36,6 +36,20 @@ make CC=clang
 make install CC=clang PREFIX=/usr
 cd ..
 
+# cpio Build
+tar xf ../sources/cpio-*.tar*
+cd cpio-*/
+./configure \
+	--disable-nls \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # libarchive Build
 tar xf ../sources/libarchive-*.tar*
 cd libarchive-*/
