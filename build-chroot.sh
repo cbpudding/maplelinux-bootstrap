@@ -455,6 +455,12 @@ sed -i "s/add_install_script('sh'/add_install_script('\/bin\/sh'/" meson.build
 muon -C build install
 cd ..
 
+# tinyramfs Build
+tar xf ../sources/tinyramfs-*.tar*
+cd tinyramfs-*/
+make install PREFIX=/usr
+cd ..
+
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 

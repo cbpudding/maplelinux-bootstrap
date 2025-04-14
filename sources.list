@@ -37,6 +37,7 @@ a56bfc25c86620c6d04ee3037fbeb7f3cc508f6d0040ca006dea34b8ad2696e9,https://github.
 3b8cf51548dfc49b7efe035e191ff5e1963ebc4fe8f6064a5eefc5343eaf78a5,https://github.com/michaelforney/samurai/releases/download/1.2/samurai-1.2.tar.gz,
 6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181,https://ftp.gnu.org/gnu/sed/sed-4.9.tar.xz,
 4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16,https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz,
+6ee152cfb083a378285a49c8e52294307458119147f795bfb7f460cb7ed1d659,https://github.com/illiliti/tinyramfs/archive/refs/tags/0.2.0.tar.gz,tinyramfs-0.2.0.tar.gz
 98d66cc12f2c5881879b976f0c55d10d311401513be254e3bd28cf3811fb50c8,https://lttng.org/files/urcu/userspace-rcu-0.15.1.tar.bz2,
 81ee93b3cfdfeb7d7c4090cedeba1d7bbce9141fd0b501b686b3fe475ddca4c6,https://www.kernel.org/pub/linux/utils/util-linux/v2.41/util-linux-2.41.tar.xz,
 0459933f93d94c82bc2789e7bd63742273d9d74207cdae67dc3032038da08337,https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/xfsprogs-6.13.0.tar.xz,
