@@ -375,5 +375,5 @@ cd ..
 cd ..
 
 # Copy the necessary configuration files to the bootstrap
-cp limine.conf $MAPLE/boot/EFI/BOOT/
+cp limine.conf $MAPLE/boot/
 cp linux.$(uname -m).config $MAPLE/maple/
