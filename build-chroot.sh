@@ -1,4 +1,6 @@
 #!/bin/sh -e
+CFLAGS="-O3 -march=skylake -pipe"
+CXXFLAGS="$CFLAGS"
 THREADS=$(nproc)
 
 mkdir -p build
@@ -252,6 +254,10 @@ sed -i "/^install.*\/src\/shared\/version\".*/d" ./tools/meson_final.sh
 # NOTE: One of the shell scripts OpenRC uses to install requires a DESTDIR, so
 #       we simply say the root is / in this case. ~ahill
 DESTDIR=/ muon -C build install
+# FIXME: Not sure why, but OpenRC doesn't take over /sbin/init like it should.
+#        As a workaround, let's create the symlinks manually. ~ahill
+ln -s openrc-init /sbin/init
+ln -s openrc-shutdown /sbin/shutdown
 cd ..
 
 # nasm Build
