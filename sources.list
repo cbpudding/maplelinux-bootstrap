@@ -34,6 +34,7 @@ a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4,https://musl.li
 a56bfc25c86620c6d04ee3037fbeb7f3cc508f6d0040ca006dea34b8ad2696e9,https://github.com/OpenRC/openrc/archive/refs/tags/0.61.tar.gz,openrc-0.61.tar.gz
 02f8c45bb379ed0c3de7514fad48c714fd46be8f0b536bfd5320050165a1ee26,https://www.cpan.org/src/5.0/perl-5.40.1.tar.gz,
 51203d99ed573fa7344bf07ca626f10c7cc094e0846ac4aa0023bd0c83c25a41,https://distfiles.ariadne.space/pkgconf/pkgconf-2.4.3.tar.xz,
+c2e6d193cc78f84cd6ddb72aaf6d5c6a9162f0470e5992092057f5ff518562fa,https://cfhcable.dl.sourceforge.net/project/procps-ng/Production/procps-ng-4.0.5.tar.xz,
 3b8cf51548dfc49b7efe035e191ff5e1963ebc4fe8f6064a5eefc5343eaf78a5,https://github.com/michaelforney/samurai/releases/download/1.2/samurai-1.2.tar.gz,
 6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181,https://ftp.gnu.org/gnu/sed/sed-4.9.tar.xz,
 4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16,https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz,
