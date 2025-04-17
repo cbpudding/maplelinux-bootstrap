@@ -23,7 +23,7 @@ mkdir -p $MAPLE/maple/sources
 mkdir -p $MAPLE/mnt
 mkdir -p $MAPLE/proc
 ln -s home/root $MAPLE/root
-ln -s var/run $MAPLE/run
+mkdir -p $MAPLE/run
 mkdir -p $MAPLE/sbin
 mkdir -p $MAPLE/sys
 mkdir -p $MAPLE/tmp
@@ -37,9 +37,9 @@ mkdir -p $MAPLE/usr/share
 mkdir -p $MAPLE/var
 mkdir -p $MAPLE/var/cache
 mkdir -p $MAPLE/var/lib
-mkdir -p $MAPLE/var/lock
+ln -s ../run/lock $MAPLE/var/lock
 mkdir -p $MAPLE/var/log
-mkdir -p $MAPLE/var/run
+ln -s ../run $MAPLE/var/run
 mkdir -p $MAPLE/var/spool
 mkdir -p $MAPLE/var/tmp
 
