@@ -468,6 +468,29 @@ cd tinyramfs-*/
 make install PREFIX=/usr
 cd ..
 
+# procps-ng Build
+tar xf ../sources/procps-ng-*.tar*
+cd procps-ng-*/
+# FIXME: Why does this not detect the ncurses we just built? Do we need a
+#        pkgconf file for this? Why didn't ncurses build one? ~ahill
+./configure \
+	--disable-nls \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--without-ncurses
+make -j $THREADS
+# FIXME: For some reason, a -e sneaks its way into local/capnames.h, which
+#        causes a syntax error to occur. This is an incredibly jank patch and I
+#        don't know what causes this yet. ~ahill
+sed -i "s/^-e//" local/capnames.h
+make -j $THREADS install
+cd ..
+
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 
