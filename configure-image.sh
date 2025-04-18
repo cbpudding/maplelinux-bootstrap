@@ -1,9 +1,5 @@
 #!/bin/sh -e
 
-# User/Group Generation
-echo "root:x:0:0::/home/root:/bin/zsh" > /etc/passwd
-echo "root:x:0:root" > /etc/group
-
 # fstab Generation
 # TODO: Is the dump column still used today? ~ahill
 echo "/dev/vda2 /              xfs      defaults            1 1" > /etc/fstab

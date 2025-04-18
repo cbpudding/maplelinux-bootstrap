@@ -491,6 +491,10 @@ sed -i "s/^-e//" local/capnames.h
 make -j $THREADS install
 cd ..
 
+# User/Group Generation
+echo "root:x:0:0::/home/root:/bin/zsh" > /etc/passwd
+echo "root:x:0:root" > /etc/group
+
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 
