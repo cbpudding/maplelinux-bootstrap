@@ -491,6 +491,37 @@ sed -i "s/^-e//" local/capnames.h
 make -j $THREADS install
 cd ..
 
+# kbd Build
+tar xf ../sources/kbd-*.tar*
+cd kbd-*/
+# NOTE: The tests require a software called autom4te to function. Ignoring the
+#       additional dependency for now. ~ahill
+./configure \
+	--disable-nls \
+	--disable-static \
+	--disable-tests \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# net-tools Build
+tar xf ../sources/net-tools-*.tar*
+cd net-tools-*/
+# NOTE: We are passing BASH=1 because the configure script apparently relies on
+#       some bashism and zsh doesn't set this environment variable. Nobody tell
+#       it that we aren't actually using bash. :) ~ahill
+# NOTE: zsh doesn't support set -h, so we'll just patch that out. ~ahill
+sed -i "s/set -f -h/set -f/" configure.sh
+BASH=1 make config
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # User/Group Generation
 echo "root:x:0:0::/home/root:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
