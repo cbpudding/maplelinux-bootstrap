@@ -280,23 +280,6 @@ make -j $THREAD
 make -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
-# CMake Build
-tar xf ../sources/cmake-*.tar*
-cd cmake-*/
-# NOTE: Tests are disabled because they attempt to run on the system responsible
-#       for the build, not the system being built. ~ahill
-cmake -B build -G Ninja \
-	-DBUILD_TESTING=OFF \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_C_COMPILER=$CC \
-	-DCMAKE_CXX_COMPILER=$CXX \
-	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
-	-DCMAKE_SYSROOT=$MAPLE \
-	-DCMAKE_USE_OPENSSL=OFF
-cmake --build build
-cmake --install build
-cd ..
-
 # Gawk Build
 tar xf ../sources/gawk-*.tar*
 cd gawk-*/

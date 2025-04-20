@@ -135,6 +135,23 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# CMake Build
+tar xf ../sources/cmake-*.tar*
+cd cmake-*/
+./bootstrap \
+	--bindir=/bin \
+	--parallel=$THREADS \
+	--prefix=/usr \
+	--system-bzip2 \
+	--system-curl \
+	--system-expat \
+	--system-libarchive \
+	--system-liblzma \
+	--system-zlib
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # Samurai Build
 tar xf ../sources/samurai-*.tar*
 cd samurai-*/
