@@ -583,11 +583,16 @@ make -j $THREADS install
 cd ..
 
 # Basic Configuration
-echo "root:x:0:0::/home/root:/bin/zsh" > /etc/passwd
+echo "root::0:0::/home/root:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
-# NOTE: Password here is "speakfriendandenter" ~ahill
-echo "root:\$6\$mainemaple\$8BwdyloMf5/n5a/n0CqCQ2CKy/OwuNYH/ZEtlByobs.pm9QoMRUu6CbOfyycILI.MQCwd4aXqN58cXpg9mtwy/:20197:0:99999:30:::" > /etc/shadow
 echo "maple" > /etc/hostname
+# FIXME: This is enough to get PAM authentication going, but this really should
+#        be reviewed before it is put anywhere important. ~ahill
+echo "#%PAM-1.0" > /etc/pam.d/system-auth
+echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
+echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
+echo "password required pam_unix.so nullok shadow" >> /etc/pam.d/system-auth
+echo "session  required pam_unix.so" >> /etc/pam.d/system-auth
 
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
