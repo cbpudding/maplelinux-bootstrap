@@ -140,6 +140,7 @@ tar xf ../sources/cmake-*.tar*
 cd cmake-*/
 ./bootstrap \
 	--bindir=/bin \
+	--datadir=/usr/share/cmake-4.0 \
 	--parallel=$THREADS \
 	--prefix=/usr \
 	--system-bzip2 \
@@ -608,6 +609,11 @@ echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
 echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
 echo "password required pam_unix.so nullok shadow" >> /etc/pam.d/system-auth
 echo "session  required pam_unix.so" >> /etc/pam.d/system-auth
+echo "NAME=Maple Linux" > /etc/os-release
+echo "VERSION=2025" >> /etc/os-release
+echo "ID=maple" >> /etc/os-release
+echo "VERSION_ID=2025" >> /etc/os-release
+echo "PRETTY_NAME=\"Maple Linux\"" >> /etc/os-release
 
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
