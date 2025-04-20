@@ -1,6 +1,14 @@
 #!/bin/sh
 MAPLE=$(pwd)/maple
 
+run_chroot() {
+    SHELL=/bin/sh
+    if [ -e $MAPLE/bin/zsh ]; then
+        SHELL=/bin/zsh
+    fi
+    chroot $MAPLE $SHELL
+}
+
 if mount --rbind /dev $MAPLE/dev && mount --make-rslave $MAPLE/dev; then
     if mount -t proc /proc $MAPLE/proc; then
         if mount --rbind /sys $MAPLE/sys && mount --make-rslave $MAPLE/sys; then
@@ -8,11 +16,11 @@ if mount --rbind /dev $MAPLE/dev && mount --make-rslave $MAPLE/dev; then
                 if mount --bind /run $MAPLE/run; then
                     if [ -d $MAPLE/maple/sources ]; then
                         if mount --bind ./sources $MAPLE/maple/sources; then
-                            chroot $MAPLE /bin/sh
+                            run_chroot
                             umount $MAPLE/maple/sources
                         fi
                     else
-                        chroot $MAPLE /bin/sh
+                        run_chroot
                     fi
                     umount $MAPLE/run
                 fi
