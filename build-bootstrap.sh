@@ -148,6 +148,7 @@ cd coreutils-*/
 ./configure \
 	--datarootdir=/usr/share \
 	--disable-nls \
+	--enable-install-program=hostname \
 	--includedir=/usr/include \
 	--libexecdir=/lib \
 	--prefix="" \
