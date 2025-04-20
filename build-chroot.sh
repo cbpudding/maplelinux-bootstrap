@@ -522,11 +522,77 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
-# User/Group Generation
+# libmd Build
+tar xf ../sources/libmd-*.tar*
+cd libmd-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libbsd Build
+tar xf ../sources/libbsd-*.tar*
+cd libbsd-*/
+./configure \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Shadow Build
+tar xf ../sources/shadow-*.tar*
+cd shadow-*/
+./configure \
+	--disable-nls \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# nano Build
+tar xf ../sources/nano-*.tar*
+cd nano-*/
+./configure \
+	--disable-nls \
+	--enable-utf8 \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Basic Configuration
 echo "root:x:0:0::/home/root:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
+# NOTE: Password here is "speakfriendandenter" ~ahill
+echo "root:\$6\$mainemaple\$8BwdyloMf5/n5a/n0CqCQ2CKy/OwuNYH/ZEtlByobs.pm9QoMRUu6CbOfyycILI.MQCwd4aXqN58cXpg9mtwy/:20197:0:99999:30:::" > /etc/shadow
+echo "maple" > /etc/hostname
 
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
+ln -s agetty /etc/init.d/agetty.tty1
+cp /etc/conf.d/agetty /etc/conf.d/agetty.tty1
+rc-update add agetty.tty1 default
 
 cd ..

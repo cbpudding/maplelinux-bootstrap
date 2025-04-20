@@ -18,9 +18,11 @@ f8c3486509de705192138b00ef2c00bbbdd0e84c30d5c07d23fc73a9dc4cc9cc,https://ftp.gnu
 f167d899d92b56ccf12f6f49355173f93870a95f15d8aeebf5fdcd28a621aca8,https://www.kernel.org/pub/linux/utils/kbd/kbd-2.7.1.tar.xz,
 d1dfcf19b58133b6f39917e6e9560e33b73d9308282750d31501870c24f22c53,https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/snapshot/kmod-34.2.tar.gz,
 ed8b5732e4cd6e30fae909fb945cad8ff9cb7be5c6cdaa3944ec96e4a200c04c,https://libarchive.org/downloads/libarchive-3.7.9.tar.xz,
+b88cc9163d0c652aaf39a99991d974ddba1c3a9711db8f1b5838af2a14731014,https://libbsd.freedesktop.org/releases/libbsd-0.12.2.tar.xz,
 de4e7e064c9ba451d5234dd46e897d7c71c96a9ebf9a0c445bc04f4742d83632,https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.75.tar.xz,
 a359755a54200e0d9fab4bf169d5af7d2177d12b324874c6c32eaac5cce79295,https://github.com/arachsys/libelf/archive/refs/tags/v0.192.1.tar.gz,libelf-0.192.1.tar.gz
 706aa05c888b53bd170e5d8aa8f8a9d9ccf5449dfed262d5103d1f292af26774,https://github.com/benhoyt/inih/archive/refs/tags/r60.tar.gz,libinih-r60.tar.gz
+1bd6aa42275313af3141c7cf2e5b964e8b1fd488025caf2f971f43b00776b332,https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz,
 4d841955f0acc3dfc71d0e3dd35f283af461222350e26843fea9731c0246a1e4,https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.0.0.tar.gz,
 5938f24aa3a838f126e573a2c7c13808554e16ff0e0818f2a9ae222db669f7df,https://github.com/limine-bootloader/limine/releases/download/v9.2.3/limine-9.2.3.tar.xz,
 c5c682a354ea3190139357a57d34a79e5c37221ace823a938e10116b577a2e1b,https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.2.tar.xz,
@@ -30,6 +32,7 @@ f0a4a240aabc9b056142d14d5478bb6d962aeac549cbd75b809f5499240a8b38,https://github.
 dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3,https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz,
 c2ce8302e886b2d3534ec38896a824dc83f43698d085d57bb19a751611d94e86,https://git.sr.ht/~lattis/muon/archive/0.4.0.tar.gz,muon-0.4.0.tar.gz
 a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4,https://musl.libc.org/releases/musl-1.2.5.tar.gz,
+5ad29222bbd55624d87ea677928b3106a743114d6c6f9b41f36c97be2a8e628d,https://www.nano-editor.org/dist/v8/nano-8.4.tar.xz,
 1412a1c760bbd05db026b6c0d1657affd6631cd0a63cddb6f73cc6d4aa616148,https://www.nasm.us/pub/nasm/releasebuilds/2.16.03/nasm-2.16.03.tar.xz,
 97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059,https://invisible-island.net/datafiles/release/ncurses.tar.gz,ncurses-6.3.tar.gz
 b262435a5241e89bfa51c3cabd5133753952f7a7b7b93f32e08cb9d96f580d69,https://versaweb.dl.sourceforge.net/project/net-tools/net-tools-2.10.tar.xz,
@@ -39,6 +42,7 @@ a56bfc25c86620c6d04ee3037fbeb7f3cc508f6d0040ca006dea34b8ad2696e9,https://github.
 c2e6d193cc78f84cd6ddb72aaf6d5c6a9162f0470e5992092057f5ff518562fa,https://cfhcable.dl.sourceforge.net/project/procps-ng/Production/procps-ng-4.0.5.tar.xz,
 3b8cf51548dfc49b7efe035e191ff5e1963ebc4fe8f6064a5eefc5343eaf78a5,https://github.com/michaelforney/samurai/releases/download/1.2/samurai-1.2.tar.gz,
 6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181,https://ftp.gnu.org/gnu/sed/sed-4.9.tar.xz,
+554801054694ff7d8a7abdf0d6ece34e2f16e111673cc01b8c9ee1278451181e,https://github.com/shadow-maint/shadow/releases/download/4.17.4/shadow-4.17.4.tar.xz,
 4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16,https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz,
 6ee152cfb083a378285a49c8e52294307458119147f795bfb7f460cb7ed1d659,https://github.com/illiliti/tinyramfs/archive/refs/tags/0.2.0.tar.gz,tinyramfs-0.2.0.tar.gz
 98d66cc12f2c5881879b976f0c55d10d311401513be254e3bd28cf3811fb50c8,https://lttng.org/files/urcu/userspace-rcu-0.15.1.tar.bz2,
