@@ -509,16 +509,14 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
-# net-tools Build
-tar xf ../sources/net-tools-*.tar*
-cd net-tools-*/
-# NOTE: We are passing BASH=1 because the configure script apparently relies on
-#       some bashism and zsh doesn't set this environment variable. Nobody tell
-#       it that we aren't actually using bash. :) ~ahill
-# NOTE: zsh doesn't support set -h, so we'll just patch that out. ~ahill
-sed -i "s/set -f -h/set -f/" configure.sh
-BASH=1 make config
-make -j $THREADS
+# iproute2 Build
+tar xf ../sources/iproute2-*.tar*
+cd iproute2-*/
+./configure --color auto --include_dir /usr/include --libdir /lib
+# NOTE: It seems that iproute2's configuration script isn't compatible with
+#       musl, which means we need to manually define HAVE_HANDLE_AT and
+#       HAVE_SETNS to make it work properly. ~ahill
+CFLAGS="$(CFLAGS) -DHAVE_HANDLE_AT -DHAVE_SETNS" make -j $THREADS CC=clang
 make -j $THREADS install
 cd ..
 
