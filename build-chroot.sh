@@ -638,7 +638,7 @@ rc-update add dhcpcd default
 cd ..
 
 # Basic Configuration
-echo "root::0:0::/home/root:/bin/zsh" > /etc/passwd
+echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
 echo "maple" > /etc/hostname
 # FIXME: This is enough to get PAM authentication going, but this really should

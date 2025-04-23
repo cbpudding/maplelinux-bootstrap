@@ -13,7 +13,7 @@ mkdir -p $MAPLE/boot
 mkdir -p $MAPLE/boot/EFI/BOOT/
 mkdir -p $MAPLE/dev
 mkdir -p $MAPLE/etc
-mkdir -p $MAPLE/home/root
+mkdir -p $MAPLE/home
 mkdir -p $MAPLE/lib
 # TODO: Does it make sense to have this long-term? Anything that depends on
 #       libc++ fails to link without it, but this should be fixed via a
@@ -22,7 +22,6 @@ ln -s . $MAPLE/lib/$HOST
 mkdir -p $MAPLE/maple/sources
 mkdir -p $MAPLE/mnt
 mkdir -p $MAPLE/proc
-ln -s home/root $MAPLE/root
 mkdir -p $MAPLE/run
 mkdir -p $MAPLE/sbin
 mkdir -p $MAPLE/sys
