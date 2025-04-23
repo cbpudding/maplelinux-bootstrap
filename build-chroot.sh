@@ -612,6 +612,31 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# dhcpcd Build
+tar xf ../sources/dhcpcd-*.tar*
+cd dhcpcd-*/
+./configure \
+	--bindir=/bin \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--prefix=/usr \
+	--sbindir=/sbin \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+# NOTE: dhcpcd doesn't come with OpenRC support, so we need to add the entry
+#       under /etc/init.d. First time actually writing an OpenRC service, so
+#       expect strangeness to occur. ~ahill
+echo "#!/sbin/openrc-run" > /etc/init.d/dhcpcd
+echo "description=\"DHCP Client Daemon\"" >> /etc/init.d/dhcpcd
+echo "command=\"/sbin/dhcpcd\"" >> /etc/init.d/dhcpcd
+echo "command_args=\"-M\"" >> /etc/init.d/dhcpcd
+echo "command_args_background=\"-b\"" >> /etc/init.d/dhcpcd
+echo "pidfile=\"/run/dhcpcd.pid\"" >> /etc/init.d/dhcpcd
+chmod +x /etc/init.d/dhcpcd
+rc-update add dhcpcd default
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/home/root:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
