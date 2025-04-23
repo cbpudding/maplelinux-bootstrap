@@ -598,6 +598,20 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# libsodium Build
+tar xf ../sources/libsodium-*.tar*
+cd libsodium-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/home/root:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group

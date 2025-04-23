@@ -25,6 +25,7 @@ a359755a54200e0d9fab4bf169d5af7d2177d12b324874c6c32eaac5cce79295,https://github.
 706aa05c888b53bd170e5d8aa8f8a9d9ccf5449dfed262d5103d1f292af26774,https://github.com/benhoyt/inih/archive/refs/tags/r60.tar.gz,libinih-r60.tar.gz
 1bd6aa42275313af3141c7cf2e5b964e8b1fd488025caf2f971f43b00776b332,https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz,
 4d841955f0acc3dfc71d0e3dd35f283af461222350e26843fea9731c0246a1e4,https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.0.0.tar.gz,
+6a7ac6c03366c88769546de60a753751a639a80cfc85b3ba45be4a95e218776d,https://download.libsodium.org/libsodium/releases/libsodium-1.0.20-stable.tar.gz,
 5938f24aa3a838f126e573a2c7c13808554e16ff0e0818f2a9ae222db669f7df,https://github.com/limine-bootloader/limine/releases/download/v9.2.3/limine-9.2.3.tar.xz,
 91c6c322c32568f09922a02ed35f46372ca8526714c6555b3115b9e9c156652a,https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.3.tar.xz,
 57dcd7a6b966ecd5bbd95e1d11173734691e16b68692fa59661cdae9b13b1697,https://github.com/linux-pam/linux-pam/releases/download/v1.7.0/Linux-PAM-1.7.0.tar.xz,
