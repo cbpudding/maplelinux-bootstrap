@@ -658,6 +658,66 @@ chmod +x /etc/init.d/chronyd
 rc-update add chronyd default
 cd ..
 
+# libmnl Build
+tar xf ../sources/libmnl-*.tar*
+cd libmnl-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libnftnl Build
+tar xf ../sources/libnftnl-*.tar*
+cd libnftnl-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libgmp Build
+tar xf ../sources/gmp-*.tar*
+cd gmp-*/
+./configure \
+	--disable-static \
+	--enable-cxx \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# nftables Build
+tar xf ../sources/nftables-*.tar*
+cd nftables-*/
+# NOTE: Building without the CLI will require fewer dependencies.
+#       (No libreadline, editline, and linenoise) ~ahill
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/usr/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--without-cli
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
