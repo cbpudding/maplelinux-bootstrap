@@ -640,6 +640,24 @@ chmod +x /etc/init.d/dhcpcd
 rc-update add dhcpcd default
 cd ..
 
+# Chrony Build
+tar xf ../sources/chrony-*.tar*
+cd chrony-*/
+./configure --exec-prefix=/ --prefix=/usr
+make -j $THREADS
+make -j $THREADS install
+echo "cmdport 0" > /etc/chrony.conf
+echo "pool pool.ntp.org iburst maxsources 3" >> /etc/chrony.conf
+echo "#!/sbin/openrc-run" > /etc/init.d/chronyd
+echo "description=\"Network Time Protocol Daemon\"" >> /etc/init.d/chronyd
+echo "command=\"/sbin/chronyd\"" >> /etc/init.d/chronyd
+# I guess we should just point OpenRC to the existing PID file unless the daemon
+# doesn't make its own? ~ahill
+echo "pidfile=\"/run/chrony/chronyd.pid\"" >> /etc/init.d/chronyd
+chmod +x /etc/init.d/chronyd
+rc-update add chronyd default
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group

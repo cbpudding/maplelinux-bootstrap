@@ -1,6 +1,7 @@
 515430115b3334c636317503460a0950dff79940aa3259ce2c1aa67c2881d023,https://ftp.gnu.org/gnu/bc/bc-1.08.1.tar.xz,
 9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2,https://ftp.gnu.org/gnu/bison/bison-3.8.2.tar.xz,
 ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269,https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz
+571ff73fbf0ae3097f0604eca2e00b1d8bb2e91affe1a3494785ff21d6199c5c,https://chrony-project.org/releases/chrony-4.6.1.tar.gz,
 d630a7e00e63e520b25259f83d425ef783b4661bdc8f47e21c7f23f3780a21e1,https://github.com/Kitware/CMake/releases/download/v4.0.1/cmake-4.0.1.tar.gz,
 e8bb26ad0293f9b5a1fc43fb42ba970e312c66ce92c1b0b16713d7500db251bf,https://ftp.gnu.org/gnu/coreutils/coreutils-9.7.tar.xz,
 937610b97c329a1ec9268553fb780037bcfff0dcffe9725ebc4fd9c1aa9075db,https://ftp.gnu.org/gnu/cpio/cpio-2.15.tar.bz2,
