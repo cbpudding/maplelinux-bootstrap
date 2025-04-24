@@ -632,7 +632,10 @@ echo "description=\"DHCP Client Daemon\"" >> /etc/init.d/dhcpcd
 echo "command=\"/sbin/dhcpcd\"" >> /etc/init.d/dhcpcd
 echo "command_args=\"-M\"" >> /etc/init.d/dhcpcd
 echo "command_args_background=\"-b\"" >> /etc/init.d/dhcpcd
-echo "pidfile=\"/run/dhcpcd.pid\"" >> /etc/init.d/dhcpcd
+# NOTE: dhcpcd forks itself to the background, meaning a custom PID file will
+#       not function as intended. Instead, use dhcpcd's own /run/dhcpcd/pid to
+#       tell OpenRC where to find the service. ~ahill
+echo "pidfile=\"/run/dhcpcd/pid\"" >> /etc/init.d/dhcpcd
 chmod +x /etc/init.d/dhcpcd
 rc-update add dhcpcd default
 cd ..
