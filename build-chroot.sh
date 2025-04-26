@@ -718,6 +718,16 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# mrustc Build
+tar xf ../sources/mrustc-*.tar*
+cd mrustc-*/
+# FIXME: I have no idea how, but this script somehow invokes the now
+#        non-existent version of clang++ from /maple/tools. Will need to look
+#        into this further. CXX=clang++ exists to fix this temporarily. ~ahill
+make -j $THREADS CXX=clang++
+# ...
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
