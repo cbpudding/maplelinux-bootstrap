@@ -718,13 +718,24 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
-# mrustc Build
+# rustc Build With mrustc Bootstrap
 tar xf ../sources/mrustc-*.tar*
 cd mrustc-*/
 # FIXME: I have no idea how, but this script somehow invokes the now
 #        non-existent version of clang++ from /maple/tools. Will need to look
 #        into this further. CXX=clang++ exists to fix this temporarily. ~ahill
 make -j $THREADS CXX=clang++
+make -C tools/minicargo/ -j $THREADS CXX=clang++
+tar xf ../../sources/rustc-*.tar*
+# NOTE: minicargo.mk makes a *lot* of assumptions about the build environment
+#       and most of them are incorrect in our case. As a result, we're stuck
+#       with building rustc ourselves. ~ahill
+./bin/minicargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build ./rustc-*-src/library/std
+./bin/minicargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build ./rustc-*-src/library/panic_unwind
+./bin/minicargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build ./rustc-*-src/library/test
+./bin/minicargo --output-dir $(pwd)/build lib/libproc_macro
+./bin/minicargo rustc-*-src/compiler/rustc_driver --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build -L $(pwd)/build
+./bin/minicargo rustc-*-src/src/tools/cargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build -L $(pwd)/build
 # ...
 cd ..
 
