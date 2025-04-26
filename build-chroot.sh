@@ -310,7 +310,7 @@ tar xf ../sources/dosfstools-*.tar*
 cd dosfstools-*/
 ./configure \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -324,7 +324,7 @@ cd bison-*/
 ./configure \
 	--disable-nls \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -339,7 +339,7 @@ cd flex-*/
 	--disable-nls \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -361,7 +361,7 @@ cd util-linux-*
 	--disable-static \
 	--disable-use-tty-group \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -388,7 +388,7 @@ cd userspace-rcu-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -405,7 +405,7 @@ CFLAGS=-DOVERRIDE_SYSTEM_STATX ./configure \
 	--disable-static \
 	--enable-gettext=no \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -418,7 +418,7 @@ tar xf ../sources/bc-*.tar*
 cd bc-*/
 ./configure \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -496,7 +496,7 @@ cd procps-ng-*/
 	--disable-static \
 	--enable-year2038 \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -519,7 +519,7 @@ cd kbd-*/
 	--disable-static \
 	--disable-tests \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -544,7 +544,7 @@ cd libmd-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -559,7 +559,7 @@ cd libbsd-*/
 	--disable-static \
 	--enable-year2038 \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -574,7 +574,7 @@ cd shadow-*/
 	--disable-nls \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -590,7 +590,7 @@ cd nano-*/
 	--enable-utf8 \
 	--enable-year2038 \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -604,7 +604,7 @@ cd libsodium-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -664,7 +664,7 @@ cd libmnl-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -678,7 +678,7 @@ cd libnftnl-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -693,7 +693,7 @@ cd gmp-*/
 	--disable-static \
 	--enable-cxx \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
@@ -709,11 +709,24 @@ cd nftables-*/
 ./configure \
 	--disable-static \
 	--exec-prefix="" \
-	--libexecdir=/usr/lib \
+	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--without-cli
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# patch Build
+tar xf ../sources/patch-*.tar*
+cd patch-*/
+./configure \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
 make -j $THREADS
 make -j $THREADS install
 cd ..
@@ -730,12 +743,50 @@ tar xf ../../sources/rustc-*.tar*
 # NOTE: minicargo.mk makes a *lot* of assumptions about the build environment
 #       and most of them are incorrect in our case. As a result, we're stuck
 #       with building rustc ourselves. ~ahill
-./bin/minicargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build ./rustc-*-src/library/std
-./bin/minicargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build ./rustc-*-src/library/panic_unwind
-./bin/minicargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build ./rustc-*-src/library/test
-./bin/minicargo --output-dir $(pwd)/build lib/libproc_macro
-./bin/minicargo rustc-*-src/compiler/rustc_driver --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build -L $(pwd)/build
-./bin/minicargo rustc-*-src/src/tools/cargo --vendor-dir rustc-*-src/vendor --output-dir $(pwd)/build -L $(pwd)/build
+cd rustc-*-src/
+RUST_VERSION=$(pwd | sed -r "s/.*rustc-(.*)-src/\1/")
+patch -p0 < ../rustc-$RUST_VERSION-src.patch
+cd ..
+./bin/minicargo \
+	--vendor-dir rustc-*-src/vendor \
+	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
+	--output-dir $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	./rustc-*-src/library/std
+./bin/minicargo \
+	--vendor-dir rustc-*-src/vendor \
+	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
+	--output-dir $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	./rustc-*-src/library/panic_unwind
+./bin/minicargo --vendor-dir rustc-*-src/vendor \
+	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
+	--output-dir $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	./rustc-*-src/library/test
+./bin/minicargo \
+	--output-dir $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	lib/libproc_macro
+./bin/minicargo \
+	--vendor-dir rustc-*-src/vendor \
+	--output-dir $(pwd)/build \
+	-L $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	rustc-*-src/compiler/rustc_driver
+./bin/minicargo \
+	--vendor-dir rustc-*-src/vendor \
+	--output-dir $(pwd)/build \
+	-L $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	--features vendored-openssl \
+	rustc-*-src/src/tools/cargo
 # ...
 cd ..
 
