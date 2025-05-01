@@ -259,6 +259,13 @@ LDFLAGS="-Wl,--undefined-version" muon setup build
 #       the Internet to download meson's tests in our current state. ~ahill
 samu -C build
 muon -C build install
+# FIXME: This is enough to get PAM authentication going, but this really should
+#        be reviewed before it is put anywhere important. ~ahill
+echo "#%PAM-1.0" > /etc/pam.d/system-auth
+echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
+echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
+echo "password required pam_unix.so nullok shadow" >> /etc/pam.d/system-auth
+echo "session  required pam_unix.so" >> /etc/pam.d/system-auth
 cd ..
 
 # OpenRC Build
@@ -794,13 +801,6 @@ cd ..
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
 echo "maple" > /etc/hostname
-# FIXME: This is enough to get PAM authentication going, but this really should
-#        be reviewed before it is put anywhere important. ~ahill
-echo "#%PAM-1.0" > /etc/pam.d/system-auth
-echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
-echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
-echo "password required pam_unix.so nullok shadow" >> /etc/pam.d/system-auth
-echo "session  required pam_unix.so" >> /etc/pam.d/system-auth
 echo "NAME=Maple Linux" > /etc/os-release
 echo "VERSION=2025" >> /etc/os-release
 echo "ID=maple" >> /etc/os-release
