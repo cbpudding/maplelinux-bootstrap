@@ -741,6 +741,23 @@ cd ..
 # rustc Build With mrustc Bootstrap
 tar xf ../sources/mrustc-*.tar*
 cd mrustc-*/
+# NOTE: Using types such as uint8_t without stdint.h is not portable. ~ahill
+sed -i "1i #include <cstdint>" src/debug.cpp
+sed -i "1i #include <cstdint>" src/ast/lifetime_ref.hpp
+sed -i "1i #include <cstdint>" src/hir/generic_ref.hpp
+sed -i "1i #include <cstdint>" src/hir/type_ref.hpp
+sed -i "1i #include <cstdint>" tools/minicargo/build.cpp
+# NOTE: LLVM loves yelling about unqualified std calls, so we'll just fix them
+#       so we can properly troubleshoot why this doesn't work. ~ahill
+sed -i -r "s/ move\(([a-z_]+)\)/ std::move\(\1\)/g" src/ast/ast.cpp
+sed -i -r "s/ move\(([a-z_]+)\)/ std::move\(\1\)/g" src/ast/ast.hpp
+sed -i -r "s/ move\(([a-z_]+)\)/ std::move\(\1\)/g" src/ast/expr.hpp
+sed -i -r "s/ move\(([a-z_]+)\)/ std::move\(\1\)/g" src/macro_rules/macro_rules.hpp
+sed -i -r "s/ move\(([a-z_]+)\)/ std::move\(\1\)/g" src/hir/expr.hpp
+# NOTE: mrustc passes -fno-tree-sra to the GCC to work around a bug that is
+#       present when it comes to linking, however clang has no idea what that
+#       means. ~ahill
+sed -i "s/-fno-tree-sra//" src/trans/codegen_c.cpp
 # FIXME: I have no idea how, but this script somehow invokes the now
 #        non-existent version of clang++ from /maple/tools. Will need to look
 #        into this further. CXX=clang++ exists to fix this temporarily. ~ahill
@@ -754,46 +771,56 @@ cd rustc-*-src/
 RUST_VERSION=$(pwd | sed -r "s/.*rustc-(.*)-src/\1/")
 patch -p0 < ../rustc-$RUST_VERSION-src.patch
 cd ..
+# NOTE: mrustc defaults to 1.29, which means macros such as asm! do not function
+#       correctly unless you manually define MRUSTC_TARGET_VER. ~ahill
+export MRUSTC_TARGET_VER=$(echo $RUST_VERSION | sed "s/\.[^.]*$//")
 ./bin/minicargo \
-	--vendor-dir rustc-*-src/vendor \
+	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
 	--output-dir $(pwd)/build \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	./rustc-*-src/library/std
+	./rustc-$RUST_VERSION-src/library/core
 ./bin/minicargo \
-	--vendor-dir rustc-*-src/vendor \
+	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
 	--output-dir $(pwd)/build \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	./rustc-*-src/library/panic_unwind
-./bin/minicargo --vendor-dir rustc-*-src/vendor \
+	./rustc-$RUST_VERSION-src/library/std
+./bin/minicargo \
+	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
 	--output-dir $(pwd)/build \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	./rustc-*-src/library/test
+	./rustc-$RUST_VERSION-src/library/panic_unwind
+./bin/minicargo --vendor-dir rustc-$RUST_VERSION-src/vendor \
+	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
+	--output-dir $(pwd)/build \
+	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
+	-j $THREADS \
+	./rustc-$RUST_VERSION-src/library/test
 ./bin/minicargo \
 	--output-dir $(pwd)/build \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
 	lib/libproc_macro
 ./bin/minicargo \
-	--vendor-dir rustc-*-src/vendor \
+	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--output-dir $(pwd)/build \
 	-L $(pwd)/build \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	rustc-*-src/compiler/rustc_driver
+	rustc-$RUST_VERSION-src/compiler/rustc_driver
 ./bin/minicargo \
-	--vendor-dir rustc-*-src/vendor \
+	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--output-dir $(pwd)/build \
 	-L $(pwd)/build \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
 	--features vendored-openssl \
-	rustc-*-src/src/tools/cargo
+	rustc-$RUST_VERSION-src/src/tools/cargo
 # ...
 cd ..
 
