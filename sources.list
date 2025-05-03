@@ -35,7 +35,7 @@ e8c216255e129f26270639fee7775265665a31b11aa920253c3e5d5d62dfc4b8,https://www.net
 5938f24aa3a838f126e573a2c7c13808554e16ff0e0818f2a9ae222db669f7df,https://github.com/limine-bootloader/limine/releases/download/v9.2.3/limine-9.2.3.tar.xz,
 9452f28d7a0051fba4886712395b484c4c7fcf9f85944a62fd3d97dc923f5339,https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.4.tar.xz,
 57dcd7a6b966ecd5bbd95e1d11173734691e16b68692fa59661cdae9b13b1697,https://github.com/linux-pam/linux-pam/releases/download/v1.7.0/Linux-PAM-1.7.0.tar.xz,
-b6183c41281ee3f23da7fda790c6d4f5877aed103d1e759763b1008bdd0e2c50,https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.3/llvm-project-20.1.3.src.tar.xz,
+a95365b02536ed4aef29b325c205dd89c268cba41503ab2fc05f81418613ab63,https://github.com/llvm/llvm-project/releases/download/llvmorg-20.1.4/llvm-project-20.1.4.src.tar.xz,
 63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96,https://ftpmirror.gnu.org/gnu/m4/m4-1.4.19.tar.xz,
 dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3,https://ftpmirror.gnu.org/gnu/make/make-4.4.1.tar.gz,
 baf1e86311e004a638b35730b4d7e72644938a6bbbbf65a862245b92ba5325ad,https://github.com/thepowersgang/mrustc/archive/refs/tags/v0.11.2.tar.gz,mrustc-0.11.2.tar.gz
