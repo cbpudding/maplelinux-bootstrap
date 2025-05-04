@@ -738,7 +738,7 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
-# rustc Build With mrustc Bootstrap
+# rustc Build With mrustc Bootstrap (Thank you Mutabah for all of your help!)
 tar xf ../sources/mrustc-*.tar*
 cd mrustc-*/
 # NOTE: Using types such as uint8_t without stdint.h is not portable. ~ahill
@@ -832,7 +832,14 @@ RUSTC_INSTALL_BINDIR=bin \
 	-L $(pwd)/build-std \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	rustc-$RUST_VERSION-src/compiler/rustc_driver
+	rustc-$RUST_VERSION-src/compiler/rustc
+# NOTE: openssl-sys supports LibreSSL, but the version shipped with this version
+#       of rustc only supports up to LibreSSL 3.8.0. We are manually updating
+#       this crate so cargo can be built without downgrading LibreSSL. ~ahill
+cd rustc-$RUST_VERSION-src/vendor
+rm -rf openssl-sys*
+tar xf ../../../../sources/openssl-sys-*.crate
+cd ../..
 ./bin/minicargo \
 	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--output-dir $(pwd)/build-cargo \
@@ -840,7 +847,8 @@ RUSTC_INSTALL_BINDIR=bin \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
 	rustc-$RUST_VERSION-src/src/tools/cargo
-# ...
+cp build-rustc/rustc_main /bin/rustc
+cp build-cargo/cargo /bin/
 cd ..
 
 # Basic Configuration
