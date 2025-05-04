@@ -758,6 +758,22 @@ sed -i -r "s/ move\(([a-z_]+)\)/ std::move\(\1\)/g" src/hir/expr.hpp
 #       present when it comes to linking, however clang has no idea what that
 #       means. ~ahill
 sed -i "s/-fno-tree-sra//" src/trans/codegen_c.cpp
+# NOTE: mrustc converts Rust's asm! macro into inline Assembly in C, which seems
+#       to work on GCC, but is broken on LLVM. Using the input constraint "0"
+#       with the output constraint prefix "+" causes an error. Substituting "+"
+#       with "=" seems to fix this problem. ~ahill
+sed -i "s/m_of << \"+\";/m_of << \"=\";/" src/trans/codegen_c.cpp
+sed -i "s/m_of << \(p\.input \? \"+\" : \"=\"\);/m_of << \"=\";/" src/trans/codegen_c.cpp
+# NOTE: mrustc forces the system to link with libatomic because it's assuming
+#       that libgcc exists, even though it doesn't in this case. compiler-rt
+#       supplies the functionality we need, so this is not required. ~ahill
+sed -i "/#define BACKEND_C_OPTS_GNU/s/, \"-l\", \"atomic\"//" src/trans/target.cpp
+# NOTE: Rust's unwind crate attempts to link with libgcc_s, even on a musl-based
+#       system. Enabling the "system-llvm-unwind" feature fixes this. ~ahill
+echo "[add.'library/panic_unwind'.dependencies.unwind]" >> rustc-$RUST_VERSION-overrides.toml
+echo "features = [\"system-llvm-libunwind\"]" >> rustc-$RUST_VERSION-overrides.toml
+echo "[add.'library/std'.dependencies.unwind]" >> rustc-$RUST_VERSION-overrides.toml
+echo "features = [\"system-llvm-libunwind\"]" >> rustc-$RUST_VERSION-overrides.toml
 # FIXME: I have no idea how, but this script somehow invokes the now
 #        non-existent version of clang++ from /maple/tools. Will need to look
 #        into this further. CXX=clang++ exists to fix this temporarily. ~ahill
@@ -774,52 +790,55 @@ cd ..
 # NOTE: mrustc defaults to 1.29, which means macros such as asm! do not function
 #       correctly unless you manually define MRUSTC_TARGET_VER. ~ahill
 export MRUSTC_TARGET_VER=$(echo $RUST_VERSION | sed "s/\.[^.]*$//")
+# NOTE: We are creating a dummy crate to build the standard library since we're
+#       doing a bit of trickery with dependencies. This should prevent conflicts
+#       later on. ~ahill
+MRUSTC_STDLIB=$(pwd)/rustc-$RUST_VERSION-src/mrustc-stdlib
+mkdir -p $MRUSTC_STDLIB
+echo "#\![no_core]" > $MRUSTC_STDLIB/lib.rs
+echo "[package]" > $MRUSTC_STDLIB/Cargo.toml
+echo "name = \"mrustc_standard_library\"" >> $MRUSTC_STDLIB/Cargo.toml
+echo "version = \"0.0.0\"" >> $MRUSTC_STDLIB/Cargo.toml
+echo "[lib]" >> $MRUSTC_STDLIB/Cargo.toml
+echo "path = \"lib.rs\"" >> $MRUSTC_STDLIB/Cargo.toml
+echo "[dependencies]" >> $MRUSTC_STDLIB/Cargo.toml
+echo "std = { path = \"../library/std\" }" >> $MRUSTC_STDLIB/Cargo.toml
+echo "panic_unwind = { path = \"../library/panic_unwind\" }" >> $MRUSTC_STDLIB/Cargo.toml
+echo "test = { path = \"../library/test\" }" >> $MRUSTC_STDLIB/Cargo.toml
 ./bin/minicargo \
 	--vendor-dir rustc-$RUST_VERSION-src/vendor \
 	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
-	--output-dir $(pwd)/build \
+	--output-dir $(pwd)/build-std \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	./rustc-$RUST_VERSION-src/library/core
+	$MRUSTC_STDLIB
 ./bin/minicargo \
-	--vendor-dir rustc-$RUST_VERSION-src/vendor \
-	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
-	--output-dir $(pwd)/build \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	./rustc-$RUST_VERSION-src/library/std
-./bin/minicargo \
-	--vendor-dir rustc-$RUST_VERSION-src/vendor \
-	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
-	--output-dir $(pwd)/build \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	./rustc-$RUST_VERSION-src/library/panic_unwind
-./bin/minicargo --vendor-dir rustc-$RUST_VERSION-src/vendor \
-	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
-	--output-dir $(pwd)/build \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	./rustc-$RUST_VERSION-src/library/test
-./bin/minicargo \
-	--output-dir $(pwd)/build \
+	--output-dir $(pwd)/build-std \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
 	lib/libproc_macro
+# NOTE: rustc and cargo will pull dependencies from build-std, but will still
+#       attempt to build their own anyways. To prevent dependencies from being
+#       clobbered, rustc and cargo get their own build directories. ~ahill
+# NOTE: CFG_RELEASE is required to build rustc_attr. ~ahill
+# NOTE: CFG_RELEASE_CHANNEL is required to build rustc_metadata. ~ahill
+# NOTE: RUSTC_INSTALL_BINDIR is required to build rustc_interface. ~ahill
+CFG_RELEASE=$RUST_VERSION \
+CFG_RELEASE_CHANNEL=stable \
+RUSTC_INSTALL_BINDIR=bin \
 ./bin/minicargo \
 	--vendor-dir rustc-$RUST_VERSION-src/vendor \
-	--output-dir $(pwd)/build \
-	-L $(pwd)/build \
+	--output-dir $(pwd)/build-rustc \
+	-L $(pwd)/build-std \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
 	rustc-$RUST_VERSION-src/compiler/rustc_driver
 ./bin/minicargo \
 	--vendor-dir rustc-$RUST_VERSION-src/vendor \
-	--output-dir $(pwd)/build \
-	-L $(pwd)/build \
+	--output-dir $(pwd)/build-cargo \
+	-L $(pwd)/build-std \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	--features vendored-openssl \
 	rustc-$RUST_VERSION-src/src/tools/cargo
 # ...
 cd ..
