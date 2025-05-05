@@ -340,7 +340,7 @@ cmake -B stage2 -G Ninja -S llvm \
 	-DLLVM_BUILD_LLVM_DYLIB=ON \
 	-DLLVM_ENABLE_LIBCXX=ON \
 	-DLLVM_ENABLE_LLD=ON \
-	-DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
+	-DLLVM_ENABLE_PROJECTS="clang;lld;lldb;llvm" \
 	-DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
 	-DLLVM_ENABLE_ZSTD=OFF \
 	-DLLVM_HOST_TRIPLE=$HOST \
