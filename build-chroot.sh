@@ -261,6 +261,7 @@ samu -C build
 muon -C build install
 # FIXME: This is enough to get PAM authentication going, but this really should
 #        be reviewed before it is put anywhere important. ~ahill
+mkdir -p /etc/pam.d
 echo "#%PAM-1.0" > /etc/pam.d/system-auth
 echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
 echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
@@ -795,7 +796,7 @@ export MRUSTC_TARGET_VER=$(echo $RUST_VERSION | sed "s/\.[^.]*$//")
 #       later on. ~ahill
 MRUSTC_STDLIB=$(pwd)/rustc-$RUST_VERSION-src/mrustc-stdlib
 mkdir -p $MRUSTC_STDLIB
-echo "#\![no_core]" > $MRUSTC_STDLIB/lib.rs
+echo "#![no_core]" > $MRUSTC_STDLIB/lib.rs
 echo "[package]" > $MRUSTC_STDLIB/Cargo.toml
 echo "name = \"mrustc_standard_library\"" >> $MRUSTC_STDLIB/Cargo.toml
 echo "version = \"0.0.0\"" >> $MRUSTC_STDLIB/Cargo.toml
