@@ -31,7 +31,7 @@ a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898,https://gmplib.
 274b9b919ef3152bfb3da3a13c950dd60d6e2bcd54230ffeca298d03b40d0525,https://www.netfilter.org/pub/libmnl/libmnl-1.0.5.tar.bz2,
 e8c216255e129f26270639fee7775265665a31b11aa920253c3e5d5d62dfc4b8,https://www.netfilter.org/pub/libnftnl/libnftnl-1.2.9.tar.xz,
 0f71c16bd34bdaaccdcb96a5d94a4921bfb612ec6e0eba7a80d8854eefd8bb61,https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.1.0.tar.gz,
-4e2f9addf438dfe9d0ea6e0baf967e7b059541b02cafa0b12e59b581bcb6da9f,https://download.libsodium.org/libsodium/releases/libsodium-1.0.20-stable.tar.gz,
+ebb65ef6ca439333c2bb41a0c1990587288da07f6c7fd07cb3a18cc18d30ce19,https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz,
 5938f24aa3a838f126e573a2c7c13808554e16ff0e0818f2a9ae222db669f7df,https://github.com/limine-bootloader/limine/releases/download/v9.2.3/limine-9.2.3.tar.xz,
 9452f28d7a0051fba4886712395b484c4c7fcf9f85944a62fd3d97dc923f5339,https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.4.tar.xz,
 57dcd7a6b966ecd5bbd95e1d11173734691e16b68692fa59661cdae9b13b1697,https://github.com/linux-pam/linux-pam/releases/download/v1.7.0/Linux-PAM-1.7.0.tar.xz,
