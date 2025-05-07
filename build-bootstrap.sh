@@ -19,6 +19,7 @@ mkdir -p $MAPLE/lib
 #       libc++ fails to link without it, but this should be fixed via a
 #       configuration change in LLVM. ~ahill
 ln -s . $MAPLE/lib/$HOST
+mkdir -p $MAPLE/maple/patches
 mkdir -p $MAPLE/maple/sources
 mkdir -p $MAPLE/mnt
 mkdir -p $MAPLE/proc

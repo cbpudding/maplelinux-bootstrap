@@ -1,0 +1,399 @@
+diff -ruN mrustc-0.11.2.orig/src/ast/ast.cpp mrustc-0.11.2/src/ast/ast.cpp
+--- mrustc-0.11.2.orig/src/ast/ast.cpp	2025-05-05 19:48:49.015447489 -0400
++++ mrustc-0.11.2/src/ast/ast.cpp	2025-05-06 21:59:55.063318921 -0400
+@@ -243,9 +243,9 @@
+ 
+ Function::Function(Span sp, ::std::string abi, Flags flags, GenericParams params, TypeRef ret_type, Arglist args, bool is_variadic):
+     m_span(sp),
+-    m_params( move(params) ),
+-    m_rettype( move(ret_type) ),
+-    m_args( move(args) ),
++    m_params( std::move(params) ),
++    m_rettype( std::move(ret_type) ),
++    m_args( std::move(args) ),
+     m_is_variadic(is_variadic),
+     m_abi( mv$(abi) ),
+     m_flags(flags)
+diff -ruN mrustc-0.11.2.orig/src/ast/ast.hpp mrustc-0.11.2/src/ast/ast.hpp
+--- mrustc-0.11.2.orig/src/ast/ast.hpp	2025-05-05 19:48:49.015447489 -0400
++++ mrustc-0.11.2/src/ast/ast.hpp	2025-05-06 22:00:48.786212819 -0400
+@@ -101,8 +101,8 @@
+ 
+     //TypeAlias() {}
+     TypeAlias(GenericParams params, TypeRef type):
+-        m_params( move(params) ),
+-        m_type( move(type) )
++        m_params( std::move(params) ),
++        m_type( std::move(type) )
+     {}
+     static TypeAlias new_associated_type(GenericParams params, GenericParams type_bounds, TypeRef default_type) {
+         TypeAlias rv { std::move(params), std::move(default_type) };
+@@ -164,8 +164,8 @@
+ 
+     Static(Class s_class, TypeRef type, Expr value):
+         m_class(s_class),
+-        m_type( move(type) ),
+-        m_value( move(value) )
++        m_type( std::move(type) ),
++        m_value( std::move(value) )
+     {}
+ 
+     const Class& s_class() const { return m_class; }
+@@ -421,8 +421,8 @@
+     
+     Enum() {}
+     Enum( GenericParams params, ::std::vector<EnumVariant> variants ):
+-        m_params( move(params) ),
+-        m_variants( move(variants) )
++        m_params( std::move(params) ),
++        m_variants( std::move(variants) )
+     {}
+ 
+     const GenericParams& params() const { return m_params; }
+@@ -483,11 +483,11 @@
+     {
+     }
+     Struct( GenericParams params, ::std::vector<StructItem> fields ):
+-        m_params( move(params) ),
++        m_params( std::move(params) ),
+         m_data( StructData::make_Struct({mv$(fields)}) )
+     {}
+     Struct( GenericParams params, ::std::vector<TupleItem> fields ):
+-        m_params( move(params) ),
++        m_params( std::move(params) ),
+         m_data( StructData::make_Tuple({mv$(fields)}) )
+     {}
+ 
+@@ -511,7 +511,7 @@
+     } m_markings;
+ 
+     Union( GenericParams params, ::std::vector<StructItem> fields ):
+-        m_params( move(params) ),
++        m_params( std::move(params) ),
+         m_variants( mv$(fields) )
+     {}
+ 
+diff -ruN mrustc-0.11.2.orig/src/ast/expr.hpp mrustc-0.11.2/src/ast/expr.hpp
+--- mrustc-0.11.2.orig/src/ast/expr.hpp	2025-05-05 19:48:49.015447489 -0400
++++ mrustc-0.11.2/src/ast/expr.hpp	2025-05-06 22:01:28.556431607 -0400
+@@ -76,8 +76,8 @@
+         m_block_type(type),
+         m_yields_final_value(yields_final_value),
+         m_label(""),
+-        m_local_mod( move(local_mod) ),
+-        m_nodes( move(nodes) )
++        m_local_mod( std::move(local_mod) ),
++        m_nodes( std::move(nodes) )
+     {
+     }
+ 
+@@ -106,9 +106,9 @@
+     bool    m_is_braced;
+ 
+     ExprNode_Macro(AST::Path name, RcString ident, ::TokenTree&& tokens, bool is_braced=false):
+-        m_path( move(name) ),
++        m_path( std::move(name) ),
+         m_ident(ident),
+-        m_tokens( move(tokens) )
++        m_tokens( std::move(tokens) )
+         , m_is_braced(is_braced)
+     {}
+ 
+@@ -132,11 +132,11 @@
+     ::std::vector<::std::string>    m_flags;
+ 
+     ExprNode_Asm(::std::string text, ::std::vector<ValRef> output, ::std::vector<ValRef> input, ::std::vector<::std::string> clobbers, ::std::vector<::std::string> flags):
+-        m_text( move(text) ),
+-        m_output( move(output) ),
+-        m_input( move(input) ),
+-        m_clobbers( move(clobbers) ),
+-        m_flags( move(flags) )
++        m_text( std::move(text) ),
++        m_output( std::move(output) ),
++        m_input( std::move(input) ),
++        m_clobbers( std::move(clobbers) ),
++        m_flags( std::move(flags) )
+     {
+     }
+ 
+@@ -169,8 +169,8 @@
+ 
+     ExprNode_Asm2(AsmCommon::Options options, std::vector<AsmCommon::Line> lines, std::vector<Param> params)
+         : m_options(options)
+-        , m_lines( move(lines) )
+-        , m_params( move(params) )
++        , m_lines( std::move(lines) )
++        , m_params( std::move(params) )
+     {
+     }
+ 
+@@ -194,8 +194,8 @@
+ 
+     ExprNode_Flow(Type type, Ident target, ExprNodeP value):
+         m_type(type),
+-        m_target( move(target) ),
+-        m_value( move(value) )
++        m_target( std::move(target) ),
++        m_value( std::move(value) )
+     {
+     }
+ 
+@@ -212,10 +212,10 @@
+     ::std::pair<unsigned,unsigned>  m_letelse_slots;
+ 
+     ExprNode_LetBinding(Pattern pat, TypeRef type, ExprNodeP value, ExprNodeP else_arm={})
+-        : m_pat( move(pat) )
+-        , m_type( move(type) )
+-        , m_value( move(value) )
+-        , m_else( move(else_arm) )
++        : m_pat( std::move(pat) )
++        , m_type( std::move(type) )
++        , m_value( std::move(value) )
++        , m_else( std::move(else_arm) )
+     {
+     }
+ 
+@@ -237,8 +237,8 @@
+     ExprNode_Assign(): m_op(NONE) {}
+     ExprNode_Assign(Operation op, ExprNodeP slot, ExprNodeP value):
+         m_op(op),
+-        m_slot( move(slot) ),
+-        m_value( move(value) )
++        m_slot( std::move(slot) ),
++        m_value( std::move(value) )
+     {
+     }
+ 
+@@ -251,8 +251,8 @@
+     ::std::vector<ExprNodeP> m_args;
+ 
+     ExprNode_CallPath(Path&& path, ::std::vector<ExprNodeP>&& args):
+-        m_path( move(path) ),
+-        m_args( move(args) )
++        m_path( std::move(path) ),
++        m_args( std::move(args) )
+     {
+     }
+ 
+@@ -266,9 +266,9 @@
+     ::std::vector<ExprNodeP> m_args;
+ 
+     ExprNode_CallMethod(ExprNodeP obj, PathNode method, ::std::vector<ExprNodeP> args):
+-        m_val( move(obj) ),
+-        m_method( move(method) ),
+-        m_args( move(args) )
++        m_val( std::move(obj) ),
++        m_method( std::move(method) ),
++        m_args( std::move(args) )
+     {
+     }
+ 
+@@ -282,8 +282,8 @@
+     ::std::vector<ExprNodeP> m_args;
+ 
+     ExprNode_CallObject(ExprNodeP val, ::std::vector< ExprNodeP >&& args):
+-        m_val( move(val) ),
+-        m_args( move(args) )
++        m_val( std::move(val) ),
++        m_args( std::move(args) )
+     {
+     }
+     NODE_METHODS();
+@@ -531,9 +531,9 @@
+     t_values    m_values;
+ 
+     ExprNode_StructLiteral(Path path, ExprNodeP base_value, t_values&& values ):
+-        m_path( move(path) ),
+-        m_base_value( move(base_value) ),
+-        m_values( move(values) )
++        m_path( std::move(path) ),
++        m_base_value( std::move(base_value) ),
++        m_values( std::move(values) )
+     {}
+ 
+     NODE_METHODS();
+@@ -548,8 +548,8 @@
+     t_values    m_values;
+ 
+     ExprNode_StructLiteralPattern(Path path, t_values&& values)
+-        : m_path( move(path) )
+-        , m_values( move(values) )
++        : m_path( std::move(path) )
++        , m_values( std::move(values) )
+     {}
+ 
+     NODE_METHODS();
+@@ -646,8 +646,8 @@
+     TypeRef m_type;
+ 
+     ExprNode_Cast(ExprNodeP value, TypeRef&& dst_type):
+-        m_value( move(value) ),
+-        m_type( move(dst_type) )
++        m_value( std::move(value) ),
++        m_type( std::move(dst_type) )
+     {
+     }
+     NODE_METHODS();
+@@ -661,8 +661,8 @@
+     TypeRef m_type;
+ 
+     ExprNode_TypeAnnotation(ExprNodeP value, TypeRef&& dst_type):
+-        m_value( move(value) ),
+-        m_type( move(dst_type) )
++        m_value( std::move(value) ),
++        m_type( std::move(dst_type) )
+     {
+     }
+     NODE_METHODS();
+diff -ruN mrustc-0.11.2.orig/src/ast/lifetime_ref.hpp mrustc-0.11.2/src/ast/lifetime_ref.hpp
+--- mrustc-0.11.2.orig/src/ast/lifetime_ref.hpp	2025-05-05 20:46:46.568398964 -0400
++++ mrustc-0.11.2/src/ast/lifetime_ref.hpp	2025-05-05 19:59:44.934652489 -0400
+@@ -6,6 +6,7 @@
+  * - AST Lifetime reference
+  */
+ #pragma once
++#include <cstdint>
+ #include "../common.hpp"
+ #include "ident.hpp"
+ 
+diff -ruN mrustc-0.11.2.orig/src/debug.cpp mrustc-0.11.2/src/debug.cpp
+--- mrustc-0.11.2.orig/src/debug.cpp	2025-05-05 20:46:46.568562659 -0400
++++ mrustc-0.11.2/src/debug.cpp	2025-05-05 19:57:59.149549205 -0400
+@@ -5,6 +5,7 @@
+  * debug.cpp
+  * - Debug printing (with indenting)
+  */
++#include <cstdint>
+ #include <debug_inner.hpp>
+ #include <debug.hpp>
+ #include <set>
+diff -ruN mrustc-0.11.2.orig/src/hir/expr.hpp mrustc-0.11.2/src/hir/expr.hpp
+--- mrustc-0.11.2.orig/src/hir/expr.hpp	2025-05-05 19:48:49.017523096 -0400
++++ mrustc-0.11.2/src/hir/expr.hpp	2025-05-06 22:02:51.568333466 -0400
+@@ -156,8 +156,8 @@
+     ExprNode_Asm2(Span sp, AsmCommon::Options options, std::vector<AsmCommon::Line> lines, std::vector<Param> params)
+         : ExprNode(mv$(sp))
+         , m_options(options)
+-        , m_lines( move(lines) )
+-        , m_params( move(params) )
++        , m_lines( std::move(lines) )
++        , m_params( std::move(params) )
+     {
+     }
+ 
+diff -ruN mrustc-0.11.2.orig/src/hir/generic_ref.hpp mrustc-0.11.2/src/hir/generic_ref.hpp
+--- mrustc-0.11.2.orig/src/hir/generic_ref.hpp	2025-05-05 20:46:46.568679102 -0400
++++ mrustc-0.11.2/src/hir/generic_ref.hpp	2025-05-05 19:59:36.463727568 -0400
+@@ -6,6 +6,7 @@
+  * - Reference to a generic
+  */
+ #pragma once
++#include <cstdint>
+ #include <rc_string.hpp>
+ 
+ /// Binding index for a Generic that indicates "Self"
+diff -ruN mrustc-0.11.2.orig/src/hir/type_ref.hpp mrustc-0.11.2/src/hir/type_ref.hpp
+--- mrustc-0.11.2.orig/src/hir/type_ref.hpp	2025-05-05 20:46:46.568770980 -0400
++++ mrustc-0.11.2/src/hir/type_ref.hpp	2025-05-05 19:59:57.743537961 -0400
+@@ -7,6 +7,7 @@
+ */
+ #pragma once
+ 
++#include <cstdint>
+ #include <rc_string.hpp>
+ #include <span.hpp>
+ 
+diff -ruN mrustc-0.11.2.orig/src/macro_rules/macro_rules.hpp mrustc-0.11.2/src/macro_rules/macro_rules.hpp
+--- mrustc-0.11.2.orig/src/macro_rules/macro_rules.hpp	2025-05-05 19:48:49.012008507 -0400
++++ mrustc-0.11.2/src/macro_rules/macro_rules.hpp	2025-05-06 22:02:05.491732403 -0400
+@@ -102,7 +102,7 @@
+         name( op ),
+         name_index(index),
+         tok( mv$(sep) ),
+-        subpats( move(ents) ),
++        subpats( std::move(ents) ),
+         type(PAT_LOOP)
+     {
+     }
+diff -ruN mrustc-0.11.2.orig/src/trans/codegen_c.cpp mrustc-0.11.2/src/trans/codegen_c.cpp
+--- mrustc-0.11.2.orig/src/trans/codegen_c.cpp	2025-05-05 19:48:49.014366958 -0400
++++ mrustc-0.11.2/src/trans/codegen_c.cpp	2025-05-06 22:09:34.173707709 -0400
+@@ -1287,10 +1287,11 @@
+                     break;
+                 }
+                 // HACK: Work around [https://gcc.gnu.org/bugzilla/show_bug.cgi?id=117423] by disabling an optimisation stage
+-                if( opt.opt_level > 0 )
++                // Disabled for Maple Linux. See build-chroot.sh for details. ~ahill
++                /* if( opt.opt_level > 0 )
+                 {
+                     args.push_back("-fno-tree-sra");
+-                }
++                } */
+                 if( opt.emit_debug_info )
+                 {
+                     args.push_back("-g");
+@@ -4785,7 +4786,8 @@
+                 switch (v.first[0])
+                 {
+                 case '=':   m_of << "=";    break;
+-                case '+':   m_of << "+";    break;
++                // Patched for Maple Linux. See build-chroot.sh for details. ~ahill
++                case '+':   m_of << "=";    break;
+                 default:    MIR_TODO(mir_res, "Handle asm! output leader '" << v.first[0] << "'");
+                 }
+                 m_of << H::convert_reg(v.first.c_str() + 1);
+@@ -5428,12 +5430,14 @@
+                     if(i != 0)  m_of << ",";
+                     m_of << " ";
+                     m_of << "\"";
+-                    if( !p.output && !p.input ) {
++                    // Patched for Maple Linux. See build-chroot.sh for details. ~ahill
++                    m_of << "=";
++                    /*if( !p.output && !p.input ) {
+                         m_of << "+";
+                     }
+                     else {
+                         m_of << (p.input ? "+" : "=");
+-                    }
++                    }*/
+                     TU_MATCH_HDRA((p.spec), {)
+                     TU_ARMA(Class, c)
+                         // https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html
+diff -ruN mrustc-0.11.2.orig/src/trans/target.cpp mrustc-0.11.2/src/trans/target.cpp
+--- mrustc-0.11.2.orig/src/trans/target.cpp	2025-05-05 19:48:49.014366958 -0400
++++ mrustc-0.11.2/src/trans/target.cpp	2025-05-06 22:07:39.775297252 -0400
+@@ -405,7 +405,8 @@
+     TargetSpec init_from_spec_name(const ::std::string& target_name)
+     {
+         // Options for all the fully-GNU environments
+-        #define BACKEND_C_OPTS_GNU  {"-ffunction-sections", "-pthread"}, {"-Wl,--start-group"}, {"-Wl,--end-group", "-Wl,--gc-sections", "-l", "atomic"}
++        // Patched for Maple Linux. See build-chroot.sh for details. ~ahill
++        #define BACKEND_C_OPTS_GNU  {"-ffunction-sections", "-pthread"}, {"-Wl,--start-group"}, {"-Wl,--end-group", "-Wl,--gc-sections"}
+         // If there's a '/' or a '\' in the filename, open it as a path, otherwise assume it's a triple.
+         if( target_name.find('/') != ::std::string::npos || target_name.find('\\') != ::std::string::npos )
+         {
+diff -ruN mrustc-0.11.2.orig/tools/minicargo/build.cpp mrustc-0.11.2/tools/minicargo/build.cpp
+--- mrustc-0.11.2.orig/tools/minicargo/build.cpp	2025-05-05 20:46:46.568933202 -0400
++++ mrustc-0.11.2/tools/minicargo/build.cpp	2025-05-06 22:49:13.710034817 -0400
+@@ -19,6 +19,7 @@
+ #include "os.hpp"
+ #include <fstream>
+ #include <cassert>
++#include <cstdint>
+ 
+ #include <unordered_map>
+ #include <algorithm>    // sort/find_if
+@@ -823,9 +824,10 @@
+     if( true ) {
+         args.push_back("--cfg"); args.push_back("debug_assertions");
+     }
+-    if( true /*parent.m_opts.enable_optimise*/ ) {
+-        args.push_back("-O");
+-    }
++    // Patched for Maple Linux. See build-chroot.sh for details. ~ahill
++    //if( true /*parent.m_opts.enable_optimise*/ ) {
++    //    args.push_back("-O");
++    //}
+     if( parent.m_opts.emit_mmir ) {
+         args.push_back("-C"); args.push_back("codegen-type=monomir");
+     }

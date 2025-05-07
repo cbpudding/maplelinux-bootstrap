@@ -16,7 +16,14 @@ if mount --rbind /dev $MAPLE/dev && mount --make-rslave $MAPLE/dev; then
                 if mount --bind /run $MAPLE/run; then
                     if [ -d $MAPLE/maple/sources ]; then
                         if mount --bind ./sources $MAPLE/maple/sources; then
-                            run_chroot
+                            if [ -d $MAPLE/maple/patches ]; then
+                                if mount --bind ./patches $MAPLE/maple/patches; then
+                                    run_chroot
+                                    umount $MAPLE/maple/patches
+                                fi
+                            else
+                                run_chroot
+                            fi
                             umount $MAPLE/maple/sources
                         fi
                     else
