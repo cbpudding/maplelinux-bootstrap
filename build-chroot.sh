@@ -772,6 +772,8 @@ echo "features = [\"system-llvm-libunwind\"]" >> rustc-$RUST_VERSION-overrides.t
 make -j $THREADS CXX=clang++
 make -C tools/minicargo/ -j $THREADS CXX=clang++
 tar xf ../../sources/rustc-*.tar*
+# NOTE: This patches rust for our version of llvm, instead of relying on years-old editions
+patch -p0 < /maple/patches/rustc-src-maple.patch
 # NOTE: minicargo.mk makes a *lot* of assumptions about the build environment
 #       and most of them are incorrect in our case. As a result, we're stuck
 #       with building rustc ourselves. ~ahill
@@ -812,9 +814,18 @@ echo "test = { path = \"../library/test\" }" >> $MRUSTC_STDLIB/Cargo.toml
 # NOTE: rustc and cargo will pull dependencies from build-std, but will still
 #       attempt to build their own anyways. To prevent dependencies from being
 #       clobbered, rustc and cargo get their own build directories. ~ahill
+# NOTE: CFG_COMPILER_HOST_TRIPLE is set during compilation and defines the default target triple
+# NOTE: CFG_VERSION is checked and compile time and will result in a strange constant evaluation panic if missing
+# NOTE: LLVM_CONFIG is used to provide llvm configuration information to rustc during compilation, it isn't strictly required
 # NOTE: CFG_RELEASE is required to build rustc_attr. ~ahill
 # NOTE: CFG_RELEASE_CHANNEL is required to build rustc_metadata. ~ahill
 # NOTE: RUSTC_INSTALL_BINDIR is required to build rustc_interface. ~ahill
+# NOTE: The llvm feature compiles rustc with the llvm backend built in. This is needed as mrustc
+# doesn't support building dylibs which are needed for dynamically loadable codegen backends
+REAL_LIBRARY_PATH_VAR="LD_LIBRARY_PATH" \
+CFG_COMPILER_HOST_TRIPLE="x86_64-unknown-linux-musl" \
+CFG_VERSION=1.74.0 \
+LLVM_CONFIG=$(which llvm-config) \
 CFG_RELEASE=$RUST_VERSION \
 CFG_RELEASE_CHANNEL=stable \
 RUSTC_INSTALL_BINDIR=bin \
@@ -824,13 +835,17 @@ RUSTC_INSTALL_BINDIR=bin \
 	-L $(pwd)/build-std \
 	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
 	-j $THREADS \
-	rustc-$RUST_VERSION-src/compiler/rustc
+	rustc-$RUST_VERSION-src/compiler/rustc \
+	--features llvm
 # NOTE: openssl-sys supports LibreSSL, but the version shipped with this version
 #       of rustc only supports up to LibreSSL 3.8.0. We are manually updating
 #       this crate so cargo can be built without downgrading LibreSSL. ~ahill
 cd rustc-$RUST_VERSION-src/vendor
 rm -rf openssl-sys*
 tar xf ../../../../sources/openssl-sys-*.crate
+# NOTE: This silences warnings from our newly-built cargo complaining about missing
+# checksums for a vendored crate
+echo "{\"files\":{}}" > openssl-sys-*/.cargo-checksum.json
 cd ../..
 ./bin/minicargo \
 	--vendor-dir rustc-$RUST_VERSION-src/vendor \
