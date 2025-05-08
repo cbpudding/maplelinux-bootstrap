@@ -1,0 +1,399 @@
+--- rustc-1.74.0-src.orig/compiler/rustc_codegen_llvm/src/consts.rs	2023-11-12 23:10:51.000000000 -0500
++++ rustc-1.74.0-src/compiler/rustc_codegen_llvm/src/consts.rs	2025-05-07 11:37:17.220114783 -0400
+@@ -371,8 +371,9 @@
+             // otherwise some LLVM optimization passes don't work as expected
+             let mut val_llty = self.val_ty(v);
+             let v = if val_llty == self.type_i1() {
+-                val_llty = self.type_i8();
+-                llvm::LLVMConstZExt(v, val_llty)
++                // val_llty = self.type_i8();
++                // llvm::LLVMConstZExt(v, val_llty)
++                unimplemented!("Const ZExt");
+             } else {
+                 v
+             };
+--- rustc-1.74.0-src.orig/compiler/rustc_codegen_llvm/src/llvm/ffi.rs	2023-11-12 23:10:51.000000000 -0500
++++ rustc-1.74.0-src/compiler/rustc_codegen_llvm/src/llvm/ffi.rs	2025-05-07 11:39:59.399988363 -0400
+@@ -969,7 +969,7 @@
+         ConstantIndices: *const &'a Value,
+         NumIndices: c_uint,
+     ) -> &'a Value;
+-    pub fn LLVMConstZExt<'a>(ConstantVal: &'a Value, ToType: &'a Type) -> &'a Value;
++    // pub fn LLVMConstZExt<'a>(ConstantVal: &'a Value, ToType: &'a Type) -> &'a Value;
+     pub fn LLVMConstPtrToInt<'a>(ConstantVal: &'a Value, ToType: &'a Type) -> &'a Value;
+     pub fn LLVMConstIntToPtr<'a>(ConstantVal: &'a Value, ToType: &'a Type) -> &'a Value;
+     pub fn LLVMConstBitCast<'a>(ConstantVal: &'a Value, ToType: &'a Type) -> &'a Value;
+--- rustc-1.74.0-src.orig/compiler/rustc_llvm/llvm-wrapper/LLVMWrapper.h	2023-11-12 23:10:51.000000000 -0500
++++ rustc-1.74.0-src/compiler/rustc_llvm/llvm-wrapper/LLVMWrapper.h	2025-05-06 22:48:58.362609469 -0400
+@@ -23,9 +23,9 @@
+ #include "llvm/Target/TargetMachine.h"
+ #include "llvm/Target/TargetOptions.h"
+ #include "llvm/Transforms/IPO.h"
+-#include "llvm/Transforms/Instrumentation.h"
++#include "llvm/Transforms/Utils/Instrumentation.h"
+ #include "llvm/Transforms/Scalar.h"
+-#include "llvm/Transforms/Vectorize.h"
++#include "llvm/Transforms/Vectorize/LoadStoreVectorizer.h"
+
+ #define LLVM_VERSION_GE(major, minor)                                          \
+   (LLVM_VERSION_MAJOR > (major) ||                                             \
+--- ./rustc-1.74.0-src.orig/compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp	2023-11-13 04:10:51.000000000 +0000
++++ ./rustc-1.74.0-src/compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp	2025-05-08 01:29:24.667035511 +0000
+@@ -1,3 +1,4 @@
++#include <llvm/Pass.h>
+ #include <stdio.h>
+
+ #include <cstddef>
+@@ -38,7 +39,7 @@
+ #include "llvm/LTO/LTO.h"
+ #include "llvm/Bitcode/BitcodeWriter.h"
+
+-#include "llvm/Transforms/Instrumentation.h"
++#include "llvm/Transforms/Utils/Instrumentation.h"
+ #include "llvm/Transforms/Instrumentation/AddressSanitizer.h"
+ #include "llvm/Support/TimeProfiler.h"
+ #include "llvm/Transforms/Instrumentation/GCOVProfiler.h"
+@@ -50,6 +51,9 @@
+ #include "llvm/Transforms/Utils/NameAnonGlobals.h"
+ #include "llvm/Transforms/Utils.h"
+
++#include "llvm-c/TargetMachine.h"
++#include "llvm-c/Target.h"
++
+ using namespace llvm;
+
+ static codegen::RegisterCodeGenFlags CGF;
+@@ -331,7 +335,7 @@
+                                         PrintBackendInfo Print,
+                                         void* Out) {
+   const TargetMachine *Target = unwrap(TM);
+-  const Triple::ArchType HostArch = Triple(sys::getDefaultTargetTriple()).getArch();
++  const Triple::ArchType HostArch = Triple(LLVMGetDefaultTargetTriple()).getArch();
+   const Triple::ArchType TargetArch = Target->getTargetTriple().getArch();
+
+   std::ostringstream Buf;
+@@ -351,7 +355,7 @@
+   // different arch since that could be wrong or misleading.
+   if (HostArch == TargetArch) {
+     MaxCPULen = std::max(MaxCPULen, (unsigned) std::strlen("native"));
+-    const StringRef HostCPU = sys::getHostCPUName();
++    const StringRef HostCPU = LLVMGetHostCPUName();
+     Buf << "    " << std::left << std::setw(MaxCPULen) << "native"
+         << " - Select the CPU of the current host "
+            "(currently " << HostCPU.str() << ").\n";
+@@ -397,7 +401,7 @@
+ }
+
+ extern "C" const char* LLVMRustGetHostCPUName(size_t *len) {
+-  StringRef Name = sys::getHostCPUName();
++  StringRef Name = LLVMGetHostCPUName();
+   *len = Name.size();
+   return Name.data();
+ }
+@@ -452,7 +456,7 @@
+   if (OutputObjFile) {
+       Options.ObjectFilenameForDebug = OutputObjFile;
+   }
+-#if LLVM_VERSION_GE(16, 0)
++/*#if LLVM_VERSION_GE(16, 0)
+   if (!strcmp("zlib", DebugInfoCompression) && llvm::compression::zlib::isAvailable()) {
+     Options.CompressDebugSections = DebugCompressionType::Zlib;
+   } else if (!strcmp("zstd", DebugInfoCompression) && llvm::compression::zstd::isAvailable()) {
+@@ -460,9 +464,9 @@
+   } else if (!strcmp("none", DebugInfoCompression)) {
+     Options.CompressDebugSections = DebugCompressionType::None;
+   }
+-#endif
++#endif*/
+
+-  Options.RelaxELFRelocations = RelaxELFRelocations;
++  //Options.RelaxELFRelocations = RelaxELFRelocations;
+   Options.UseInitArray = UseInitArray;
+
+ #if LLVM_VERSION_LT(17, 0)
+@@ -515,8 +519,11 @@
+     assert(buffer_offset == ArgsCstrBuffLen);
+
+     Options.MCOptions.Argv0 = arg0;
+-    Options.MCOptions.CommandLineArgs =
+-      llvm::ArrayRef<std::string>(cmd_arg_strings, num_cmd_arg_strings);
++    std::string args = "";
++    for (int i = 0; i < num_cmd_arg_strings; i++) {
++      args += cmd_arg_strings[i] + " ";
++    }
++    Options.MCOptions.CommandlineArgs = args;
+   }
+
+   TargetMachine *TM = TheTarget->createTargetMachine(
+@@ -527,8 +534,8 @@
+ extern "C" void LLVMRustDisposeTargetMachine(LLVMTargetMachineRef TM) {
+
+   MCTargetOptions& MCOptions = unwrap(TM)->Options.MCOptions;
+-  delete[] MCOptions.Argv0;
+-  delete[] MCOptions.CommandLineArgs.data();
++  // delete[] MCOptions.Argv0;
++  // delete[] MCOptions.CommandLineArgs.data();
+
+   delete unwrap(TM);
+ }
+@@ -541,7 +548,7 @@
+   TargetLibraryInfoImpl TLII(TargetTriple);
+   if (DisableSimplifyLibCalls)
+     TLII.disableAllFunctions();
+-  unwrap(PMR)->add(new TargetLibraryInfoWrapperPass(TLII));
++  unwrap(PMR)->add(reinterpret_cast<Pass*>(new TargetLibraryInfoWrapperPass(TLII)));
+ }
+
+ extern "C" void LLVMRustSetLLVMOptions(int Argc, char **Argv) {
+@@ -761,6 +768,7 @@
+                         FS,
+ #endif
+                         PGOOptions::IRInstr, PGOOptions::NoCSAction,
++                        PGOOptions::ColdFuncOpt::Default,
+                         DebugInfoForProfiling);
+   } else if (PGOUsePath) {
+     assert(!PGOSampleUsePath);
+@@ -770,6 +778,7 @@
+                         FS,
+ #endif
+                         PGOOptions::IRUse, PGOOptions::NoCSAction,
++                        PGOOptions::ColdFuncOpt::Default,
+                         DebugInfoForProfiling);
+   } else if (PGOSampleUsePath) {
+     PGOOpt = PGOOptions(PGOSampleUsePath, "", "",
+@@ -778,6 +787,7 @@
+                         FS,
+ #endif
+                         PGOOptions::SampleUse, PGOOptions::NoCSAction,
++                        PGOOptions::ColdFuncOpt::Default,
+                         DebugInfoForProfiling);
+   } else if (DebugInfoForProfiling) {
+     PGOOpt = PGOOptions("", "", "",
+@@ -786,6 +796,7 @@
+                         FS,
+ #endif
+                         PGOOptions::NoAction, PGOOptions::NoCSAction,
++                        PGOOptions::ColdFuncOpt::Default,
+                         DebugInfoForProfiling);
+   }
+
+@@ -813,7 +824,7 @@
+   // PassBuilder does not create a pipeline.
+   std::vector<std::function<void(ModulePassManager &, OptimizationLevel)>>
+       PipelineStartEPCallbacks;
+-  std::vector<std::function<void(ModulePassManager &, OptimizationLevel)>>
++  std::vector<std::function<void(ModulePassManager &, OptimizationLevel, ThinOrFullLTOPhase)>>
+       OptimizerLastEPCallbacks;
+
+   if (!IsLinkerPluginLTO
+@@ -823,7 +834,7 @@
+       [](ModulePassManager &MPM, OptimizationLevel Level) {
+         MPM.addPass(LowerTypeTestsPass(/*ExportSummary=*/nullptr,
+                                        /*ImportSummary=*/nullptr,
+-                                       /*DropTypeTests=*/false));
++                                       /*DropTypeTests=*/llvm::lowertypetests::DropTestKind::None));
+       }
+     );
+   }
+@@ -854,7 +865,7 @@
+         // cargo run tests in multhreading mode by default
+         // so use atomics for coverage counters
+         Options.Atomic = true;
+-        MPM.addPass(InstrProfiling(Options, false));
++        MPM.addPass(InstrProfilingLoweringPass(Options, false));
+       }
+     );
+   }
+@@ -867,7 +878,7 @@
+           /*CompileKernel=*/false,
+           /*EagerChecks=*/true);
+       OptimizerLastEPCallbacks.push_back(
+-        [Options](ModulePassManager &MPM, OptimizationLevel Level) {
++        [Options](ModulePassManager &MPM, OptimizationLevel Level, ThinOrFullLTOPhase _) {
+ #if LLVM_VERSION_LT(16, 0)
+           MPM.addPass(ModuleMemorySanitizerPass(Options));
+           MPM.addPass(createModuleToFunctionPassAdaptor(MemorySanitizerPass(Options)));
+@@ -880,7 +891,7 @@
+
+     if (SanitizerOptions->SanitizeThread) {
+       OptimizerLastEPCallbacks.push_back(
+-        [](ModulePassManager &MPM, OptimizationLevel Level) {
++        [](ModulePassManager &MPM, OptimizationLevel Level, ThinOrFullLTOPhase _) {
+           MPM.addPass(ModuleThreadSanitizerPass());
+           MPM.addPass(createModuleToFunctionPassAdaptor(ThreadSanitizerPass()));
+         }
+@@ -889,7 +900,7 @@
+
+     if (SanitizerOptions->SanitizeAddress || SanitizerOptions->SanitizeKernelAddress) {
+       OptimizerLastEPCallbacks.push_back(
+-        [SanitizerOptions](ModulePassManager &MPM, OptimizationLevel Level) {
++        [SanitizerOptions](ModulePassManager &MPM, OptimizationLevel Level, ThinOrFullLTOPhase _) {
+           auto CompileKernel = SanitizerOptions->SanitizeKernelAddress;
+           AddressSanitizerOptions opts = AddressSanitizerOptions{
+             CompileKernel,
+@@ -908,7 +919,7 @@
+     }
+     if (SanitizerOptions->SanitizeHWAddress) {
+       OptimizerLastEPCallbacks.push_back(
+-        [SanitizerOptions](ModulePassManager &MPM, OptimizationLevel Level) {
++        [SanitizerOptions](ModulePassManager &MPM, OptimizationLevel Level, ThinOrFullLTOPhase _) {
+           HWAddressSanitizerOptions opts(
+               /*CompileKernel=*/false, SanitizerOptions->SanitizeHWAddressRecover,
+               /*DisableOptimization=*/false);
+@@ -945,7 +956,7 @@
+         PB.registerOptimizerLastEPCallback(C);
+
+       // Pass false as we manually schedule ThinLTOBufferPasses below.
+-      MPM = PB.buildO0DefaultPipeline(OptLevel, /* PreLinkLTO */ false);
++      MPM = PB.buildO0DefaultPipeline(OptLevel, /* PreLinkLTO */ ThinOrFullLTOPhase::FullLTOPreLink);
+     } else {
+       for (const auto &C : PipelineStartEPCallbacks)
+         PB.registerPipelineStartEPCallback(C);
+@@ -956,7 +967,7 @@
+
+       switch (OptStage) {
+       case LLVMRustOptStage::PreLinkNoLTO:
+-        MPM = PB.buildPerModuleDefaultPipeline(OptLevel, DebugPassManager);
++        MPM = PB.buildPerModuleDefaultPipeline(OptLevel, ThinOrFullLTOPhase::FullLTOPreLink);
+         break;
+       case LLVMRustOptStage::PreLinkThinLTO:
+         MPM = PB.buildThinLTOPreLinkDefaultPipeline(OptLevel);
+@@ -967,7 +978,7 @@
+         if (OptimizerLastEPCallbacks.empty())
+           NeedThinLTOBufferPasses = false;
+         for (const auto &C : OptimizerLastEPCallbacks)
+-          C(MPM, OptLevel);
++          C(MPM, OptLevel, ThinOrFullLTOPhase::None);
+         break;
+       case LLVMRustOptStage::PreLinkFatLTO:
+         MPM = PB.buildLTOPreLinkDefaultPipeline(OptLevel);
+@@ -989,7 +1000,7 @@
+     for (const auto &C : PipelineStartEPCallbacks)
+       C(MPM, OptLevel);
+     for (const auto &C : OptimizerLastEPCallbacks)
+-      C(MPM, OptLevel);
++      C(MPM, OptLevel, ThinOrFullLTOPhase::None);
+   }
+
+   if (ExtraPassesLen) {
+@@ -1218,7 +1229,7 @@
+   // Not 100% sure what these are, but they impact what's internalized and
+   // what's inlined across modules, I believe.
+ #if LLVM_VERSION_GE(18, 0)
+-  DenseMap<StringRef, FunctionImporter::ImportMapTy> ImportLists;
++  FunctionImporter::ImportListsTy ImportLists;
+   DenseMap<StringRef, FunctionImporter::ExportSetTy> ExportLists;
+   DenseMap<StringRef, GVSummaryMapTy> ModuleToDefinedGVSummaries;
+ #else
+@@ -1407,12 +1418,12 @@
+   TargetMachine &Target = *unwrap(TM);
+
+   bool ClearDSOLocal = clearDSOLocalOnDeclarations(Mod, Target);
+-  bool error = renameModuleForThinLTO(Mod, Data->Index, ClearDSOLocal);
++  renameModuleForThinLTO(Mod, Data->Index, ClearDSOLocal);
+
+-  if (error) {
+-    LLVMRustSetLastError("renameModuleForThinLTO failed");
+-    return false;
+-  }
++  // if (error) {
++  //   LLVMRustSetLastError("renameModuleForThinLTO failed");
++  //   return false;
++  // }
+   return true;
+ }
+
+@@ -1629,14 +1640,13 @@
+ // used during the normal linker-plugin incremental thin-LTO process.
+ extern "C" void
+ LLVMRustComputeLTOCacheKey(RustStringRef KeyOut, const char *ModId, LLVMRustThinLTOData *Data) {
+-  SmallString<40> Key;
+   llvm::lto::Config conf;
+   const auto &ImportList = Data->ImportLists.lookup(ModId);
+   const auto &ExportList = Data->ExportLists.lookup(ModId);
+   const auto &ResolvedODR = Data->ResolvedODR.lookup(ModId);
+   const auto &DefinedGlobals = Data->ModuleToDefinedGVSummaries.lookup(ModId);
+-  std::set<GlobalValue::GUID> CfiFunctionDefs;
+-  std::set<GlobalValue::GUID> CfiFunctionDecls;
++  DenseSet<GlobalValue::GUID> CfiFunctionDefs;
++  DenseSet<GlobalValue::GUID> CfiFunctionDecls;
+
+   // Based on the 'InProcessThinBackend' constructor in LLVM
+   for (auto &Name : Data->Index.cfiFunctionDefs())
+@@ -1646,7 +1656,7 @@
+     CfiFunctionDecls.insert(
+         GlobalValue::getGUID(GlobalValue::dropLLVMManglingEscape(Name)));
+
+-  llvm::computeLTOCacheKey(Key, conf, Data->Index, ModId,
++  std::string Key = llvm::computeLTOCacheKey(conf, Data->Index, ModId,
+       ImportList, ExportList, ResolvedODR, DefinedGlobals, CfiFunctionDefs, CfiFunctionDecls
+   );
+   
+--- rustc-1.74.0-src.orig/compiler/rustc_llvm/llvm-wrapper/RustWrapper.cpp	2023-11-12 23:10:51.000000000 -0500
++++ rustc-1.74.0-src/compiler/rustc_llvm/llvm-wrapper/RustWrapper.cpp	2025-05-07 11:23:24.661493619 -0400
+@@ -1081,11 +1081,12 @@
+     LLVMRustDIBuilderRef Builder, LLVMValueRef V, LLVMMetadataRef VarInfo,
+     uint64_t *AddrOps, unsigned AddrOpsCount, LLVMMetadataRef DL,
+     LLVMBasicBlockRef InsertAtEnd) {
+-  return wrap(Builder->insertDeclare(
++    Builder->insertDeclare(
+       unwrap(V), unwrap<DILocalVariable>(VarInfo),
+       Builder->createExpression(llvm::ArrayRef<uint64_t>(AddrOps, AddrOpsCount)),
+       DebugLoc(cast<MDNode>(unwrap(DL))),
+-      unwrap(InsertAtEnd)));
++      unwrap(InsertAtEnd));
++    return nullptr; //FIXME: VERY BAD
+ }
+
+ extern "C" LLVMMetadataRef LLVMRustDIBuilderCreateEnumerator(
+@@ -1105,7 +1106,7 @@
+       unwrapDI<DIDescriptor>(Scope), StringRef(Name, NameLen),
+       unwrapDI<DIFile>(File), LineNumber,
+       SizeInBits, AlignInBits, DINodeArray(unwrapDI<MDTuple>(Elements)),
+-      unwrapDI<DIType>(ClassTy), "", IsScoped));
++      unwrapDI<DIType>(ClassTy), 0, "", IsScoped));
+ }
+
+ extern "C" LLVMMetadataRef LLVMRustDIBuilderCreateUnionType(
+@@ -1369,8 +1370,8 @@
+     return LLVMPointerTypeKind;
+   case Type::FixedVectorTyID:
+     return LLVMVectorTypeKind;
+-  case Type::X86_MMXTyID:
+-    return LLVMX86_MMXTypeKind;
++  // case Type::X86_MMXTyID:
++  //   return LLVMX86_MMXTypeKind;
+   case Type::TokenTyID:
+     return LLVMTokenTypeKind;
+   case Type::ScalableVectorTyID:
+@@ -1814,6 +1815,7 @@
+       std::string{},    // ExtName
+       std::string{},    // SymbolName
+       std::string{},    // AliasTarget
++      std::string{},
+       ordinal,          // Ordinal
+       ordinal_present,  // Noname
+       false,            // Data
+@@ -1909,7 +1911,7 @@
+         }
+       }
+       if (DiagnosticHandlerCallback) {
+-        DiagnosticHandlerCallback(DI, DiagnosticHandlerContext);
++        DiagnosticHandlerCallback(&DI, DiagnosticHandlerContext);
+         return true;
+       }
+       return false;
+--- rustc-1.74.0-src.orig/compiler/rustc_target/src/spec/x86_64_unknown_linux_musl.rs	2023-11-12 23:10:51.000000000 -0500
++++ rustc-1.74.0-src/compiler/rustc_target/src/spec/x86_64_unknown_linux_musl.rs	2025-05-07 17:44:10.449613830 -0400
+@@ -18,8 +18,9 @@
+     Target {
+         llvm_target: "x86_64-unknown-linux-musl".into(),
+         pointer_width: 64,
+-        data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
+-            .into(),
++        //data_layout: "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
++        data_layout:
++            "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128".into(),
+         arch: "x86_64".into(),
+         options: base,
+     }

@@ -372,28 +372,14 @@ diff -ruN mrustc-0.11.2.orig/src/trans/target.cpp mrustc-0.11.2/src/trans/target
          // If there's a '/' or a '\' in the filename, open it as a path, otherwise assume it's a triple.
          if( target_name.find('/') != ::std::string::npos || target_name.find('\\') != ::std::string::npos )
          {
-diff -ruN mrustc-0.11.2.orig/tools/minicargo/build.cpp mrustc-0.11.2/tools/minicargo/build.cpp
---- mrustc-0.11.2.orig/tools/minicargo/build.cpp	2025-05-05 20:46:46.568933202 -0400
-+++ mrustc-0.11.2/tools/minicargo/build.cpp	2025-05-06 22:49:13.710034817 -0400
-@@ -19,6 +19,7 @@
- #include "os.hpp"
- #include <fstream>
- #include <cassert>
-+#include <cstdint>
- 
- #include <unordered_map>
- #include <algorithm>    // sort/find_if
-@@ -823,9 +824,10 @@
-     if( true ) {
-         args.push_back("--cfg"); args.push_back("debug_assertions");
-     }
--    if( true /*parent.m_opts.enable_optimise*/ ) {
--        args.push_back("-O");
--    }
-+    // Patched for Maple Linux. See build-chroot.sh for details. ~ahill
-+    //if( true /*parent.m_opts.enable_optimise*/ ) {
-+    //    args.push_back("-O");
-+    //}
-     if( parent.m_opts.emit_mmir ) {
-         args.push_back("-C"); args.push_back("codegen-type=monomir");
-     }
+diff -ruN mrustc-0.11.2.orig/src/trans/codegen_c.cpp mrustc-0.11.2/src/trans/codegen_c.cpp
+--- mrustc-0.11.2.orig/src/trans/codegen_c.cpp	2024-12-29 22:28:18.000000000 -0500
++++ mrustc-0.11.2/src/trans/codegen_c.cpp	2025-05-07 12:57:51.573401275 -0400
+@@ -1295,6 +1295,7 @@
+                 {
+                     args.push_back("-g");
+                 }
++                args.push_back("-fno-delete-null-pointer-checks");
+                 // TODO: Why?
+                 args.push_back("-fPIC");
+                 args.push_back("-o");
