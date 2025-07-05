@@ -608,20 +608,6 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
-# libsodium Build
-tar xf ../sources/libsodium-*.tar*
-cd libsodium-*/
-./configure \
-	--disable-static \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
-cd ..
-
 # dhcpcd Build
 tar xf ../sources/dhcpcd-*.tar*
 cd dhcpcd-*/
@@ -741,161 +727,6 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
-# rustc Build With mrustc Bootstrap (Thank you Mutabah for all of your help!)
-tar xf ../sources/mrustc-*.tar*
-cd mrustc-*/
-# NOTE: Using types such as uint8_t without stdint.h is not portable. ~ahill
-# NOTE: LLVM loves yelling about unqualified std calls, so we'll just fix them
-#       so we can properly troubleshoot why this doesn't work. ~ahill
-# NOTE: mrustc passes -fno-tree-sra to the GCC to work around a bug that is
-#       present when it comes to linking, however clang has no idea what that
-#       means. ~ahill
-# NOTE: mrustc converts Rust's asm! macro into inline Assembly in C, which seems
-#       to work on GCC, but is broken on LLVM. Using the input constraint "0"
-#       with the output constraint prefix "+" causes an error. Substituting "+"
-#       with "=" seems to fix this problem. ~ahill
-# NOTE: mrustc forces the system to link with libatomic because it's assuming
-#       that libgcc exists, even though it doesn't in this case. compiler-rt
-#       supplies the functionality we need, so this is not required. ~ahill
-# NOTE: Rather than completely disabling optimizations, which causes rustc to
-#       become incredibly slow, we simply prevent it from optimizing null
-#       pointer checks out (-fno-delete-null-pointer-checks). I'm not sure why
-#       this behavior would be desired, but someone likely has a valid use case.
-#       ~ahill
-patch -p1 < /maple/patches/mrustc-maple.patch
-# FIXME: I have no idea how, but this script somehow invokes the now
-#        non-existent version of clang++ from /maple/tools. Will need to look
-#        into this further. CXX=clang++ exists to fix this temporarily. ~ahill
-make -j $THREADS CXX=clang++
-make -C tools/minicargo/ -j $THREADS CXX=clang++
-tar xf ../../sources/rustc-*.tar*
-# NOTE: This patches rust for our version of llvm, instead of relying on years-old editions
-patch -p0 < /maple/patches/rustc-src-maple.patch
-# NOTE: minicargo.mk makes a *lot* of assumptions about the build environment
-#       and most of them are incorrect in our case. As a result, we're stuck
-#       with building rustc ourselves. ~ahill
-cd rustc-*-src/
-RUST_VERSION=$(pwd | sed -r "s/.*rustc-(.*)-src/\1/")
-patch -p0 < ../rustc-$RUST_VERSION-src.patch
-cd ..
-mv rustc-$RUST_VERSION-src/ rustc-$RUST_VERSION-src-patched/
-# NOTE: Rust's unwind crate attempts to link with libgcc_s, even on a musl-based
-#       system. Enabling the "system-llvm-unwind" feature fixes this. ~ahill
-echo "[add.'library/panic_unwind'.dependencies.unwind]" >> rustc-$RUST_VERSION-overrides.toml
-echo "features = [\"system-llvm-libunwind\"]" >> rustc-$RUST_VERSION-overrides.toml
-echo "[add.'library/std'.dependencies.unwind]" >> rustc-$RUST_VERSION-overrides.toml
-echo "features = [\"system-llvm-libunwind\"]" >> rustc-$RUST_VERSION-overrides.toml
-# NOTE: mrustc defaults to 1.29, which means macros such as asm! do not function
-#       correctly unless you manually define MRUSTC_TARGET_VER. ~ahill
-export MRUSTC_TARGET_VER=$(echo $RUST_VERSION | sed "s/\.[^.]*$//")
-# NOTE: We are creating a dummy crate to build the standard library since we're
-#       doing a bit of trickery with dependencies. This should prevent conflicts
-#       later on. ~ahill
-MRUSTC_STDLIB=$(pwd)/rustc-$RUST_VERSION-src-patched/mrustc-stdlib
-mkdir -p $MRUSTC_STDLIB
-echo "#![no_core]" > $MRUSTC_STDLIB/lib.rs
-echo "[package]" > $MRUSTC_STDLIB/Cargo.toml
-echo "name = \"mrustc_standard_library\"" >> $MRUSTC_STDLIB/Cargo.toml
-echo "version = \"0.0.0\"" >> $MRUSTC_STDLIB/Cargo.toml
-echo "[lib]" >> $MRUSTC_STDLIB/Cargo.toml
-echo "path = \"lib.rs\"" >> $MRUSTC_STDLIB/Cargo.toml
-echo "[dependencies]" >> $MRUSTC_STDLIB/Cargo.toml
-echo "std = { path = \"../library/std\" }" >> $MRUSTC_STDLIB/Cargo.toml
-echo "panic_unwind = { path = \"../library/panic_unwind\" }" >> $MRUSTC_STDLIB/Cargo.toml
-echo "test = { path = \"../library/test\" }" >> $MRUSTC_STDLIB/Cargo.toml
-./bin/minicargo \
-	--vendor-dir rustc-$RUST_VERSION-src-patched/vendor \
-	--script-overrides script-overrides/stable-$RUST_VERSION-linux \
-	--output-dir $(pwd)/build-std-stage0 \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	$MRUSTC_STDLIB
-./bin/minicargo \
-	--output-dir $(pwd)/build-std-stage0 \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	lib/libproc_macro
-# NOTE: rustc and cargo will pull dependencies from build-std, but will still
-#       attempt to build their own anyways. To prevent dependencies from being
-#       clobbered, rustc and cargo get their own build directories. ~ahill
-# NOTE: CFG_COMPILER_HOST_TRIPLE is set during compilation and defines the default target triple
-# NOTE: CFG_VERSION is checked and compile time and will result in a strange constant evaluation panic if missing
-# NOTE: LLVM_CONFIG is used to provide llvm configuration information to rustc during compilation, it isn't strictly required
-# NOTE: CFG_RELEASE is required to build rustc_attr. ~ahill
-# NOTE: CFG_RELEASE_CHANNEL is required to build rustc_metadata. ~ahill
-# NOTE: RUSTC_INSTALL_BINDIR is required to build rustc_interface. ~ahill
-# NOTE: The llvm feature compiles rustc with the llvm backend built in. This is needed as mrustc
-# doesn't support building dylibs which are needed for dynamically loadable codegen backends
-CFG_COMPILER_HOST_TRIPLE="x86_64-unknown-linux-musl" \
-CFG_RELEASE=$RUST_VERSION \
-CFG_RELEASE_CHANNEL=stable \
-CFG_VERSION=$RUST_VERSION \
-LLVM_CONFIG=$(which llvm-config) \
-REAL_LIBRARY_PATH_VAR="LD_LIBRARY_PATH" \
-RUSTC_INSTALL_BINDIR=bin \
-./bin/minicargo \
-	--vendor-dir rustc-$RUST_VERSION-src-patched/vendor \
-	--output-dir $(pwd)/build-rustc-stage1 \
-	-L $(pwd)/build-std-stage0 \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	rustc-$RUST_VERSION-src-patched/compiler/rustc \
-	--features llvm
-# NOTE: openssl-sys supports LibreSSL, but the version shipped with this version
-#       of rustc only supports up to LibreSSL 3.8.0. We are manually updating
-#       this crate so cargo can be built without downgrading LibreSSL. ~ahill
-cd rustc-$RUST_VERSION-src-patched/vendor
-rm -rf openssl-sys*
-tar xf ../../../../sources/openssl-sys-*.crate
-# NOTE: This silences warnings from our newly-built cargo complaining about missing
-# checksums for a vendored crate
-cd openssl-sys-*/
-echo "{\"files\":{}}" > .cargo-checksum.json
-cd ../../..
-./bin/minicargo \
-	--vendor-dir rustc-$RUST_VERSION-src-patched/vendor \
-	--output-dir $(pwd)/build-cargo-stage1 \
-	-L $(pwd)/build-std-stage0 \
-	--manifest-overrides rustc-$RUST_VERSION-overrides.toml \
-	-j $THREADS \
-	rustc-$RUST_VERSION-src-patched/src/tools/cargo
-# Now that we have the initial bootstrap, let's build Rust so we can produce a
-# cleaner build with fewer patches. ~ahill
-tar xf ../../sources/rustc-*.tar*
-# NOTE: Once again, we must patch rustc to work with LLVM the same way we did
-#       above to make it compatible with Maple Linux. A lot of this is likely
-#       fixed in future versions of Rust, but mrustc isn't able to bootstrap a
-#       more modern version. See above notes for the commands here. ~ahill
-patch -p0 < /maple/patches/rustc-src-maple.patch
-cd rustc-$RUST_VERSION-src-patched/vendor
-rm -rf openssl-sys*
-tar xf ../../../../sources/openssl-sys-*.crate
-cd openssl-sys-*/
-echo "{\"files\":{}}" > .cargo-checksum.json
-cd ../../..
-# FIXME: It appears that either LibreSSL or cargo has been misconfigured in a
-#        way that prevents it from verifying legitimate certificates. Setting
-#        CARGO_HTTP_CAINFO to the certificate path (/etc/ssl/cert.pem) seems to
-#        fix the issue. ~ahill
-# See also: https://github.com/kisslinux/repo/issues/339
-CARGO_HTTP_CAINFO=/etc/ssl/cert.pem \
-CARGO_HOME=$(pwd)/.cargo \
-CARGO_TARGET_DIR=build-std-stage1 \
-CFG_COMPILER_HOST_TRIPLE=x86_64-unknown-linux-musl \
-PROXY_MRUSTC=$(pwd)/build-rustc-stage1/rustc_main \
-PROXY_RUSTC=$(pwd)/build-rustc-stage1/rustc_main \
-RUSTC=$(pwd)/run_rustc/rustc_proxy.sh \
-RUSTC_BOOTSTRAP=1 \
-RUSTFLAGS="-Z force-unstable-if-unmarked -C link_args=-Wl,-rpath,\$$ORIGIN/../lib" \
-./build-cargo-stage1/cargo build \
-	--features panic-unwind \
-	-j $THREADS \
-	--manifest-path rustc-$RUST_VERSION-src/library/sysroot/Cargo.toml \
-	--release \
-	--target x86_64-unknown-linux-musl
-# ...
-cd ..
-
 # Basic Configuration
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
@@ -907,18 +738,6 @@ echo "VERSION_ID=2025" >> /etc/os-release
 echo "PRETTY_NAME=\"Maple Linux\"" >> /etc/os-release
 echo "nameserver 1.1.1.1" > /etc/resolv.conf
 echo "nameserver 1.0.0.1" >> /etc/resolv.conf
-
-# greetd Build
-tar xf ../sources/greetd-*.tar*
-cd greetd-*/
-# FIXME: It appears that either LibreSSL or cargo has been misconfigured in a
-#        way that prevents it from verifying legitimate certificates. Setting
-#        CARGO_HTTP_CAINFO to the certificate path (/etc/ssl/cert.pem) seems to
-#        fix the issue. ~ahill
-# See also: https://github.com/kisslinux/repo/issues/339
-CARGO_HTTP_CAINFO=/etc/ssl/cert.pem cargo build
-# ...
-cd ..
 
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
