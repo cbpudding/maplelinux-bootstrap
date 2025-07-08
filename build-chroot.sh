@@ -409,6 +409,13 @@ cd ..
 # xfsprogs Build
 tar xf ../sources/xfsprogs-*.tar*
 cd xfsprogs-*/
+# NOTE: libxfs redefined PAGE_SIZE from the standard C library (limits.h), so
+#       we simply undefine it to get it to play nice with musl. ~ahill
+sed -i "/#define PAGE_SIZE/d" libxfs/libxfs_priv.h
+# NOTE: io/stat.c relies on the internal STATX__RESERVED definition to function.
+#       musl doesn't have STATX__RESERVED, so we replace it with STATX_ALL since
+#       that's what we're actually trying to achieve here. ~ahill
+sed -i "s/~STATX__RESERVED/STATX_ALL/" io/stat.c
 # Overriding system statx fixes an issue with musl compatability.
 # Gentoo bugzilla for reference: https://bugs.gentoo.org/948468
 CFLAGS=-DOVERRIDE_SYSTEM_STATX ./configure \
