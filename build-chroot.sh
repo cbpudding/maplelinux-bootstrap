@@ -31,6 +31,8 @@ cd libressl-*/
 	--sysconfdir=/etc
 make -j $THREADS
 make -j $THREADS install
+# NOTE: No need to hide what we're using. ~ahill
+ln -s openssl /bin/libressl
 cd ..
 
 # bzip2 Build
@@ -113,6 +115,46 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# Autoconf Build
+tar xf ../sources/autoconf-*.tar*
+cd autoconf-*/
+./configure \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Automake Build
+tar xf ../sources/automake-*.tar*
+cd automake-*/
+./configure \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libtool Build
+tar xf ../sources/libtool-*.tar*
+cd libtool-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # cURL Build
 tar xf ../sources/curl-*.tar*
 cd curl-*/
@@ -144,7 +186,7 @@ cd cmake-*/
 	--bindir=/bin \
 	--datadir=/usr/share/cmake-4.0 \
 	--parallel=$THREADS \
-	--prefix=/usr \
+	--prefix=/ \
 	--system-bzip2 \
 	--system-curl \
 	--system-expat \
@@ -734,6 +776,662 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# X.Org Utility Macros Build
+tar xf ../sources/macros-util-macros-*.tar*
+cd macros-util-macros-*/
+./autogen.sh \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+# NOTE: make claims that there's nothing to do for the build... so we just
+#       don't. ~ahill
+make -j $THREADS install
+cd ..
+
+# libxtrans Build
+tar xf ../sources/libxtrans-xtrans-*.tar*
+cd libxtrans-xtrans-*/
+./autogen.sh \
+	--disable-docs \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+# NOTE: Once again, make does nothing. ~ahill
+make -j $THREADS install
+cd ..
+
+# xorgproto Build
+tar xf ../sources/xorgproto-xorgproto-*.tar*
+cd xorgproto-xorgproto-*/
+muon setup -Dprefix=/usr build
+muon -C build install
+cd ..
+
+# libffi Build
+tar xf ../sources/libffi-*.tar*
+cd libffi-*/
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Python Build
+# NOTE: I don't like how we're using an old version of Python, but it'll have to
+#       do because it's the last version that supports LibreSSL. ~ahill
+# See also: https://peps.python.org/pep-0644/
+# NOTE: Python will not build _ctypes if libffi is not present. ~ahill
+tar xf ../sources/Python-*.tar*
+cd Python-*/
+./configure \
+	--enable-optimizations \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# xcbproto Build
+tar xf ../sources/xcbproto-xcb-proto-*.tar*
+cd xcbproto-xcb-proto-*/
+./autogen.sh \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libXau Build
+tar xf ../sources/libxau-libXau-*.tar*
+cd libxau-libXau-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# libxcb Build
+tar xf ../sources/libxcb-libxcb-*.tar*
+cd libxcb-libxcb-*/
+./autogen.sh \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libX11 Build
+tar xf ../sources/libx11-*.tar*
+cd libx11-*/
+# NOTE: Disabling xsltproc and xmlto is the only way I've found to disable
+#       documentation. ~ahill
+# NOTE: For some reason, autoconf attempts to pipe C code into the preprocessor
+#       without passing -, so setting ac_cv_path_RAWCPP fixes that. ~ahill
+ac_cv_path_RAWCPP="clang -E -" ./autogen.sh \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--without-xsltproc \
+	--without-xmlto
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Pixman Build
+tar xf ../sources/pixman-*.tar*
+cd pixman-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# libxkbfile Build
+tar xf ../sources/libxkbfile-libxkbfile-*.tar*
+cd libxkbfile-libxkbfile-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# FreeType Build
+tar xf ../sources/freetype-*.tar*
+cd freetype-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# font-util Build
+tar xf ../sources/util-font-util-*.tar*
+cd util-font-util-*/
+./autogen.sh \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libfontenc Build
+tar xf ../sources/libfontenc-libfontenc-*.tar*
+cd libfontenc-libfontenc-*/
+./autogen.sh \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libXfont2 Build
+tar xf ../sources/libxfont-libXfont2-*.tar*
+cd libxfont-libXfont2-*/
+./autogen.sh \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libxcvt Build
+tar xf ../sources/libxcvt-libxcvt-*.tar*
+cd libxcvt-libxcvt-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# skalibs Build
+# TODO: Should skalibs/mdevd/libudev-zero be moved to earlier in the script to
+#       benefit other software? ~ahill
+tar xf ../sources/skalibs-*.tar*
+cd skalibs-*/
+# NOTE: We prefer a static library over a shared library in this instance since
+#       this is only used by mdevd. ~ahill
+./configure \
+	--disable-shared \
+	--enable-pkgconfig \
+	--includedir=/usr/include \
+	--prefix=/
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# mdevd Build
+tar xf ../sources/mdevd-*.tar*
+cd mdevd-*/
+./configure \
+	--disable-static \
+	--enable-pkgconfig \
+	--enable-shared \
+	--includedir=/usr/include \
+	--libexecdir=/lib \
+	--prefix=/
+make -j $THREADS
+make -j $THREADS install
+echo "#!/sbin/openrc-run" > /etc/init.d/mdevd
+echo "description=\"Mini Device Mapper Daemon\"" >> /etc/init.d/mdevd
+echo "command=\"/bin/mdevd\"" >> /etc/init.d/mdevd
+echo "command_args=\"-O4\"" >> /etc/init.d/mdevd
+echo "command_background=\"yes\"" >> /etc/init.d/mdevd
+echo "pidfile=\"/run/mdevd.pid\"" >> /etc/init.d/mdevd
+chmod +x /etc/init.d/mdevd
+cd ..
+
+# libudev-zero Build
+tar xf ../sources/libudev-zero-*.tar*
+cd libudev-zero-*/
+make -j $THREADS
+make -j $THREADS install PREFIX=/
+cd ..
+
+# libXdmcp Build
+tar xf ../sources/libxdmcp-libXdmcp-*.tar*
+cd libxdmcp-libXdmcp-*/
+./autogen.sh \
+	--disable-docs \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Flit Core Build
+# NOTE: Required to build Packaging
+tar xf ../sources/flit_core-*.tar*
+cd flit_core-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Packaging Build
+# NOTE: Required by Build and MarkupSafe
+# NOTE: Build isolation starts having problems here because pip isolates itself
+#       from its dependencies. ~ahill
+# See also: https://pip.pypa.io/en/latest/reference/build-system/pyproject-toml/#disabling-build-isolation
+tar xf ../sources/packaging-*.tar*
+cd packaging-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Tomli Build
+# NOTE: Required by Build
+tar xf ../sources/tomli-*.tar*
+cd tomli-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Pyproject Hooks Build
+# NOTE: Required by Build
+tar xf ../sources/pyproject_hooks-*.tar*
+cd pyproject_hooks-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Wheel Build
+# NOTE: Required by ImportLib Metadata
+tar xf ../sources/wheel-*.tar*
+cd wheel-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# SetupTools Build
+# NOTE: While not an explicit dependency of ImportLib Metadata, it produces an
+#       UNKNOWN egg if this isn't installed. ~ahill
+tar xf ../sources/setuptools-*.tar*
+cd setuptools-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Typing Extensions Build
+# NOTE: Required by SetupTools SCM
+tar xf ../sources/typing_extensions-*.tar*
+cd typing_extensions-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Zipp Build
+# NOTE: Required by ImportLib Metadata
+tar xf ../sources/zipp-*.tar*
+cd zipp-*/
+python3 -m pip install --no-build-isolation .
+# NOTE: For some reason, Zipp, which is a dependency of ImportLib Metadata,
+#       requires SetupTools SCM to properly version the module. This doesn't
+#       sound too bad until you realize that ImportLib Metadata is a dependency
+#       of SetupTools SCM, which we can't install because Zipp is the dependency
+#       of that! In other words, we have encountered a circular dependency for
+#       this version of Python. The simple solution is to simply upgrade Python,
+#       but you wouldn't be reading this if that was possible. Instead, we will
+#       extract the version number from the name of the tarball, and inject that
+#       into the egg info for Zipp after installing. ~ahill
+ZIPP_VERSION=$(pwd | cut -d"-" -f2)
+ZIPP_PACKAGE=/lib/python3.9/site-packages/zipp-$ZIPP_VERSION.dist-info
+mv /lib/python3.9/site-packages/zipp-0.0.0.dist-info $ZIPP_PACKAGE
+sed -i "s/Version: 0.0.0/Version: $ZIPP_VERSION/" $ZIPP_PACKAGE/METADATA
+sed -i "s/zipp-0.0.0/zipp-$ZIPP_VERSION/" $ZIPP_PACKAGE/RECORD
+ZIPP_METADATA_HASH=$(cat $ZIPP_PACKAGE/METADATA | libressl sha256 -binary | base64 -w 0)
+sed -i "s|METADATA,sha256=.*,|METADATA,sha256=$ZIPP_METADATA_HASH,|" $ZIPP_PACKAGE/RECORD
+cd ..
+
+# ImportLib Metadata Build
+# NOTE: Required by Build
+tar xf ../sources/importlib_metadata-*.tar*
+cd importlib_metadata-*/
+python3 -m pip install --no-build-isolation .
+# NOTE: Applying the same hack from Zipp to ImportLib Metadata because both rely
+#       on SetupTools SCM, which we can't install due to a circular dependency.
+IMPORTLIB_METADATA_VERSION=$(pwd | cut -d"-" -f2)
+IMPORTLIB_METADATA_PACKAGE=/lib/python3.9/site-packages/importlib_metadata-$IMPORTLIB_METADATA_VERSION.dist-info
+mv /lib/python3.9/site-packages/importlib_metadata-0.0.0.dist-info $IMPORTLIB_METADATA_PACKAGE
+sed -i "s/Version: 0.0.0/Version: $IMPORTLIB_METADATA_VERSION/" $IMPORTLIB_METADATA_PACKAGE/METADATA
+sed -i "s/importlib_metadata-0.0.0/importlib_metadata-$IMPORTLIB_METADATA_VERSION/" $IMPORTLIB_METADATA_PACKAGE/RECORD
+# I refuse to call this IMPORTLIB_METADATA_METADATA_HASH. ~ahill
+IMPORTLIB_METADATA_HASH=$(cat $IMPORTLIB_METADATA_PACKAGE/METADATA | libressl sha256 -binary | base64 -w 0)
+sed -i "s|METADATA,sha256=.*,|METADATA,sha256=$IMPORTLIB_METADATA_HASH,|" $IMPORTLIB_METADATA_PACKAGE/RECORD
+cd ..
+
+# SetupTools SCM Build
+# NOTE: Technically required by Zipp and ImportLib Metadata, but not needed at
+#       this point. This is just here for future-proofing. ~ahill
+tar xf ../sources/setuptools_scm-*.tar*
+cd setuptools_scm-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# "Build" Build
+# NOTE: The above line makes me question my sanity. ~ahill
+# NOTE: Required by MarkupSafe
+tar xf ../sources/build-*.tar*
+cd build-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# MarkupSafe Build
+# NOTE: Required by Mako
+tar xf ../sources/markupsafe-*.tar*
+cd markupsafe-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Babel Build
+# NOTE: Required by Mako
+tar xf ../sources/babel-*.tar*
+cd babel-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Click Build
+# NOTE: Required by Lingua
+tar xf ../sources/click-*.tar*
+cd click-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Polib Build
+# NOTE: Required by Lingua
+tar xf ../sources/polib-*.tar*
+cd polib-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Lingua Build
+# NOTE: Required by Mako
+tar xf ../sources/lingua-*.tar*
+cd lingua-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# Mako Build
+# NOTE: This is a Python library that is required to build Mesa. ~ahill
+tar xf ../sources/mako-*.tar*
+cd mako-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# PyYAML Build
+# NOTE: Another Python library for Mesa. ~ahill
+tar xf ../sources/pyyaml-*.tar*
+cd pyyaml-*/
+python3 -m pip install --no-build-isolation .
+cd ..
+
+# libpciaccess Build
+tar xf ../sources/libpciaccess-libpciaccess-*.tar*
+cd libpciaccess-libpciaccess-*/
+muon setup \
+	-Dprefix=/usr \
+	-Dzlib=enabled \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# libdrm Build
+tar xf ../sources/libdrm-*.tar*
+cd libdrm-*/
+muon setup \
+	-Dintel=enabled \
+	-Dprefix=/usr \
+	-Dudev=true \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# LLVM pkgconf hack
+# NOTE: Not proud of this, but I guess LLVM doesn't support pkg-config at all.
+#       This is here to allow muon to detect LLVM when building Mesa. ~ahill
+# See also: https://github.com/llvm/llvm-project/issues/9777#issuecomment-980893725
+echo "Name: LLVM" > /lib/pkgconfig/llvm.pc
+echo "Description: Low-Level Virtual Machine" >> /lib/pkgconfig/llvm.pc
+echo "Version: $(llvm-config --version)" >> /lib/pkgconfig/llvm.pc
+echo "URL: https://www.llvm.org/" >> /lib/pkgconfig/llvm.pc
+echo "Requires:" >> /lib/pkgconfig/llvm.pc
+echo "Conflicts:" >> /lib/pkgconfig/llvm.pc
+echo "Libs: -L$(llvm-config --libdir) -lLLVM" >> /lib/pkgconfig/llvm.pc
+echo "Cflags: -I$(llvm-config --includedir)" >> /lib/pkgconfig/llvm.pc
+
+# LLVMConfig.cmake hack
+# FIXME: I'm not sure why, but LLVMConfig.cmake *assumes* that the LLVM install
+#        prefix is exactly three directories up from itself. This means that it
+#        believes the install prefix is /lib rather than /, which results in it
+#        failing to locate the other CMake files. This hack forcefully sets the
+#        LLVM install prefix to the proper location. ~ahill
+sed -i "/get_filename_component(LLVM_INSTALL_PREFIX \"\${CMAKE_CURRENT_LIST_FILE/a set(LLVM_INSTALL_PREFIX \"/\")" /lib/cmake/llvm/LLVMConfig.cmake
+sed -i "/get_filename_component(LLVM_INSTALL_PREFIX/d" /lib/cmake/llvm/LLVMConfig.cmake
+
+# SPIR-V Tools Build
+tar xf ../sources/spirv-tools-*.tar*
+cd SPIRV-Tools-*/
+# NOTE: In an effort to avoid Python and access to the Internet for the duration
+#       of the build, "python3 utils/git-sync-deps" has been replaced with the
+#       SPIR-V headers we used earlier. ~ahill
+cd external
+tar xf ../../../sources/SPIRV-Headers-vulkan-sdk-1.4.309.0.tar*
+mv SPIRV-Headers-*/ spirv-headers
+cd ..
+cmake -B build \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_LIBDIR=/lib \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DSPIRV_SKIP_TESTS=ON
+# FIXME: Having "stable" releases that rely on very specific commits to function
+#        is terrible practice. If updates are going to be that unstable, make
+#        the headers, tools, and translator all part of a single source tree!
+#        ~ahill
+# See also: https://github.com/KhronosGroup/SPIRV-Headers/issues/515
+#           https://github.com/KhronosGroup/SPIRV-LLVM-Translator/issues/3048
+#           https://bugs.gentoo.org/951062
+make -C build -j $THREADS
+make -C build -j $THREADS install
+cd ..
+
+# SPIR-V LLVM Translator Build
+tar xf ../sources/spirv-llvm-translator-*.tar*
+cd SPIRV-LLVM-Translator-*/
+# NOTE: CMAKE_INSTALL_LIBDIR explicitly defined due to /usr/lib64 usage that
+#       breaks pkgconf. ~ahill
+# NOTE: SPIR-V headers need to be imported from the source. ~ahill
+tar xf ../../sources/SPIRV-Headers-vulkan-sdk-1.4.321.0.tar*
+mv SPIRV-Headers-*/ SPIRV-Headers/
+cmake -B build \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_LIBDIR=/lib \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLLVM_DIR=/lib/cmake/llvm \
+	-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=$(pwd)/SPIRV-Headers
+make -C build -j $THREADS
+make -C build -j $THREADS install
+cd ..
+
+# Glslang Build
+tar xf ../sources/glslang-*.tar*
+cd glslang-*/
+cmake -B build \
+	-DALLOW_EXTERNAL_SPIRV_TOOLS=true \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DGLSLANG_TESTS=false
+make -C build -j $THREADS
+make -C build -j $THREADS install
+cd ..
+
+# libXext Build
+tar xf ../sources/libxext-libXext-*.tar*
+cd libxext-libXext-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--without-fop \
+	--without-xmlto \
+	--without-xsltproc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libXfixes Build
+tar xf ../sources/libxfixes-libXfixes-*.tar*
+cd libxfixes-libXfixes-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libxshmfence Build
+tar xf ../sources/libxshmfence-libxshmfence-*.tar*
+cd libxshmfence-libxshmfence-*/
+./autogen.sh \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libXxf86vm Build
+tar xf ../sources/libxxf86vm-libXxf86vm-*.tar*
+cd libxxf86vm-libXxf86vm-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libXrender Build
+tar xf ../sources/libxrender-libXrender-*.tar*
+cd libxrender-libXrender-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libXrandr Build
+tar xf ../sources/libxrandr-libXrandr-*.tar*
+cd libxrandr-libXrandr-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Mesa Build
+tar xf ../sources/mesa-mesa-*.tar*
+cd mesa-mesa-*/
+# NOTE: Mesa apparently contains Rust code now. To avoid the dependency, we make
+#       sure gallium-rusticl, with_nouveau_vk, and etnaviv are all disabled.
+#       gallium-rusticl is a feature, with_nouveau_vk is part of nouveau itself,
+#       and etnaviv is part of the tools included with Mesa. ~ahill
+# NOTE: Despite not building Rust, rust_std and build.rust_std are included in
+#       the project definition. We'll patch these out with sed before
+#       proceeding. ~ahill
+sed -i "/rust_std=.*/d" meson.build
+# NOTE: muon doesn't support configtool, so we patch meson.build to use the
+#       llvm-config command instead. RTTI detection is necessary for ABI-level
+#       compatibility with LLVM. ~ahill
+sed -i "s/_llvm_rtti = \[.*/_llvm_rtti = ['ON', 'YES'].contains(run_command('llvm-config', '--has-rtti').stdout().strip())/" meson.build
+sed -i "s/llvm_libdir = dep_llvm.*/llvm_libdir = run_command('llvm-config', '--libdir').stdout().strip()/" meson.build
+LLVM_HASRTTI=$(llvm-config --has-rtti)
+if [ "$LLVM_HASRTTI" = "YES" ] || [ "$LLVM_HASRTTI" = "ON" ]; then
+	LLVM_HASRTTI=true
+else
+	LLVM_HASRTTI=false
+fi
+# NOTE: egl-native-platform and platforms are manually defined so we don't build
+#       Wayland support, which reduces the number of dependencies even further.
+#       ~ahill
+# TODO: Have Mesa use the system-built Lua library rather than pulling one in
+#       from the web to use with Mesa and Mesa alone. ~ahill
+# NOTE: intel-ui is temporary disabled due to a lack of libepoxy, which we can't
+#       build due to a muon bug. ~ahill
+# See also: https://todo.sr.ht/~lattis/muon/141
+# NOTE: Dropping intel tools for now because it conflicting definitions with
+#       musl. ~ahill
+# NOTE: Mesa and musl do not seem to get along, so I have patched the shim out
+#       from the 64-bit syscall variants since they're just aliased in musl,
+#       preventing a re-definition error. ~ahill
+sed -i "1i #define off64_t off_t" src/drm-shim/drm_shim.h
+patch -p0 < /maple/patches/mesa-drm-maple.patch
+muon setup \
+	-Dcpp_rtti=$LLVM_HASRTTI \
+	-Degl-native-platform=x11 \
+	-Dgallium-rusticl=false \
+	-Dllvm=true \
+	-Dplatforms=x11 \
+	-Dprefix=/usr \
+	-Dtools=drm-shim,dlclose-skip,freedreno,glsl,lima,nir,nouveau,asahi,imagination \
+	-Dvulkan-drivers=amd,intel,intel_hasvk,swrast \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
@@ -751,5 +1449,6 @@ cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 ln -s agetty /etc/init.d/agetty.tty1
 cp /etc/conf.d/agetty /etc/conf.d/agetty.tty1
 rc-update add agetty.tty1 default
+rc-update add mdevd sysinit
 
 cd ..

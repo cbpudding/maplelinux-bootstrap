@@ -54,12 +54,13 @@ cd llvm-project-*/
 #       Python 3.9 for a while, but that's not a sustainable solution long-term.
 #       ~ahill
 # See also: https://peps.python.org/pep-0644/
-cmake -B stage1 -G Ninja -S llvm \ 
+cmake -B stage1 -G Ninja -S llvm \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$MAPLE/maple/tools \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
 	-DCLANG_DEFAULT_RTLIB=compiler-rt \
 	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
+	-DCLANG_VENDOR=Maple \
 	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
 	-DLIBCXX_CXX_ABI=libcxxabi \
 	-DLIBCXX_HAS_MUSL_LIBC=ON \
@@ -98,6 +99,7 @@ LLVM=1 make -j $THREADS headers_install INSTALL_HDR_PATH=$MAPLE/usr
 cd ..
 
 # musl Build
+# FIXME: CVE-2025-26519
 tar xf ../sources/musl-*.tar*
 cd musl-*/
 ./configure --disable-static --includedir=/usr/include --prefix=""
@@ -328,11 +330,13 @@ echo "set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)" >> $TOOLCHAIN_FILE
 # See also: https://github.com/llvm/llvm-project/issues/60687
 cmake -B stage2 -G Ninja -S llvm \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
-	-DCMAKE_TOOLCHAIN_FILE=$(pwd)/$TOOLCHAIN_FILE \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
 	-DCLANG_DEFAULT_RTLIB=compiler-rt \
 	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
+	-DCMAKE_INSTALL_LIBDIR=$MAPLE/lib \
+	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
+	-DCMAKE_INSTALL_RPATH=/lib \
+	-DCMAKE_TOOLCHAIN_FILE=$(pwd)/$TOOLCHAIN_FILE \
 	-DCLANG_VENDOR=Maple \
 	-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
 	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
@@ -346,7 +350,8 @@ cmake -B stage2 -G Ninja -S llvm \
 	-DLLVM_BUILD_LLVM_DYLIB=ON \
 	-DLLVM_ENABLE_LIBCXX=ON \
 	-DLLVM_ENABLE_LLD=ON \
-	-DLLVM_ENABLE_PROJECTS="clang;lld;lldb;llvm" \
+	-DLLVM_ENABLE_PROJECTS="clang;libclc;lld;lldb;llvm" \
+	-DLLVM_ENABLE_RTTI=ON \
 	-DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
 	-DLLVM_ENABLE_ZSTD=OFF \
 	-DLLVM_HOST_TRIPLE=$HOST \
