@@ -903,7 +903,14 @@ cd ..
 # Pixman Build
 tar xf ../sources/pixman-*.tar*
 cd pixman-*/
-muon setup -Dprefix=/usr build
+# NOTE: Pixman builds as a static library by default, but appears to be missing
+#       the MMX, SSE2, and SSE3 symbols upon installation. Telling it to build a
+#       shared library fixes the problem, but the question is why this happens
+#       in the first place... ~ahill
+muon setup \
+	-Ddefault_library=shared \
+	-Dprefix=/usr \
+	build
 muon samu -C build
 muon -C build install
 cd ..
@@ -911,7 +918,10 @@ cd ..
 # libxkbfile Build
 tar xf ../sources/libxkbfile-libxkbfile-*.tar*
 cd libxkbfile-libxkbfile-*/
-muon setup -Dprefix=/usr build
+muon setup \
+	-Ddefault_library=shared \
+	-Dprefix=/usr \
+	build
 muon samu -C build
 muon -C build install
 cd ..
@@ -1287,6 +1297,7 @@ cd glslang-*/
 cmake -B build \
 	-DALLOW_EXTERNAL_SPIRV_TOOLS=true \
 	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_LIBDIR=/lib \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DGLSLANG_TESTS=false
 make -C build -j $THREADS
@@ -1428,6 +1439,73 @@ muon setup \
 	-Dtools=drm-shim,dlclose-skip,freedreno,glsl,lima,nir,nouveau,asahi,imagination \
 	-Dvulkan-drivers=amd,intel,intel_hasvk,swrast \
 	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# XCB Util Build
+tar xf ../sources/libxcb-util-xcb-util-*.tar*
+cd libxcb-util-xcb-util-*/
+# NOTE: For some reason, configure.ac attempts to use LIBTOOL without invoking
+#       LT_INIT anywhere. The following line adds the line to the file so it can
+#       build properly. ~ahill
+sed -i "/AM_INIT_AUTOMAKE/a LT_INIT" configure.ac
+# NOTE: Makefile.am can't be built because pkgconfig_DATA and xcbinclude_HEADERS
+#       are used without having pkgconfigdir or xcbincludedir defined. This
+#       patches the files. ~ahill
+sed -i "/pkgconfig_DATA/i pkgconfigdir=/lib/pkgconfig" Makefile.am
+sed -i "/xcbinclude_HEADERS/i xcbincludedir=/usr/include/xcb" src/Makefile.am
+# NOTE: XCB Util requires XCB Util M4 to build, which is software without a
+#       release tag and is only ever referred to by the commit hash. It fails to
+#       configure if this isn't present. ~ahill
+tar xf ../../sources/xcb-util-m4-*.tar*
+rm -rf m4/
+mv xcb-util-m4-*/ m4
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# XCB Util WM Build
+tar xf ../sources/libxcb-wm-xcb-util-wm-*.tar*
+cd libxcb-wm-xcb-util-wm-*/
+# NOTE: XCB Util WM requires XCB Util M4 to build. We went over this with XCB
+#       Util already, and thankfully, it uses the same commit hash. ~ahill
+tar xf ../../sources/xcb-util-m4-*.tar*
+rm -rf m4/
+mv xcb-util-m4-*/ m4
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Xlibre Build
+tar xf ../sources/xlibre-xserver-*.tar*
+cd xserver-xlibre-xserver-*/
+# NOTE: Once again, muon doesn't like a simple "sh" so we need to replace it
+#       with /bin/sh to make it happy. ~ahill
+sed -i "s|'sh'|'/bin/sh'|" hw/xfree86/meson.build
+muon setup \
+	-Dglamor=false \
+	-Dprefix=/usr \
+	build
+# FIXME: For some reason, "muon setup" defines HAVE_ARC4RANDOM_BUF in
+#        build/dix-config.h, despite musl not having the function available. To
+#        fix this, we simply undef the symbol in the configuration file that was
+#        just generated. ~ahill
+sed -i "s/#define HAVE_ARC4RANDOM_BUF.*/#undef HAVE_ARC4RANDOM_BUF/" build/dix-config.h
 muon samu -C build
 muon -C build install
 cd ..
