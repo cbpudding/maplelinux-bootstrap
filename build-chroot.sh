@@ -1048,7 +1048,7 @@ cd ..
 # NOTE: Required to build Packaging
 tar xf ../sources/flit_core-*.tar*
 cd flit_core-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Packaging Build
@@ -1058,28 +1058,28 @@ cd ..
 # See also: https://pip.pypa.io/en/latest/reference/build-system/pyproject-toml/#disabling-build-isolation
 tar xf ../sources/packaging-*.tar*
 cd packaging-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Tomli Build
 # NOTE: Required by Build
 tar xf ../sources/tomli-*.tar*
 cd tomli-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Pyproject Hooks Build
 # NOTE: Required by Build
 tar xf ../sources/pyproject_hooks-*.tar*
 cd pyproject_hooks-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Wheel Build
 # NOTE: Required by ImportLib Metadata
 tar xf ../sources/wheel-*.tar*
 cd wheel-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # SetupTools Build
@@ -1087,21 +1087,21 @@ cd ..
 #       UNKNOWN egg if this isn't installed. ~ahill
 tar xf ../sources/setuptools-*.tar*
 cd setuptools-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Typing Extensions Build
 # NOTE: Required by SetupTools SCM
 tar xf ../sources/typing_extensions-*.tar*
 cd typing_extensions-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Zipp Build
 # NOTE: Required by ImportLib Metadata
 tar xf ../sources/zipp-*.tar*
 cd zipp-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 # NOTE: For some reason, Zipp, which is a dependency of ImportLib Metadata,
 #       requires SetupTools SCM to properly version the module. This doesn't
 #       sound too bad until you realize that ImportLib Metadata is a dependency
@@ -1124,7 +1124,7 @@ cd ..
 # NOTE: Required by Build
 tar xf ../sources/importlib_metadata-*.tar*
 cd importlib_metadata-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 # NOTE: Applying the same hack from Zipp to ImportLib Metadata because both rely
 #       on SetupTools SCM, which we can't install due to a circular dependency.
 IMPORTLIB_METADATA_VERSION=$(pwd | cut -d"-" -f2)
@@ -1142,7 +1142,7 @@ cd ..
 #       this point. This is just here for future-proofing. ~ahill
 tar xf ../sources/setuptools_scm-*.tar*
 cd setuptools_scm-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # "Build" Build
@@ -1150,56 +1150,56 @@ cd ..
 # NOTE: Required by MarkupSafe
 tar xf ../sources/build-*.tar*
 cd build-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # MarkupSafe Build
 # NOTE: Required by Mako
 tar xf ../sources/markupsafe-*.tar*
 cd markupsafe-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Babel Build
 # NOTE: Required by Mako
 tar xf ../sources/babel-*.tar*
 cd babel-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Click Build
 # NOTE: Required by Lingua
 tar xf ../sources/click-*.tar*
 cd click-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Polib Build
 # NOTE: Required by Lingua
 tar xf ../sources/polib-*.tar*
 cd polib-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Lingua Build
 # NOTE: Required by Mako
 tar xf ../sources/lingua-*.tar*
 cd lingua-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # Mako Build
 # NOTE: This is a Python library that is required to build Mesa. ~ahill
 tar xf ../sources/mako-*.tar*
 cd mako-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # PyYAML Build
 # NOTE: Another Python library for Mesa. ~ahill
 tar xf ../sources/pyyaml-*.tar*
 cd pyyaml-*/
-python3 -m pip install --no-build-isolation .
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
 cd ..
 
 # libpciaccess Build

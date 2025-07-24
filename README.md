@@ -141,9 +141,8 @@ While it may sound too good to be true, that's because it is. Maple Linux does n
 
 Maple Linux uses a slightly different filesystem hierarchy compared to most Linux systems, but it shouldn't be enough to become incompatible with existing software. The following are the notable changes:
 
-- `/bin` - This is the canonical location for all system-level binaries. Paths such as `/usr/bin` should be considered legacy. See also: https://lists.busybox.net/pipermail/busybox/2010-December/074114.html
+- `/bin` - This is the canonical location for all system-level binaries. Paths such as `/sbin`, `/usr/bin`, and `/usr/sbin` should be considered legacy. See also: https://lists.busybox.net/pipermail/busybox/2010-December/074114.html
 - `/boot` - This is the mount point for the EFI System Partition
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` should be considered legacy.
-- `/sbin` - This is the canonical location for all system-level binaries that require superuser privileges to run. Paths such as `/usr/sbin` should be considered legacy.
 
 Many of alternative paths are symlinked for compatibility's sake.
