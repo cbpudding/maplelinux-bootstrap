@@ -1,6 +1,8 @@
 #!/bin/sh -e
 export CC=clang
+export CFLAGS="-O3 -march=skylake -pipe --sysroot=$MAPLE"
 export CXX=clang++
+export CXXFLAGS="$CFLAGS"
 export LD=ld.lld
 export MAPLE=$(pwd)/maple
 export THREADS=$(nproc)
@@ -24,7 +26,7 @@ mkdir -p $MAPLE/maple/sources
 mkdir -p $MAPLE/mnt
 mkdir -p $MAPLE/proc
 mkdir -p $MAPLE/run
-mkdir -p $MAPLE/sbin
+ln -sf bin $MAPLE/sbin
 mkdir -p $MAPLE/sys
 mkdir -p $MAPLE/tmp
 mkdir -p $MAPLE/usr
@@ -32,7 +34,7 @@ ln -sf ../bin $MAPLE/usr/bin
 mkdir -p $MAPLE/usr/include
 ln -sf ../lib $MAPLE/usr/lib
 ln -sf ../lib $MAPLE/usr/libexec
-ln -sf ../sbin $MAPLE/usr/sbin
+ln -sf ../bin $MAPLE/usr/sbin
 mkdir -p $MAPLE/usr/share
 mkdir -p $MAPLE/var
 mkdir -p $MAPLE/var/cache
@@ -85,8 +87,6 @@ cd ..
 
 export CC="$MAPLE/maple/tools/bin/clang"
 export CXX="$MAPLE/maple/tools/bin/clang++"
-export CFLAGS="-O3 -march=skylake -pipe --sysroot=$MAPLE"
-export CXXFLAGS="$CFLAGS"
 export LD=$MAPLE/maple/tools/bin/ld.lld
 export PATH="$MAPLE/maple/tools/bin:$PATH"
 
