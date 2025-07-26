@@ -15,6 +15,7 @@ f4619a1e2474c4bbfedc88a7c2191209c8334b48fa1f4e53fd584cc12e9120dd,https://curl.se
 6721e606609226dbf4d864a78802a9e96beec0ee034a1bd84138b3e037bba7d9,https://github.com/NetworkConfiguration/dhcpcd/releases/download/v10.2.4/dhcpcd-10.2.4.tar.xz,
 7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd,https://ftpmirror.gnu.org/gnu/diffutils/diffutils-3.12.tar.xz,
 64926eebf90092dca21b14259a5301b7b98e7b1943e8a201c7d726084809b527,https://github.com/dosfstools/dosfstools/releases/download/v4.2/dosfstools-4.2.tar.gz,
+93ebe1294ee3203d3bf548c78d51bde9494d3f24de64eaec380a2620f0431f20,https://github.com/mkj/dropbear/archive/refs/tags/DROPBEAR_2025.88.tar.gz,dropbear-2025.88.tar.gz
 354552544b8f99012e5062f7d570ec77f14b412a3ff5c7d8d0dae62c0d217c30,https://github.com/libexpat/libexpat/releases/download/R_2_7_1/expat-2.7.1.tar.xz,
 1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5,https://ftpmirror.gnu.org/gnu/findutils/findutils-4.10.0.tar.xz,
 e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995,https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz,

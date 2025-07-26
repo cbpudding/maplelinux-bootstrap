@@ -311,6 +311,11 @@ echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
 echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
 echo "password required pam_unix.so nullok shadow" >> /etc/pam.d/system-auth
 echo "session  required pam_unix.so" >> /etc/pam.d/system-auth
+echo "#%PAM-1.0" > /etc/pam.d/sshd
+echo "auth     include system-auth" >> /etc/pam.d/sshd
+echo "account  include system-auth" >> /etc/pam.d/sshd
+echo "password include system-auth" >> /etc/pam.d/sshd
+echo "session  include system-auth" >> /etc/pam.d/sshd
 cd ..
 
 # OpenRC Build
@@ -1524,9 +1529,37 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# Dropbear Build
+tar xf ../sources/dropbear-*.tar*
+cd dropbear-*/
+./configure \
+	--enable-pam \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+# NOTE: Creating an ssh alias here for convenience's sake. ~ahill
+ln -s dbclient /bin/ssh
+# NOTE: Dropbear doesn't come with OpenRC support, but that's simple enough to
+#       fix. ~ahill
+echo "#!/bin/openrc-run" > /etc/init.d/dropbear
+echo "command=\"/bin/dropbear\"" >> /etc/init.d/dropbear
+echo "command_args=\"-R\"" >> /etc/init.d/dropbear
+echo "pidfile=\"/run/dropbear.pid\"" >> /etc/init.d/dropbear
+chmod +x /etc/init.d/dropbear
+# NOTE: Dropbear won't make keys if the directory doesn't exist. ~ahill
+mkdir -p /etc/dropbear
+cd ..
+
 # Basic Configuration
-echo "root::0:0::/:/bin/zsh" > /etc/passwd
+echo "root:x:0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
+echo "root::20295::::::" > /etc/shadow
+echo "/bin/sh" > /etc/shells
+echo "/bin/zsh" >> /etc/shells
 echo "maple" > /etc/hostname
 echo "NAME=Maple Linux" > /etc/os-release
 echo "VERSION=2025" >> /etc/os-release
@@ -1541,6 +1574,9 @@ cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 ln -s agetty /etc/init.d/agetty.tty1
 cp /etc/conf.d/agetty /etc/conf.d/agetty.tty1
 rc-update add agetty.tty1 default
+# NOTE: Dropbear currently included for troubleshooting purposes. Should be
+#       disabled for desktop systems. ~ahill
+rc-update add dropbear default
 rc-update add mdevd sysinit
 
 cd ..

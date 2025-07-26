@@ -2,13 +2,14 @@
 
 # fstab Generation
 # TODO: Is the dump column still used today? ~ahill
+# NOTE: /dev is not here because CONFIG_DEVTMPFS_MOUNT is enabled in the Linux
+#       kernel configuration. ~ahill
 echo "/dev/vda2 /              xfs      defaults            1 1" > /etc/fstab
 echo "/dev/vda1 /boot          vfat     defaults            0 2" >> /etc/fstab
 echo "proc      /proc          proc     nosuid,noexec,nodev 0 0" >> /etc/fstab
 echo "sysfs     /sys           sysfs    nosuid,noexec,nodev 0 0" >> /etc/fstab
-echo "devpts    /dev/pts       devpts   gid=5,mode=620      0 0" >> /etc/fstab
+echo "devpts    /dev/pts       devpts   defaults            0 0" >> /etc/fstab
 echo "tmpfs     /run           tmpfs    defaults            0 0" >> /etc/fstab
-echo "devtmpfs  /dev           devtmpfs mode=0755,nosuid    0 0" >> /etc/fstab
 echo "tmpfs     /dev/shm       tmpfs    nosuid,nodev        0 0" >> /etc/fstab
 echo "cgroup2   /sys/fs/cgroup cgroup2  nosuid,noexec,nodev 0 0" >> /etc/fstab
 
