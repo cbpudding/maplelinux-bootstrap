@@ -1510,6 +1510,20 @@ muon samu -C build
 muon -C build install
 cd ..
 
+# XFree86 VESA Driver Build
+tar xf ../sources/xlibre-xf86-video-vesa-*.tar*
+cd xf86-video-vesa-xlibre-xf86-video-vesa-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
 # Basic Configuration
 echo "root::0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group

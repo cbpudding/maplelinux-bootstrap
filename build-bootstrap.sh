@@ -57,6 +57,7 @@ cd llvm-project-*/
 #       ~ahill
 # See also: https://peps.python.org/pep-0644/
 cmake -B stage1 -G Ninja -S llvm \
+	-DCMAKE_BUILD_PARALLEL_LEVEL=$THREADS \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$MAPLE/maple/tools \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
@@ -333,6 +334,7 @@ cmake -B stage2 -G Ninja -S llvm \
 	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
 	-DCLANG_DEFAULT_RTLIB=compiler-rt \
 	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
+	-DCMAKE_BUILD_PARALLEL_LEVEL=$THREADS \
 	-DCMAKE_INSTALL_LIBDIR=$MAPLE/lib \
 	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
 	-DCMAKE_INSTALL_RPATH=/lib \

@@ -24,6 +24,7 @@ f0129159515c13ebe53ba2a6a94755e98c266470e844ee0aacc6196fd62b44f0,https://gitlab.
 f8c3486509de705192138b00ef2c00bbbdd0e84c30d5c07d23fc73a9dc4cc9cc,https://ftpmirror.gnu.org/gnu/gawk/gawk-5.3.2.tar.xz,
 07d75fb5438d7bd2e3353a18abef34a2e143edcd62679f0907440d9529735d43,https://git.kernel.org/pub/scm/git/git.git/snapshot/git-2.50.0.tar.gz,
 b16c78e7604b9be9f546ee35ad8b6db6f39bbbbfb19e8d038b6fe2ea5bba4ff4,https://github.com/KhronosGroup/glslang/archive/refs/tags/15.4.0.tar.gz,glslang-15.4.0.tar.gz
+a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898,https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz,
 2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9,https://ftpmirror.gnu.org/gnu/grep/grep-3.12.tar.xz,
 01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6,https://ftpmirror.gnu.org/gnu/gzip/gzip-1.14.tar.xz,
 d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000,https://files.pythonhosted.org/packages/76/66/650a33bd90f786193e4de4b3ad86ea60b53c89b669a5c7be931fac31cdb0/importlib_metadata-8.7.0.tar.gz,
@@ -37,7 +38,6 @@ d4bae92797a50f81a93524762e0410a49cd84cfa0f997795bc0172ac8fb1d96a,https://dri.fre
 6253395679c2bb2156d926b3d8b7e3b2bbeb40a56d2bea29e1c73e40ed9de4ba,https://github.com/arachsys/libelf/archive/refs/tags/v0.193.tar.gz,libelf-0.193.tar.gz
 31dc201284fb5d2bec60b2ceee3126b5cf633c3de74151be44817890e8e7c581,https://gitlab.freedesktop.org/xorg/lib/libfontenc/-/archive/libfontenc-1.1.8/libfontenc-libfontenc-1.1.8.tar.gz,
 f99eb68a67c7d54866b7706af245e87ba060d419a062474b456d3bc8d4abdbd1,https://github.com/libffi/libffi/releases/download/v3.5.1/libffi-3.5.1.tar.gz,
-a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898,https://gmplib.org/download/gmp/gmp-6.3.0.tar.xz,
 706aa05c888b53bd170e5d8aa8f8a9d9ccf5449dfed262d5103d1f292af26774,https://github.com/benhoyt/inih/archive/refs/tags/r60.tar.gz,libinih-r60.tar.gz
 1bd6aa42275313af3141c7cf2e5b964e8b1fd488025caf2f971f43b00776b332,https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz,
 274b9b919ef3152bfb3da3a13c950dd60d6e2bcd54230ffeca298d03b40d0525,https://www.netfilter.org/pub/libmnl/libmnl-1.0.5.tar.bz2,
@@ -110,6 +110,7 @@ be9ad9a276f4305ab7dd2f5225c8be1ff54352f565ff4dede9628c1aaa7dec57,https://www.ker
 7b56592b339d47809cbefb9f46721705c662de1a001bc773d335975cd2eba34f,https://gitlab.freedesktop.org/xorg/lib/libxcb-util/-/archive/xcb-util-0.4.1/libxcb-util-xcb-util-0.4.1.tar.gz,
 c1b792306874c36b535413a33edc71a0ac46e78adcf6ddb1a34090a07393d717,https://gitlab.freedesktop.org/xorg/lib/libxcb-wm/-/archive/xcb-util-wm-0.4.2/libxcb-wm-xcb-util-wm-0.4.2.tar.gz,
 6389dae32d7d772245fed7c76d3f83cb7ffa88eb447dbb4db8400c2220e42c2a,https://gitlab.freedesktop.org/xorg/util/xcb-util-m4/-/archive/c617eee22ae5c285e79e81ec39ce96862fd3262f/xcb-util-m4-c617eee22ae5c285e79e81ec39ce96862fd3262f.tar.gz,
+15f858fa325fc6366577e095f968470d2575e8d4a5feeeaf9e9dbaf891703ba9,https://github.com/X11Libre/xf86-video-vesa/archive/refs/tags/xlibre-xf86-video-vesa-2.6.0.1.tar.gz,
 13b91f74beef8ad11137f7d9d71055573d91e961bc55bb0245956f69b84cd704,https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/xfsprogs-6.15.0.tar.xz,
 0d599978d2bc911d199d5f18755297ec2d216a41f91c746b74a1caaf57b5ebd3,https://github.com/X11Libre/xserver/archive/refs/tags/xlibre-xserver-25.0.0.5.tar.gz,
 c92466091663b68d93997eab4f329d0be511cb448a61b61fe74a738f2698b77c,https://gitlab.freedesktop.org/xorg/proto/xorgproto/-/archive/xorgproto-2024.1/xorgproto-xorgproto-2024.1.tar.gz,
