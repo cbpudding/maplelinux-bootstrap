@@ -837,9 +837,12 @@ cd ..
 # NOTE: Python will not build _ctypes if libffi is not present. ~ahill
 tar xf ../sources/Python-*.tar*
 cd Python-*/
+# TODO: Review Python's configuration to make sure the paths are configured
+#       correctly. Setting exec-prefix to / instead of an empty string fixed
+#       the need for PYTHONHOME. ~ahill
 ./configure \
 	--enable-optimizations \
-	--exec-prefix="" \
+	--exec-prefix=/ \
 	--libexecdir=/lib \
 	--localstatedir=/var \
 	--prefix=/usr \
@@ -1552,6 +1555,109 @@ echo "pidfile=\"/run/dropbear.pid\"" >> /etc/init.d/dropbear
 chmod +x /etc/init.d/dropbear
 # NOTE: Dropbear won't make keys if the directory doesn't exist. ~ahill
 mkdir -p /etc/dropbear
+cd ..
+
+# mtdev Build
+tar xf ../sources/mtdev-*.tar*
+cd mtdev-*/
+# TODO: Should this be static or shared? As far as I know, libinput is the only
+#       thing that will need this dependency, but I'll withhold judgement until
+#       I have a fully functional copy of Maple Linux. ~ahill
+./configure \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# evdev Build
+tar xf ../sources/libevdev-*.tar*
+cd libevdev-*/
+# TODO: Once again, unsure whether this is used for anything but libinput at
+#       this point. ~ahill
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# libinput Build
+tar xf ../sources/libinput-*.tar*
+cd libinput-*/
+# NOTE: We're not building libwacom here so we don't have to bootstrap another
+#       dependency. Once we have a self-sufficient version, this should probably
+#       be re-enabled. ~ahill
+muon setup \
+	-Ddebug-gui=false \
+	-Dlibwacom=false \
+	-Dprefix=/usr \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# XFree86 libinput Driver Build
+tar xf ../sources/xlibre-xf86-input-libinput-*.tar*
+cd xf86-input-libinput-*/
+./autogen.sh \
+	--disable-static \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
+cd ..
+
+# Pytest Runner Build
+tar xf ../sources/pytest-runner-*.tar*
+cd pytest-runner-*/
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
+cd ..
+
+# StrEnum Build
+tar xf ../sources/StrEnum-*.tar*
+cd StrEnum-*/
+python3 -m pip install --no-build-isolation --root-user-action=ignore .
+cd ..
+
+# XKeyboardConfig Build
+tar xf ../sources/xkeyboard-config-*.tar*
+cd xkeyboard-config-*/
+# TODO: The configuration portion requires Python to function, but unfortunately
+#       introspection via pymod in Muon appears to rely on the path Python is
+#       located under. Muon is likely finding /bin/python3 before it finds
+#       /usr/bin/python3, which makes it think / is the prefix and fails to
+#       locate the other Python directories. Modifying meson.build to point
+#       straight to /usr/bin/python3 does the trick. ~ahill
+sed -i "s|'python3|'/usr/bin/python3|" rules/meson.build
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# xkbcomp Build
+tar xf ../sources/xkbcomp-*.tar*
+cd xkbcomp-*/
+./autogen.sh \
+	--enable-year2038 \
+	--exec-prefix="" \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+make -j $THREADS
+make -j $THREADS install
 cd ..
 
 # Basic Configuration

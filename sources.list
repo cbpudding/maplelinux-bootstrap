@@ -37,9 +37,11 @@ b88cc9163d0c652aaf39a99991d974ddba1c3a9711db8f1b5838af2a14731014,https://libbsd.
 629da4ab29900d0f7fcc36227073743119925fd711c99a1689bbf5c9b40c8e6f,https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-2.76.tar.xz,
 d4bae92797a50f81a93524762e0410a49cd84cfa0f997795bc0172ac8fb1d96a,https://dri.freedesktop.org/libdrm/libdrm-2.4.125.tar.xz,
 6253395679c2bb2156d926b3d8b7e3b2bbeb40a56d2bea29e1c73e40ed9de4ba,https://github.com/arachsys/libelf/archive/refs/tags/v0.193.tar.gz,libelf-0.193.tar.gz
+0cfa48d1dddac26988ae9ce16282eff97683f1adcd3f5d4312f86d714565d890,https://gitlab.freedesktop.org/libevdev/libevdev/-/archive/libevdev-1.13.4/libevdev-libevdev-1.13.4.tar.gz,
 31dc201284fb5d2bec60b2ceee3126b5cf633c3de74151be44817890e8e7c581,https://gitlab.freedesktop.org/xorg/lib/libfontenc/-/archive/libfontenc-1.1.8/libfontenc-libfontenc-1.1.8.tar.gz,
 f99eb68a67c7d54866b7706af245e87ba060d419a062474b456d3bc8d4abdbd1,https://github.com/libffi/libffi/releases/download/v3.5.1/libffi-3.5.1.tar.gz,
 706aa05c888b53bd170e5d8aa8f8a9d9ccf5449dfed262d5103d1f292af26774,https://github.com/benhoyt/inih/archive/refs/tags/r60.tar.gz,libinih-r60.tar.gz
+a13f8c9a7d93df3c85c66afd135f0296701d8d32f911991b7aa4273fdd6a42a3,https://gitlab.freedesktop.org/libinput/libinput/-/archive/1.28.1/libinput-1.28.1.tar.gz,
 1bd6aa42275313af3141c7cf2e5b964e8b1fd488025caf2f971f43b00776b332,https://libbsd.freedesktop.org/releases/libmd-1.1.0.tar.xz,
 274b9b919ef3152bfb3da3a13c950dd60d6e2bcd54230ffeca298d03b40d0525,https://www.netfilter.org/pub/libmnl/libmnl-1.0.5.tar.bz2,
 e8c216255e129f26270639fee7775265665a31b11aa920253c3e5d5d62dfc4b8,https://www.netfilter.org/pub/libnftnl/libnftnl-1.2.9.tar.xz,
@@ -73,6 +75,7 @@ dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3,https://ftpmirr
 ee55d3edf80167e48ea11a923c7386f4669df67d7994554387f84e7d8b0a2bf0,https://files.pythonhosted.org/packages/b2/97/5d42485e71dfc078108a86d6de8fa46db44a1a9295e89c5d6d4a06e23a62/markupsafe-3.0.2.tar.gz,
 ec966eec39879f33c785343373021c44f887c836a08fcaf1d63412e3bdbfca32,https://skarnet.org/software/mdevd/mdevd-0.1.7.0.tar.gz,
 35fcca3e039d0f7628af1c0db453a2425de68d4e9559f73f712ac36c440aaca1,https://gitlab.freedesktop.org/mesa/mesa/-/archive/mesa-25.1.5/mesa-mesa-25.1.5.tar.gz,
+a55bd02a9af4dd266c0042ec608744fff3a017577614c057da09f1f4566ea32c,https://bitmath.se/org/code/mtdev/mtdev-1.1.7.tar.gz,
 c2ce8302e886b2d3534ec38896a824dc83f43698d085d57bb19a751611d94e86,https://git.sr.ht/~lattis/muon/archive/0.4.0.tar.gz,muon-0.4.0.tar.gz
 a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4,https://musl.libc.org/releases/musl-1.2.5.tar.gz,
 000b011d339c141af9646d43288f54325ff5c6e8d39d6e482b787bbc6654c26a,https://nano-editor.org/dist/v8/nano-8.5.tar.xz,
@@ -89,6 +92,7 @@ f3ef94aefed6e183e342a8a269ae1fc4742ba193186ad76f175938621dbfc26b,https://files.p
 c2e6d193cc78f84cd6ddb72aaf6d5c6a9162f0470e5992092057f5ff518562fa,https://gigenet.dl.sourceforge.net/project/procps-ng/Production/procps-ng-4.0.5.tar.xz,
 1e859bd5c40fae9448642dd871adf459e5e2084186e8d2c2a79a824c970da1f8,https://files.pythonhosted.org/packages/e7/82/28175b2414effca1cdac8dc99f76d660e7a4fb0ceefa4b4ab8f5f6742925/pyproject_hooks-1.2.0.tar.gz,
 61a42919e13d539f7673cf11d1c404380e28e540510860b9d242196e165709c9,https://www.python.org/ftp/python/3.9.23/Python-3.9.23.tar.xz,
+70d4739585a7008f37bf4933c013fdb327b8878a5a69fcbb3316c88882f0f49b,https://files.pythonhosted.org/packages/d7/7d/60976d532519c3a0b41e06a59ad60949e2be1af937cf02738fec91bfd808/pytest-runner-6.0.1.tar.gz,
 d584d9ec91ad65861cc08d42e834324ef890a082e591037abe114850ff7bbc3e,https://files.pythonhosted.org/packages/54/ed/79a089b6be93607fa5cdaedf301d7dfb23af5f25c398d5ead2525b063e17/pyyaml-6.0.2.tar.gz,
 3b8cf51548dfc49b7efe035e191ff5e1963ebc4fe8f6064a5eefc5343eaf78a5,https://github.com/michaelforney/samurai/releases/download/1.2/samurai-1.2.tar.gz,
 6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181,https://ftpmirror.gnu.org/gnu/sed/sed-4.9.tar.xz,
@@ -96,6 +100,7 @@ f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c,https://files.p
 3d555e92b75dacd037d32bafdf94f97af51ea29ae8c7b234cf94b7a5bd242a63,https://files.pythonhosted.org/packages/b9/19/7ae64b70b2429c48c3a7a4ed36f50f94687d3bfcd0ae2f152367b6410dff/setuptools_scm-8.3.1.tar.gz,
 add4604d3bc410344433122a819ee4154b79dd8316a56298c60417e637c07608,https://github.com/shadow-maint/shadow/releases/download/4.18.0/shadow-4.18.0.tar.xz,
 0e626261848cc920738f92fd50a24c14b21e30306dfed97b8435369f4bae00a5,https://skarnet.org/software/skalibs/skalibs-2.14.4.0.tar.gz,
+878fb5ab705442070e4dd1929bb5e2249511c0bcf2b0eeacf3bcd80875c82eff,https://files.pythonhosted.org/packages/85/ad/430fb60d90e1d112a62ff57bdd1f286ec73a2a0331272febfddd21f330e1/StrEnum-0.4.15.tar.gz,
 a96f8b4f2dfb18f7432e5c523e220ab0075372a9509e0c25fbff21c76af0de7c,https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/vulkan-sdk-1.4.309.0.tar.gz,SPIRV-Headers-vulkan-sdk-1.4.309.0.tar.gz
 5bbea925663d4cd2bab23efad53874f2718248a73dcaf9dd21dff8cb48e602fc,https://github.com/KhronosGroup/SPIRV-Headers/archive/refs/tags/vulkan-sdk-1.4.321.0.tar.gz,SPIRV-Headers-vulkan-sdk-1.4.321.0.tar.gz
 f6c414f9384c8f68775d9461e55e7c492f01759f5a1754f30dad4cbfb049c7d7,https://github.com/KhronosGroup/SPIRV-LLVM-Translator/archive/refs/tags/v20.1.4.tar.gz,spirv-llvm-translator-20.1.4.tar.gz
@@ -110,7 +115,10 @@ be9ad9a276f4305ab7dd2f5225c8be1ff54352f565ff4dede9628c1aaa7dec57,https://www.ker
 479447448281cfb6585ad780f23bd75311af20daf344fb9209c8a87ea77e296a,https://gitlab.freedesktop.org/xorg/proto/xcbproto/-/archive/xcb-proto-1.17.0/xcbproto-xcb-proto-1.17.0.tar.gz,
 7b56592b339d47809cbefb9f46721705c662de1a001bc773d335975cd2eba34f,https://gitlab.freedesktop.org/xorg/lib/libxcb-util/-/archive/xcb-util-0.4.1/libxcb-util-xcb-util-0.4.1.tar.gz,
 c1b792306874c36b535413a33edc71a0ac46e78adcf6ddb1a34090a07393d717,https://gitlab.freedesktop.org/xorg/lib/libxcb-wm/-/archive/xcb-util-wm-0.4.2/libxcb-wm-xcb-util-wm-0.4.2.tar.gz,
+dd18aece9b4e99e6b3d4d9d436cf0645ea31d11e142da193e8b01c23a8b097b2,https://gitlab.freedesktop.org/xorg/app/xkbcomp/-/archive/xkbcomp-1.4.7/xkbcomp-xkbcomp-1.4.7.tar.gz,
+9ab49abdae20545c8f215472d8537e0228635b7947d63e02592db24a5025ed6a,https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config/-/archive/xkeyboard-config-2.45/xkeyboard-config-xkeyboard-config-2.45.tar.gz,
 6389dae32d7d772245fed7c76d3f83cb7ffa88eb447dbb4db8400c2220e42c2a,https://gitlab.freedesktop.org/xorg/util/xcb-util-m4/-/archive/c617eee22ae5c285e79e81ec39ce96862fd3262f/xcb-util-m4-c617eee22ae5c285e79e81ec39ce96862fd3262f.tar.gz,
+21f1f8b07623154bb8329098695d21b36888b15a882418bb58450d30e5e1b423,https://github.com/X11Libre/xf86-input-libinput/archive/refs/tags/xlibre-xf86-input-libinput-1.5.0.1.tar.gz,
 15f858fa325fc6366577e095f968470d2575e8d4a5feeeaf9e9dbaf891703ba9,https://github.com/X11Libre/xf86-video-vesa/archive/refs/tags/xlibre-xf86-video-vesa-2.6.0.1.tar.gz,
 13b91f74beef8ad11137f7d9d71055573d91e961bc55bb0245956f69b84cd704,https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/xfsprogs-6.15.0.tar.xz,
 0d599978d2bc911d199d5f18755297ec2d216a41f91c746b74a1caaf57b5ebd3,https://github.com/X11Libre/xserver/archive/refs/tags/xlibre-xserver-25.0.0.5.tar.gz,
