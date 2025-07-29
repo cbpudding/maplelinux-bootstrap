@@ -182,9 +182,11 @@ cd ..
 # CMake Build
 tar xf ../sources/cmake-*.tar*
 cd cmake-*/
+# TODO: CMake automatically installs scripts for emacs and vim, which we don't
+#       need by default on Maple Linux. ~ahill
 ./bootstrap \
-	--bindir=/bin \
-	--datadir=/usr/share/cmake-4.0 \
+	--datadir=usr/share/cmake-4.0 \
+	--docdir=usr/share/doc/cmake-4.0 \
 	--parallel=$THREADS \
 	--prefix=/ \
 	--system-bzip2 \
@@ -192,7 +194,8 @@ cd cmake-*/
 	--system-expat \
 	--system-libarchive \
 	--system-liblzma \
-	--system-zlib
+	--system-zlib \
+	--xdgdatadir=usr/share
 make -j $THREADS
 make -j $THREADS install
 cd ..
@@ -506,7 +509,10 @@ sed -i "/#define USE_ZSTD.*/d" src/config.h
 #       the shared library. ~ahill
 sed -i "s/-lzstd//" Makefile
 make -j $THREADS libelf.so
-make -j $THREADS install-headers
+# NOTE: INCDIR is manually set here because it defaults to $(PREFIX)/include,
+#       which becomes /include. Setting this to /usr/include fixes installation.
+#       ~ahill
+make -j $THREADS install-headers INCDIR=/usr/include
 make -j $THREADS install-shared
 cd ..
 
@@ -525,10 +531,10 @@ cd ..
 # kmod Build
 tar xf ../sources/kmod-*.tar*
 cd kmod-*/
-# FIXME: kmod's meson script attempts to invoke sh via the add_install_script
-#        and confuses muon, so it starts searching for sh in the current
-#        directory. As a workaround, we will tweak the invocation to point
-#        directly to /bin/sh. ~ahill
+# NOTE: kmod's meson script attempts to invoke sh via the add_install_script and
+#       confuses muon, so it starts searching for sh in the current directory.
+#       As a workaround, we will tweak the invocation to point directly to
+#       /bin/sh. ~ahill
 sed -i "s/add_install_script('sh'/add_install_script('\/bin\/sh'/" meson.build
 # NOTE: Might enable zstd later, but I want to make sure that the lack of
 #       Facebook's software doesn't negatively impact the open source world.
@@ -740,15 +746,22 @@ cd ..
 tar xf ../sources/gmp-*.tar*
 cd gmp-*/
 ./configure \
+	--bindir=/bin \
 	--disable-static \
 	--enable-cxx \
-	--exec-prefix="" \
+	--exec-prefix=/ \
+	--libdir=/lib \
 	--libexecdir=/lib \
-	--localstatedir=/var \
 	--prefix=/usr \
-	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+	--sbindir=/bin \
+	--sysconfdir=/etc \
+	--localstatedir=/var
+make -O -j $THREADS
+make -O -j $THREADS install
+# FIXME: For some reason, gmp.h keeps showing up under /include. This is a
+#        temporary workaround while I figure out what's going on. ~ahill
+cp /include/* /usr/include/
+rm -rf /include
 cd ..
 
 # nftables Build
@@ -837,6 +850,7 @@ cd ..
 # NOTE: Python will not build _ctypes if libffi is not present. ~ahill
 tar xf ../sources/Python-*.tar*
 cd Python-*/
+# FIXME: Python copies its headers to /include rather than /usr/include. ~ahill
 # TODO: Review Python's configuration to make sure the paths are configured
 #       correctly. Setting exec-prefix to / instead of an empty string fixed
 #       the need for PYTHONHOME. ~ahill
@@ -1033,6 +1047,7 @@ cd ..
 # libudev-zero Build
 tar xf ../sources/libudev-zero-*.tar*
 cd libudev-zero-*/
+# FIXME: libudev-zero copies headers to /include instead of /usr/include. ~ahill
 make -j $THREADS
 make -j $THREADS install PREFIX=/
 cd ..

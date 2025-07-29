@@ -23,7 +23,6 @@ mkdir -p $MAPLE/lib
 ln -sf . $MAPLE/lib/$HOST
 mkdir -p $MAPLE/maple/patches
 mkdir -p $MAPLE/maple/sources
-mkdir -p $MAPLE/mnt
 mkdir -p $MAPLE/proc
 mkdir -p $MAPLE/run
 ln -sf bin $MAPLE/sbin
