@@ -1675,6 +1675,256 @@ make -j $THREADS
 make -j $THREADS install
 cd ..
 
+# PCRE2 Build
+tar xf ../sources/pcre2-*.tar*
+cd pcre2-*/
+./configure \
+	--bindir=/bin \
+	--disable-static \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# gettext Build
+# NOTE: I didn't want to include this initially, since this is just supposed to
+#       be the bootstrap, but since I've already started working on X11, why
+#       not? This should probably be placed earlier in the bootstrap so more
+#       software can take advantage of NLS/i18n. ~ahill
+tar xf ../sources/gettext-*.tar*
+cd gettext-*/
+./configure \
+	--bindir=/bin \
+	--disable-d \
+	--disable-java \
+	--disable-modula2 \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# Glib Build
+tar xf ../sources/glib-*.tar*
+cd glib-*/
+# Another dependency that links directly to a git commit rather than a proper
+# version number? Why isn't this just a part of Glib? ~ahill
+cd subprojects
+rm -rf gvdb/
+tar xf ../../../sources/gvdb-*.tar*
+mv gvdb-*/ gvdb
+# NOTE: If we don't delete the .wrap file, it attempts to clone from git, which
+#       fails, and causes the entire build to fail. ~ahill
+rm -f gvdb.wrap
+cd ..
+muon setup \
+	-Ddefault_library=shared \
+	-Dprefix=/usr \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# libpng Build
+tar xf ../sources/libpng-*.tar*
+cd libpng-*/
+./configure \
+	--bindir=/bin \
+	--disable-static \
+	--enable-intel-sse \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# gperf Build
+tar xf ../sources/gperf-*.tar*
+cd gperf-*/
+./configure \
+	--bindir=/bin \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# fontconfig Build
+tar xf ../sources/fontconfig-*.tar*
+cd fontconfig-*/
+./configure \
+	--bindir=/bin \
+	--disable-docs \
+	--disable-static \
+	--enable-year2038 \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# Cairo Build
+tar xf ../sources/cairo-*.tar*
+cd cairo-*/
+# NOTE: Despite libpng and fontconfig being listed as optional dependencies, the
+#       build fails without them. ~ahill
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# Fribidi Build
+tar xf ../sources/fribidi-*.tar*
+cd fribidi-*/
+./configure \
+	--bindir=/bin \
+	--disable-static \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# HarfBuzz Build
+tar xf ../sources/harfbuzz-*.tar*
+cd harfbuzz-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# Pango Build
+tar xf ../sources/pango-*.tar*
+cd pango-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# libxml2 Build
+tar xf ../sources/libxml2-*.tar*
+cd libxml2-*/
+./autogen.sh \
+	--bindir=/bin \
+	--disable-static \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc \
+	--without-python
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# Shared MIME Info Build
+tar xf ../sources/shared-mime-info-*.tar*
+cd shared-mime-info-*/
+muon setup -Dprefix=/usr build
+muon samu -C build
+muon -C build install
+cd ..
+
+# GDK Pixbuf Build
+tar xf ../sources/gdk-pixbuf-*.tar*
+cd gdk-pixbuf-*/
+# NOTE: GNOME encourages the use of Glycin on Linux to improve security, however
+#       it relies on the Rust programming language, which we do not have a
+#       compiler for. ~ahill
+# See also: https://blogs.gnome.org/sophieh/2025/06/13/making-gnomes-gdkpixbuf-image-loading-safer/
+# FIXME: The thumbnailer is currently disabled due to a failure to build. I need
+#        to investigate what kind of witchcraft is happening inside of
+#        build/thumbnailer/gdk-pixbuf-print-mime-types. ~ahill
+muon setup \
+	-Dglycin=disabled \
+	-Dgtk_doc=false \
+	-Dman=false \
+	-Dprefix=/usr \
+	-Dthumbnailer=disabled \
+	build
+muon samu -C build
+muon -C build install
+cd ..
+
+# Tiff Build
+tar xf ../sources/tiff-*.tar*
+cd tiff-*/
+./configure \
+	--bindir=/bin \
+	--disable-docs \
+	--disable-static \
+	--enable-cxx \
+	--exec-prefix=/ \
+	--libdir=/lib \
+	--libexecdir=/lib \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--runstatedir=/run \
+	--sbindir=/bin \
+	--sysconfdir=/etc
+make -O -j $THREADS
+make -O -j $THREADS install
+cd ..
+
+# libjpeg-turbo Build
+tar xf ../sources/libjpeg-turbo-*.tar*
+cd libjpeg-turbo-*/
+cmake -B build . \
+	-DCMAKE_INSTALL_BINDIR=/bin \
+	-DCMAKE_INSTALL_LIBDIR=/lib \
+	-DCMAKE_INSTALL_PREFIX=/usr
+make -C build -j $THREADS
+make -C build -j $THREADS install
+cd ..
+
+# GTK Build
+# FIXME: librsvg is required, but we don't have a Rust compiler to build it
+#        with! ~ahill
+# FIXME: libepoxy has a known bug with this version of muon. See the Mesa build
+#        for more information. ~ahill
+
 # Basic Configuration
 echo "root:x:0:0::/:/bin/zsh" > /etc/passwd
 echo "root:x:0:root" > /etc/group
