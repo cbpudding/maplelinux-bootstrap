@@ -389,10 +389,11 @@ cd rustc-*/
 	--enable-profiler \
 	--enable-sanitizers \
 	--enable-use-libcxx \
-	--host=$HOST.json \
 	--llvm-root=$MAPLE/maple/tools
 # NOTE: The target for Alpine is missing musl-root, so we define it here. ~ahill
 sed -i "/\[target.$BUILD\]/a musl-root='/usr'" bootstrap.toml
+# TODO: Also required for the "rust" section as well. Further research needed. ~ahill
+sed -i "/\[rust\]/a musl-root='/usr'" bootstrap.toml
 # NOTE: Next, we tell Rust to use our custom LLVM toolchain. ~ahill
 sed -i "/\[target.'$HOST.json'\]/a ar = '$MAPLE/maple/tools/bin/llvm-ar'" bootstrap.toml
 sed -i "/\[target.'$HOST.json'\]/a cc = '$CC'" bootstrap.toml
@@ -450,15 +451,22 @@ echo "\"supported-split-debuginfo\": [\"packed\", \"unpacked\", \"off\"]" >> $HO
 # END OF TARGET OPTIONS
 echo "}," >> $HOST.json
 # FIXME: How do we automatically detect the pointer width? ~ahill
-echo "\"pointer-width\": 64" >> $HOST.json
+echo "\"target-pointer-width\": \"64\"" >> $HOST.json
 echo "}" >> $HOST.json
-# NOTE: Make sure we revert to Alpine's compiler because we're bootstrapping a
-#       compiler again. ~ahill
+# NOTE: Rust has an interesting convention when it comes to the CC and CXX
+#       variables. It treats CC and CXX as the native compiler, leaving CC_$HOST
+#       and CXX_$HOST as the cross-compilers. Interesting strategy. ~ahill
+export $(echo CC_$HOST | sed "s/-/_/g")=$CC
+export $(echo CFLAGS_$HOST | sed "s/-/_/g")="$CFLAGS --sysroot=$MAPLE"
+export $(echo CXX_$HOST | sed "s/-/_/g")=$CXX
+export $(echo CXXFLAGS_$HOST | sed "s/-/_/g")="$CXXFLAGS --sysroot=$MAPLE"
 export CC=clang
 export CXX=clang++
-./x.py build --stage 0
-./x.py build --stage 1
-./x.py build --stage 2
+# NOTE: This was supposedly fixed already, but here I am defining this myself. ~ahill
+# See also: https://github.com/llvm/llvm-project/issues/96536
+sed -i "/static char \*CountersLast/a static char *BitmapLast = NULL;" src/llvm-project/compiler-rt/lib/profile/InstrProfilingPlatformOther.c
+sed -i "/static char \*CountersLast/a static char *BitmapFirst = NULL;" src/llvm-project/compiler-rt/lib/profile/InstrProfilingPlatformOther.c
+./x.py build --stage 0 --target $HOST.json
 # ...
 # DESTDIR on ./x.py install?
 cd ..
