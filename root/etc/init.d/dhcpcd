@@ -1,0 +1,6 @@
+#!/bin/openrc-run
+description="DHCP Client Daemon"
+command="/bin/dhcpcd"
+command_args="-M"
+command_args_background="-b"
+pidfile="/run/dhcpcd/pid"

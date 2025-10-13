@@ -29,8 +29,8 @@ cd libressl-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 # NOTE: No need to hide what we're using. ~ahill
 ln -s openssl /bin/libressl
 cd ..
@@ -38,8 +38,8 @@ cd ..
 # bzip2 Build
 tar xf ../sources/bzip2-*.tar*
 cd bzip2-*/
-make CC=clang
-make install CC=clang PREFIX=/usr
+make -O CC=clang
+make -O install CC=clang PREFIX=/usr
 cd ..
 
 # cpio Build
@@ -52,8 +52,8 @@ cd cpio-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libarchive Build
@@ -66,8 +66,8 @@ cd libarchive-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libexpat Build
@@ -80,8 +80,8 @@ cd expat-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # pkgconf Build
@@ -95,8 +95,8 @@ cd pkgconf-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 ln -s pkgconf /bin/pkg-config
 cd ..
 
@@ -111,8 +111,8 @@ cd perl-*/
 	-Duseshrplib \
 	-Dusethreads \
 	-Ud_eaccess
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Autoconf Build
@@ -124,8 +124,8 @@ cd autoconf-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Automake Build
@@ -137,8 +137,8 @@ cd automake-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libtool Build
@@ -151,8 +151,8 @@ cd libtool-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # cURL Build
@@ -175,8 +175,8 @@ cd curl-*/
 	--with-zlib \
 	--with-zsh-functions-dir \
 	--without-libpsl
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # CMake Build
@@ -196,8 +196,8 @@ cd cmake-*/
 	--system-liblzma \
 	--system-zlib \
 	--xdgdatadir=usr/share
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Samurai Build
@@ -207,8 +207,8 @@ cd samurai-*/
 #       the Makefile. ~ahill
 sed -i "s/^PREFIX=.*/PREFIX=\/usr/" Makefile
 # NOTE: CC is manually defined due to the use of the c99 command. ~ahill
-make -j $THREADS CC=clang
-make -j $THREADS install
+make -O -j $THREADS CC=clang
+make -O -j $THREADS install
 cd ..
 
 # git Build
@@ -220,8 +220,8 @@ cd git-*/
 # NOTE: Passing NO_TCLTK disables the GUI and passing NO_GETTEXT disables locale
 #       generation... unless it attempts to build the GUI, where it will attempt
 #       to generate the locales anyways. ~ahill
-make -j $THREADS all prefix=/usr NO_GETTEXT=YesUnfortunately NO_REGEX=NeedsStartEnd NO_TCLTK=YesPlease
-make -j $THREADS install prefix=/usr NO_GETTEXT=YesUnfortunately NO_REGEX=NeedsStartEnd NO_TCLTK=YesPlease
+make -O -j $THREADS all prefix=/usr NO_GETTEXT=YesUnfortunately NO_REGEX=NeedsStartEnd NO_TCLTK=YesPlease
+make -O -j $THREADS install prefix=/usr NO_GETTEXT=YesUnfortunately NO_REGEX=NeedsStartEnd NO_TCLTK=YesPlease
 cd ..
 
 # muon Build
@@ -252,8 +252,8 @@ cd ncurses-*/
 	--without-ada \
 	--without-manpages \
 	--without-normal
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 # NOTE: These symbolic links are for backwards compatibility. Specifically, for
 #       fixing "make menuconfig" for the Linux kernel, since it looks for the
 #       non-wide version of the library. ~ahill
@@ -276,8 +276,8 @@ CFLAGS="-Wno-implicit-int" ./configure \
 	--exec-prefix="" \
 	--libexecdir=/lib \
 	--prefix=/usr
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 # NOTE: While zsh isn't 100% compatible with bash, it can still be used as a
 #       reliable replacement in this case. ~ahill
 ln -s zsh /bin/bash
@@ -287,8 +287,8 @@ cd ..
 tar xf ../sources/libcap-*.tar*
 cd libcap-*/
 # NOTE: Review additional prefix settings for correctness
-make CC=clang prefix=/usr lib=lib -j $THREADS
-make prefix=/usr lib=lib -j $THREADS install
+make CC=clang prefix=/usr lib=lib -O -j $THREADS
+make prefix=/usr lib=lib -O -j $THREADS install
 cd ..
 
 # Linux PAM Build
@@ -306,19 +306,6 @@ LDFLAGS="-Wl,--undefined-version" muon setup build
 #       the Internet to download meson's tests in our current state. ~ahill
 samu -C build
 muon -C build install
-# FIXME: This is enough to get PAM authentication going, but this really should
-#        be reviewed before it is put anywhere important. ~ahill
-mkdir -p /etc/pam.d
-echo "#%PAM-1.0" > /etc/pam.d/system-auth
-echo "auth     required pam_unix.so nullok" >> /etc/pam.d/system-auth
-echo "account  required pam_unix.so" >> /etc/pam.d/system-auth
-echo "password required pam_unix.so nullok shadow" >> /etc/pam.d/system-auth
-echo "session  required pam_unix.so" >> /etc/pam.d/system-auth
-echo "#%PAM-1.0" > /etc/pam.d/sshd
-echo "auth     include system-auth" >> /etc/pam.d/sshd
-echo "account  include system-auth" >> /etc/pam.d/sshd
-echo "password include system-auth" >> /etc/pam.d/sshd
-echo "session  include system-auth" >> /etc/pam.d/sshd
 cd ..
 
 # OpenRC Build
@@ -347,8 +334,8 @@ cd nasm-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Limine Build
@@ -361,8 +348,8 @@ cd limine-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # dosfstools Build
@@ -374,8 +361,8 @@ cd dosfstools-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # bison Build
@@ -388,8 +375,8 @@ cd bison-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # flex Build
@@ -403,8 +390,8 @@ cd flex-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # util-linux Build
@@ -427,8 +414,8 @@ cd util-linux-*
 	--sysconfdir=/etc \
 	--without-python \
 	--without-systemd
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libinih Build
@@ -452,8 +439,8 @@ cd userspace-rcu-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # xfsprogs Build
@@ -476,8 +463,8 @@ CFLAGS=-DOVERRIDE_SYSTEM_STATX ./configure \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # bc Build
@@ -493,8 +480,8 @@ cd bc-*/
 # MAKEINFO=true replaces the makeinfo executable (which we don't have)
 # with `/usr/bin/true`. This is fine for the bootstrap, but should
 # not be done when properly packaged. ~nmcdaniel
-make MAKEINFO=true -j $THREADS
-make MAKEINFO=true -j $THREADS install
+make MAKEINFO=true -O -j $THREADS
+make MAKEINFO=true -O -j $THREADS install
 cd ..
 
 # libelf Build
@@ -512,8 +499,8 @@ make -j $THREADS libelf.so
 # NOTE: INCDIR is manually set here because it defaults to $(PREFIX)/include,
 #       which becomes /include. Setting this to /usr/include fixes installation.
 #       ~ahill
-make -j $THREADS install-headers INCDIR=/usr/include
-make -j $THREADS install-shared
+make -O -j $THREADS install-headers INCDIR=/usr/include
+make -O -j $THREADS install-shared
 cd ..
 
 # Linux Build
@@ -571,12 +558,12 @@ cd procps-ng-*/
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--without-ncurses
-make -j $THREADS
+make -O -j $THREADS
 # FIXME: For some reason, a -e sneaks its way into local/capnames.h, which
 #        causes a syntax error to occur. This is an incredibly jank patch and I
 #        don't know what causes this yet. ~ahill
 sed -i "s/^-e//" local/capnames.h
-make -j $THREADS install
+make -O -j $THREADS install
 cd ..
 
 # kbd Build
@@ -593,8 +580,8 @@ cd kbd-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # iproute2 Build
@@ -605,7 +592,7 @@ cd iproute2-*/
 #       musl, which means we need to manually define HAVE_HANDLE_AT and
 #       HAVE_SETNS to make it work properly. ~ahill
 CFLAGS="$(CFLAGS) -DHAVE_HANDLE_AT -DHAVE_SETNS" make -j $THREADS CC=clang
-make -j $THREADS install
+make -O -j $THREADS install
 cd ..
 
 # libmd Build
@@ -618,8 +605,8 @@ cd libmd-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libbsd Build
@@ -633,8 +620,8 @@ cd libbsd-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Shadow Build
@@ -648,8 +635,8 @@ cd shadow-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # nano Build
@@ -664,8 +651,8 @@ cd nano-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # dhcpcd Build
@@ -678,40 +665,16 @@ cd dhcpcd-*/
 	--prefix=/usr \
 	--sbindir=/sbin \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
-# NOTE: dhcpcd doesn't come with OpenRC support, so we need to add the entry
-#       under /etc/init.d. First time actually writing an OpenRC service, so
-#       expect strangeness to occur. ~ahill
-echo "#!/sbin/openrc-run" > /etc/init.d/dhcpcd
-echo "description=\"DHCP Client Daemon\"" >> /etc/init.d/dhcpcd
-echo "command=\"/sbin/dhcpcd\"" >> /etc/init.d/dhcpcd
-echo "command_args=\"-M\"" >> /etc/init.d/dhcpcd
-echo "command_args_background=\"-b\"" >> /etc/init.d/dhcpcd
-# NOTE: dhcpcd forks itself to the background, meaning a custom PID file will
-#       not function as intended. Instead, use dhcpcd's own /run/dhcpcd/pid to
-#       tell OpenRC where to find the service. ~ahill
-echo "pidfile=\"/run/dhcpcd/pid\"" >> /etc/init.d/dhcpcd
-chmod +x /etc/init.d/dhcpcd
-rc-update add dhcpcd default
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Chrony Build
 tar xf ../sources/chrony-*.tar*
 cd chrony-*/
 ./configure --exec-prefix=/ --prefix=/usr
-make -j $THREADS
-make -j $THREADS install
-echo "cmdport 0" > /etc/chrony.conf
-echo "pool pool.ntp.org iburst maxsources 3" >> /etc/chrony.conf
-echo "#!/sbin/openrc-run" > /etc/init.d/chronyd
-echo "description=\"Network Time Protocol Daemon\"" >> /etc/init.d/chronyd
-echo "command=\"/sbin/chronyd\"" >> /etc/init.d/chronyd
-# I guess we should just point OpenRC to the existing PID file unless the daemon
-# doesn't make its own? ~ahill
-echo "pidfile=\"/run/chrony/chronyd.pid\"" >> /etc/init.d/chronyd
-chmod +x /etc/init.d/chronyd
-rc-update add chronyd default
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libmnl Build
@@ -724,8 +687,8 @@ cd libmnl-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libnftnl Build
@@ -738,8 +701,8 @@ cd libnftnl-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libgmp Build
@@ -777,8 +740,8 @@ cd nftables-*/
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--without-cli
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # patch Build
@@ -790,8 +753,8 @@ cd patch-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # X.Org Utility Macros Build
@@ -805,7 +768,7 @@ cd macros-util-macros-*/
 	--sysconfdir=/etc
 # NOTE: make claims that there's nothing to do for the build... so we just
 #       don't. ~ahill
-make -j $THREADS install
+make -O -j $THREADS install
 cd ..
 
 # libxtrans Build
@@ -819,7 +782,7 @@ cd libxtrans-xtrans-*/
 	--prefix=/usr \
 	--sysconfdir=/etc
 # NOTE: Once again, make does nothing. ~ahill
-make -j $THREADS install
+make -O -j $THREADS install
 cd ..
 
 # xorgproto Build
@@ -839,8 +802,8 @@ cd libffi-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Python Build
@@ -861,8 +824,8 @@ cd Python-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # xcbproto Build
@@ -874,8 +837,8 @@ cd xcbproto-xcb-proto-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libXau Build
@@ -897,8 +860,8 @@ cd libxcb-libxcb-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libX11 Build
@@ -918,8 +881,8 @@ ac_cv_path_RAWCPP="clang -E -" ./autogen.sh \
 	--sysconfdir=/etc \
 	--without-xsltproc \
 	--without-xmlto
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Pixman Build
@@ -965,8 +928,8 @@ cd util-font-util-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libfontenc Build
@@ -980,8 +943,8 @@ cd libfontenc-libfontenc-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libXfont2 Build
@@ -995,8 +958,8 @@ cd libxfont-libXfont2-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libxcvt Build
@@ -1019,8 +982,8 @@ cd skalibs-*/
 	--enable-pkgconfig \
 	--includedir=/usr/include \
 	--prefix=/
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # mdevd Build
@@ -1033,23 +996,16 @@ cd mdevd-*/
 	--includedir=/usr/include \
 	--libexecdir=/lib \
 	--prefix=/
-make -j $THREADS
-make -j $THREADS install
-echo "#!/sbin/openrc-run" > /etc/init.d/mdevd
-echo "description=\"Mini Device Mapper Daemon\"" >> /etc/init.d/mdevd
-echo "command=\"/bin/mdevd\"" >> /etc/init.d/mdevd
-echo "command_args=\"-O4\"" >> /etc/init.d/mdevd
-echo "command_background=\"yes\"" >> /etc/init.d/mdevd
-echo "pidfile=\"/run/mdevd.pid\"" >> /etc/init.d/mdevd
-chmod +x /etc/init.d/mdevd
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libudev-zero Build
 tar xf ../sources/libudev-zero-*.tar*
 cd libudev-zero-*/
 # FIXME: libudev-zero copies headers to /include instead of /usr/include. ~ahill
-make -j $THREADS
-make -j $THREADS install PREFIX=/
+make -O -j $THREADS
+make -O -j $THREADS install PREFIX=/
 cd ..
 
 # libXdmcp Build
@@ -1063,8 +1019,8 @@ cd libxdmcp-libXdmcp-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Flit Core Build
@@ -1340,8 +1296,8 @@ cd libxext-libXext-*/
 	--without-fop \
 	--without-xmlto \
 	--without-xsltproc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libXfixes Build
@@ -1354,8 +1310,8 @@ cd libxfixes-libXfixes-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libxshmfence Build
@@ -1369,8 +1325,8 @@ cd libxshmfence-libxshmfence-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libXxf86vm Build
@@ -1383,8 +1339,8 @@ cd libxxf86vm-libXxf86vm-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libXrender Build
@@ -1397,8 +1353,8 @@ cd libxrender-libXrender-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libXrandr Build
@@ -1411,8 +1367,8 @@ cd libxrandr-libXrandr-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Mesa Build
@@ -1491,8 +1447,8 @@ mv xcb-util-m4-*/ m4
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # XCB Util WM Build
@@ -1510,8 +1466,8 @@ mv xcb-util-m4-*/ m4
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Xlibre Build
@@ -1543,8 +1499,8 @@ cd xf86-video-vesa-xlibre-xf86-video-vesa-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Dropbear Build
@@ -1557,17 +1513,10 @@ cd dropbear-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 # NOTE: Creating an ssh alias here for convenience's sake. ~ahill
 ln -s dbclient /bin/ssh
-# NOTE: Dropbear doesn't come with OpenRC support, but that's simple enough to
-#       fix. ~ahill
-echo "#!/bin/openrc-run" > /etc/init.d/dropbear
-echo "command=\"/bin/dropbear\"" >> /etc/init.d/dropbear
-echo "command_args=\"-R\"" >> /etc/init.d/dropbear
-echo "pidfile=\"/run/dropbear.pid\"" >> /etc/init.d/dropbear
-chmod +x /etc/init.d/dropbear
 # NOTE: Dropbear won't make keys if the directory doesn't exist. ~ahill
 mkdir -p /etc/dropbear
 cd ..
@@ -1585,8 +1534,8 @@ cd mtdev-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # evdev Build
@@ -1601,8 +1550,8 @@ cd libevdev-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # libinput Build
@@ -1630,8 +1579,8 @@ cd xf86-input-libinput-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # Pytest Runner Build
@@ -1671,8 +1620,8 @@ cd xkbcomp-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install
+make -O -j $THREADS
+make -O -j $THREADS install
 cd ..
 
 # PCRE2 Build
@@ -1925,26 +1874,13 @@ cd ..
 # FIXME: libepoxy has a known bug with this version of muon. See the Mesa build
 #        for more information. ~ahill
 
-# Basic Configuration
-echo "root:x:0:0::/:/bin/zsh" > /etc/passwd
-echo "root:x:0:root" > /etc/group
-echo "root::20295::::::" > /etc/shadow
-echo "/bin/sh" > /etc/shells
-echo "/bin/zsh" >> /etc/shells
-echo "maple" > /etc/hostname
-echo "NAME=Maple Linux" > /etc/os-release
-echo "VERSION=2025" >> /etc/os-release
-echo "ID=maple" >> /etc/os-release
-echo "VERSION_ID=2025" >> /etc/os-release
-echo "PRETTY_NAME=\"Maple Linux\"" >> /etc/os-release
-echo "nameserver 1.1.1.1" > /etc/resolv.conf
-echo "nameserver 1.0.0.1" >> /etc/resolv.conf
-
 # Finally, make the image bootable.
 cp /usr/share/limine/BOOTX64.EFI /boot/EFI/BOOT/
 ln -s agetty /etc/init.d/agetty.tty1
 cp /etc/conf.d/agetty /etc/conf.d/agetty.tty1
 rc-update add agetty.tty1 default
+rc-update add chronyd default
+rc-update add dhcpcd default
 # NOTE: Dropbear currently included for troubleshooting purposes. Should be
 #       disabled for desktop systems. ~ahill
 rc-update add dropbear default

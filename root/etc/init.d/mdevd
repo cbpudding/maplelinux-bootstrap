@@ -1,0 +1,6 @@
+#!/bin/openrc-run
+description="Mini Device Mapper Daemon"
+command="/bin/mdevd"
+command_args="-O4"
+command_background="yes"
+pidfile="/run/mdevd.pid"

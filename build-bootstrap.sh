@@ -82,14 +82,13 @@ cmake -B stage1 -G Ninja -S llvm \
 	-DLLVM_HOST_TRIPLE=$BUILD \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON \
-	-DLLVM_TARGETS_TO_BUILD=X86
+	-DLLVM_LINK_LLVM_DYLIB=ON
 cmake --build stage1
 cmake --install stage1
 cd ..
 
 export CC="$MAPLE/maple/tools/bin/clang"
-export CFLAGS="-O3 -march=skylake -pipe --sysroot=$MAPLE"
+export CFLAGS="$CFLAGS --sysroot=$MAPLE"
 export CXX="$MAPLE/maple/tools/bin/clang++"
 export CXXFLAGS="$CFLAGS"
 export LD=$MAPLE/maple/tools/bin/ld.lld
@@ -136,8 +135,8 @@ cd dash-*/
 	--libexecdir=/lib \
 	--prefix="" \
 	--sharedstatedir=/usr/com
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 ln -sf dash $MAPLE/bin/sh
 cd ..
 
@@ -152,8 +151,8 @@ cd m4-*/
 	--libexecdir=/lib \
 	--prefix="" \
 	--sharedstatedir=/usr/com
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 cd ..
 
 # Coreutils Build
@@ -167,8 +166,8 @@ cd coreutils-*/
 	--libexecdir=/lib \
 	--prefix="" \
 	--sharedstatedir=/usr/com
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 cd ..
 
 # Diffutils Build
@@ -181,8 +180,8 @@ cd diffutils-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 cd ..
 
 # Findutils Build
@@ -196,8 +195,8 @@ cd findutils-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 cd ..
 
 # Grep Build
@@ -211,8 +210,8 @@ cd grep-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 cd ..
 
 # Gzip Build
@@ -225,8 +224,8 @@ cd gzip-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREAD
-make -j $THREAD install DESTDIR=$MAPLE
+make -O -j $THREAD
+make -O -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
 # Make Build
@@ -241,8 +240,8 @@ cd make-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREAD
-make -j $THREAD install DESTDIR=$MAPLE
+make -O -j $THREAD
+make -O -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
 # Sed Build
@@ -257,8 +256,8 @@ cd sed-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREAD
-make -j $THREAD install DESTDIR=$MAPLE
+make -O -j $THREAD
+make -O -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
 # Tar Build
@@ -272,8 +271,8 @@ cd tar-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREAD
-make -j $THREAD install DESTDIR=$MAPLE
+make -O -j $THREAD
+make -O -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
 # Xz Build
@@ -290,8 +289,8 @@ cd xz-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREAD
-make -j $THREAD install DESTDIR=$MAPLE
+make -O -j $THREAD
+make -O -j $THREAD install DESTDIR=$MAPLE
 cd ..
 
 # Gawk Build
@@ -305,8 +304,8 @@ cd gawk-*/
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc
-make -j $THREADS
-make -j $THREADS install DESTDIR=$MAPLE
+make -O -j $THREADS
+make -O -j $THREADS install DESTDIR=$MAPLE
 cd ..
 
 # LLVM Build (Stage 2)
@@ -334,17 +333,24 @@ echo "set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)" >> $TOOLCHAIN_FILE
 # NOTE: compiler-rt fails to build on musl because execinfo.h is missing.
 #       Disabling COMPILER_RT_BUILD_GWP_ASAN works. ~ahill
 # See also: https://github.com/llvm/llvm-project/issues/60687
+# TODO: When building LLVM from an older version, clang-tblgen and llvm-tblgen
+#       start complaining about missing libc++ symbols when CMake builds a
+#       native version for the build. CLANG_TABLEGEN and LLVM_TABLEGEN are both
+#       set, but that only seems to temporarily defer the build. ~ahill
+# See also: https://github.com/llvm/llvm-project/issues/53561
 cmake -B stage2 -G Ninja -S llvm \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+    -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
 	-DCLANG_DEFAULT_RTLIB=compiler-rt \
 	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
-	-DCMAKE_BUILD_PARALLEL_LEVEL=$THREADS \
+	-DCLANG_VENDOR=Maple \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+	-DCMAKE_INSTALL_BINDIR=$MAPLE/bin \
 	-DCMAKE_INSTALL_LIBDIR=$MAPLE/lib \
 	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
 	-DCMAKE_INSTALL_RPATH=/lib \
+	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_TOOLCHAIN_FILE=$(pwd)/$TOOLCHAIN_FILE \
-	-DCLANG_VENDOR=Maple \
 	-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
 	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
 	-DLIBCXX_CXX_ABI=libcxxabi \
@@ -364,9 +370,7 @@ cmake -B stage2 -G Ninja -S llvm \
 	-DLLVM_HOST_TRIPLE=$HOST \
 	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
 	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON \
-	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+	-DLLVM_LINK_LLVM_DYLIB=ON
 cmake --build stage2
 cmake --install stage2
 ln -sf clang $MAPLE/bin/cc
@@ -377,8 +381,14 @@ ln -sf ld.lld $MAPLE/bin/ld
 mv $MAPLE/maple/tools/include/$HOST/c++/v1/__config_site $MAPLE/maple/tools/include/c++/v1/
 cd ..
 
+# Rust Build
+tar xf ../sources/rustc-*.tar*
+cd rustc-*/
+# ...
+cd ..
+
 cd ..
 
 # Copy the necessary configuration files to the bootstrap
-cp limine.conf $MAPLE/boot/
-cp linux.$(uname -m).config $MAPLE/maple/
+cp -rv root/* maple/
+cp config/linux.$(uname -m).config $MAPLE/maple/

@@ -1,0 +1,4 @@
+#!/bin/openrc-run
+command="/bin/dropbear"
+command_args="-R"
+pidfile="/run/dropbear.pid"

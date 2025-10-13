@@ -1,0 +1,4 @@
+#!/bin/openrc-run
+description="Network Time Protocol Daemon"
+command="/bin/chronyd"
+pidfile="/run/chrony/chronyd.pid"
