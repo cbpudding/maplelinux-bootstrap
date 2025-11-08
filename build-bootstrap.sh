@@ -1,115 +1,126 @@
-#!/bin/sh -e
-export MAPLE=$(pwd)/maple
-
+#!/bin/zsh -e
 export BUILD=$(clang -dumpmachine)
+export MAPLE=$(pwd)/maple
+export MICROARCH="skylake"
+export TARGET=x86_64-maple-linux-musl
+
+export AR=llvm-ar
 export CC=clang
-export CFLAGS="-O3 -march=skylake -pipe"
+export CFLAGS="-O3 -march=$MICROARCH -pipe"
 export CXX=clang++
 export CXXFLAGS="$CFLAGS"
-export HOST=x86_64-maple-linux-musl
 export LD=ld.lld
+export RANLIB=llvm-ranlib
 export THREADS=$(nproc)
 
-# A simplified FHS variant with symlinks for backwards compatibility ~ahill
-# TODO: Where does /usr/com fit into all of this (shared state directory)? ~ahill
-mkdir -p $MAPLE/bin
-mkdir -p $MAPLE/boot
-mkdir -p $MAPLE/boot/EFI/BOOT/
-mkdir -p $MAPLE/dev
-mkdir -p $MAPLE/etc
-mkdir -p $MAPLE/home
-mkdir -p $MAPLE/lib
+# A simplified version of the filesystem loosely based on FHS with symlinks for
+# backwards compatibility. ~ahill
+mkdir -p $MAPLE/{bin,boot/EFI/BOOT,dev,etc,home,lib,proc,run,sys,tmp,usr/{include,share},var/{cache,lib,log,spool,tmp}}
 # TODO: Does it make sense to have this long-term? Anything that depends on
 #       libc++ fails to link without it, but this should be fixed via a
 #       configuration change in LLVM. ~ahill
-ln -sf . $MAPLE/lib/$HOST
-mkdir -p $MAPLE/maple/patches
-mkdir -p $MAPLE/maple/sources
-mkdir -p $MAPLE/proc
-mkdir -p $MAPLE/run
+ln -sf . $MAPLE/lib/$TARGET
+ln -sf . $MAPLE/usr/include/$TARGET
+# NOTE: Symlinks are for compatibility's sake. These shouldn't have to exist for
+#       the base system to function. ~ahill
 ln -sf bin $MAPLE/sbin
-mkdir -p $MAPLE/sys
-mkdir -p $MAPLE/tmp
-mkdir -p $MAPLE/usr
 ln -sf ../bin $MAPLE/usr/bin
-mkdir -p $MAPLE/usr/include
-ln -sf . $MAPLE/usr/include/$HOST
+ln -sf ../bin $MAPLE/usr/sbin
 ln -sf ../lib $MAPLE/usr/lib
 ln -sf ../lib $MAPLE/usr/libexec
-ln -sf ../bin $MAPLE/usr/sbin
-mkdir -p $MAPLE/usr/share
-mkdir -p $MAPLE/var
-mkdir -p $MAPLE/var/cache
-mkdir -p $MAPLE/var/lib
 ln -sf ../run/lock $MAPLE/var/lock
-mkdir -p $MAPLE/var/log
 ln -sf ../run $MAPLE/var/run
-mkdir -p $MAPLE/var/spool
-mkdir -p $MAPLE/var/tmp
 
-mkdir -p build
+# NOTE: These are exclusively used for the bootstrapping process and can be
+#       removed later. ~ahill
+mkdir -p $MAPLE/maple/{patches,sources}
+
+# Create the build directory and enter it so we can begin! ~ahill
+mkdir build
 cd build
-
-# LLVM Build
-tar xf ../sources/llvm-project-*.tar*
-cd llvm-project-*/
-# TODO: Python is a required part of LLVM, but we can't include the latest
-#       version due to conflicts with LibreSSL. Maybe we can piggyback off of
-#       Python 3.9 for a while, but that's not a sustainable solution long-term.
-#       ~ahill
-# See also: https://peps.python.org/pep-0644/
-cmake -B stage1 -G Ninja -S llvm \
-	-DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-	-DCLANG_DEFAULT_RTLIB=compiler-rt \
-	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
-	-DCLANG_VENDOR=Maple \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-	-DCMAKE_INSTALL_PREFIX=$MAPLE/maple/tools \
-	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
-	-DLIBCXX_CXX_ABI=libcxxabi \
-	-DLIBCXX_HAS_MUSL_LIBC=ON \
-	-DLIBCXX_USE_COMPILER_RT=ON \
-	-DLIBCXXABI_USE_COMPILER_RT=ON \
-	-DLIBCXXABI_USE_LLVM_UNWINDER=ON \
-	-DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
-	-DLIBUNWIND_USE_COMPILER_RT=ON \
-	-DLLVM_BUILD_LLVM_DYLIB=ON \
-	-DLLVM_DEFAULT_TARGET_TRIPLE=$HOST \
-	-DLLVM_ENABLE_LIBCXX=ON \
-	-DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
-	-DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
-	-DLLVM_HOST_TRIPLE=$BUILD \
-	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
-	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON
-cmake --build stage1
-cmake --install stage1
-cd ..
-
-export CC="$MAPLE/maple/tools/bin/clang"
-export CFLAGS="$CFLAGS --sysroot=$MAPLE"
-export CXX="$MAPLE/maple/tools/bin/clang++"
-export CXXFLAGS="$CFLAGS"
-export LD=$MAPLE/maple/tools/bin/ld.lld
-export PATH="$MAPLE/maple/tools/bin:$PATH"
-export RUSTFLAGS="-C target-feature=-crt-static"
 
 # Linux Headers
 tar xf ../sources/linux-*.tar*
 cd linux-*/
 LLVM=1 make -j $THREADS mrproper
-# TODO: Why do we need rsync to install the Linux headers? ~ahill
-LLVM=1 make -j $THREADS headers_install INSTALL_HDR_PATH=$MAPLE/usr
+# NOTE: We don't use the built-in headers_install here because it requires rsync
+#       for some reason. ~ahill
+LLVM=1 make -j $THREADS headers
+find usr/include -type f ! -name "*.h" -delete
+cp -r usr/include $MAPLE/usr
 cd ..
 
-# musl Build
-# FIXME: CVE-2025-26519
+# musl Build (Stage 1)
 tar xf ../sources/musl-*.tar*
 cd musl-*/
-./configure --includedir=/usr/include --prefix=""
+./configure \
+    --bindir=/bin \
+    --build=$BUILD \
+    --includedir=/usr/include \
+    --libdir=/lib \
+    --prefix=/ \
+    --target=$TARGET
 make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
+make -O install-headers DESTDIR=$MAPLE
+cd ..
+
+# LLVM Build
+tar xf ../sources/llvm-project-*.tar*
+cd llvm-project-*/
+
+# Common flags used across all of the LLVM builds
+COMMON_LLVM_CMAKE=(
+    "-DCMAKE_ASM_COMPILER_TARGET=$TARGET"
+    "-DCMAKE_BUILD_TYPE=Release"
+    "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
+    "-DCMAKE_C_COMPILER=$CC"
+    "-DCMAKE_C_COMPILER_TARGET=$TARGET"
+    "-DCMAKE_CXX_COMPILER=$CXX"
+    "-DCMAKE_CXX_COMPILER_TARGET=$TARGET"
+    "-DCMAKE_FIND_ROOT_PATH=$MAPLE"
+    "-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY"
+    "-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY"
+    "-DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY"
+    "-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER"
+    "-DCMAKE_INSTALL_DATAROOTDIR=usr/share"
+    "-DCMAKE_INSTALL_INCLUDEDIR=usr/include"
+    "-DCMAKE_INSTALL_LIBEXECDIR=lib"
+    "-DCMAKE_INSTALL_PREFIX=$MAPLE"
+    "-DCMAKE_INSTALL_RPATH=/lib"
+    "-DCMAKE_INSTALL_RUNSTATEDIR=run"
+    "-DCMAKE_INSTALL_SHAREDSTATEDIR=usr/com"
+    "-DCMAKE_SYSROOT=$MAPLE"
+    "-DCMAKE_SYSTEM_NAME=Linux"
+    "-DLLVM_HOST_TRIPLE=$TARGET"
+    "-DLLVM_USE_LINKER=lld"
+    "-DLLVM_TARGETS_TO_BUILD=X86"
+    "-DLLVM_ENABLE_ZSTD=OFF"
+)
+
+# (LLVM) Builtins Build
+# NOTE: For some reason, atomics are not built unless you... disable the thing
+#       that disables it? Why was it implemented this way? ~ahill
+cmake -S compiler-rt/lib/builtins -B build-builtins \
+    $COMMON_LLVM_CMAKE \
+    -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF
+cmake --build build-builtins
+cmake --install build-builtins
+
+# musl Build (Stage 2)
+# FIXME: CVE-2025-26519
+cd ../musl-*/
+make -O clean
+CFLAGS="-fuse-ld=lld --sysroot=$MAPLE $CFLAGS" \
+LIBCC="$MAPLE/lib/linux/libclang_rt.builtins-x86_64.a" \
+./configure \
+    --bindir=/bin \
+    --build=$BUILD \
+    --includedir=/usr/include \
+    --libdir=/lib \
+    --prefix=/ \
+    --target=$TARGET
+make -O -j $THREADS
+make -O install DESTDIR=$MAPLE
 # NOTE: musl provides static libraries for POSIX libraries such as libm, but
 #       fails to provide shared versions which will breaks builds later on.
 #       Granted, they are useless since libc.so contains all the functionality
@@ -123,272 +134,59 @@ done
 #       entry point is something I have never thought of before, but I'm
 #       interested in exploring the possibilities. ~ahill
 ln -sf /lib/ld-musl-x86_64.so.1 $MAPLE/bin/ldd
-cd ..
+cd ../llvm-project-*/
 
-# dash Build
-tar xf ../sources/dash-*.tar*
-cd dash-*/
-./configure \
-	--datarootdir=/usr/share \
-	--exec-prefix="" \
-	--includedir=/usr/include \
-	--libexecdir=/lib \
-	--prefix="" \
-	--sharedstatedir=/usr/com
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-ln -sf dash $MAPLE/bin/sh
-cd ..
-
-# m4 Build
-tar xf ../sources/m4-*.tar*
-cd m4-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-nls \
-	--enable-c++ \
-	--includedir=/usr/include \
-	--libexecdir=/lib \
-	--prefix="" \
-	--sharedstatedir=/usr/com
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# Coreutils Build
-tar xf ../sources/coreutils-*.tar*
-cd coreutils-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-nls \
-	--enable-install-program=hostname \
-	--includedir=/usr/include \
-	--libexecdir=/lib \
-	--prefix="" \
-	--sharedstatedir=/usr/com
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# Diffutils Build
-tar xf ../sources/diffutils-*.tar*
-cd diffutils-*/
-./configure \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# Findutils Build
-tar xf ../sources/findutils-*.tar*
-cd findutils-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# Grep Build
-tar xf ../sources/grep-*.tar*
-cd grep-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# Gzip Build
-tar xf ../sources/gzip-*.tar*
-cd gzip-*/
-./configure \
-	--datarootdir=/usr/share \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREAD
-make -O -j $THREAD install DESTDIR=$MAPLE
-cd ..
-
-# Make Build
-tar xf ../sources/make-*.tar*
-cd make-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-nls \
-	--enable-year2038 \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREAD
-make -O -j $THREAD install DESTDIR=$MAPLE
-cd ..
-
-# Sed Build
-tar xf ../sources/sed-*.tar*
-cd sed-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-i18n \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREAD
-make -O -j $THREAD install DESTDIR=$MAPLE
-cd ..
-
-# Tar Build
-tar xf ../sources/tar-*.tar*
-cd tar-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREAD
-make -O -j $THREAD install DESTDIR=$MAPLE
-cd ..
-
-# Xz Build
-tar xf ../sources/xz-*.tar*
-cd xz-*/
-./configure \
-	--datarootdir=/usr/share \
-	--disable-doc \
-	--disable-nls \
-	--disable-static \
-	--enable-year2038 \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREAD
-make -O -j $THREAD install DESTDIR=$MAPLE
-cd ..
-
-# Gawk Build
-tar xf ../sources/gawk-*.tar*
-cd gawk-*/
-./configure \
-	--disable-mpfr \
-	--disable-nls \
-	--exec-prefix="" \
-	--libexecdir=/lib \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
-make -O -j $THREADS
-make -O -j $THREADS install DESTDIR=$MAPLE
-cd ..
-
-# LLVM Build (Stage 2)
-# NOTE: We are removing the sysroot option from CFLAGS and CXXFLAGS to prevent a
-#       potential conflict with CMake. Adapted from Nick's contribution. ~ahill
-export CFLAGS=$(echo $CFLAGS | sed "s/--sysroot=\S*//")
-export CXXFLAGS=$(echo $CXXFLAGS | sed "s/--sysroot=\S*//")
-cd llvm-project-*/
-TOOLCHAIN_FILE=$HOST-maple-clang.cmake
-# NOTE: First time doing this. Did I do it right? ~ahill
-echo "set(CMAKE_SYSTEM_NAME Linux)" > $TOOLCHAIN_FILE
-echo "set(CMAKE_SYSROOT $MAPLE)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_C_COMPILER_TARGET $HOST)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_CXX_COMPILER_TARGET $HOST)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_C_FLAGS_INIT \"$CFLAGS\")" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_CXX_FLAGS_INIT \"$CXXFLAGS\")" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_LINKER_TYPE LLD)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_C_COMPILER \"$CC\")" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_CXX_COMPILER \"$CXX\")" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> $TOOLCHAIN_FILE
-echo "set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)" >> $TOOLCHAIN_FILE
+# (LLVM) Runtimes Build
 # TODO: Is it possible to prevent CMake from building static libraries? ~ahill
-# NOTE: compiler-rt fails to build on musl because execinfo.h is missing.
-#       Disabling COMPILER_RT_BUILD_GWP_ASAN works. ~ahill
-# See also: https://github.com/llvm/llvm-project/issues/60687
-# TODO: When building LLVM from an older version, clang-tblgen and llvm-tblgen
-#       start complaining about missing libc++ symbols when CMake builds a
-#       native version for the build. CLANG_TABLEGEN and LLVM_TABLEGEN are both
-#       set, but that only seems to temporarily defer the build. ~ahill
-# See also: https://github.com/llvm/llvm-project/issues/53561
-cmake -B stage2 -G Ninja -S llvm \
+# NOTE: We have to trick CMake because we don't have a copy of libunwind yet, so
+#       CMAKE_C_COMPILER_WORKS and CMAKE_CXX_COMPILER_WORKS are manually set to
+#       prevent it from trying to link with libunwind initially. ~ahill
+cmake -S runtimes -B build-runtimes \
+    $COMMON_LLVM_CMAKE \
+    -DCMAKE_C_COMPILER_WORKS=ON \
+    -DCMAKE_C_FLAGS="-fuse-ld=lld -Qunused-arguments -rtlib=compiler-rt -Wl,--dynamic-linker=/lib/ld-musl-x86_64.so.1" \
+    -DCMAKE_CXX_COMPILER_WORKS=ON \
+    -DCMAKE_CXX_FLAGS="-fuse-ld=lld -Qunused-arguments -rtlib=compiler-rt -Wl,--dynamic-linker=/lib/ld-musl-x86_64.so.1" \
+    -DCOMPILER_RT_EXCLUDE_ATOMIC_BUILTIN=OFF \
+    -DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
+    -DLIBCXX_CXX_ABI=libcxxabi \
+    -DLIBCXX_HAS_MUSL_LIBC=ON \
+    -DLIBCXX_USE_COMPILER_RT=ON \
+    -DLIBCXXABI_HAS_CXA_THREAD_ATEXIT_IMPL=OFF \
+    -DLIBCXXABI_USE_COMPILER_RT=ON \
+    -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+    -DLIBUNWIND_USE_COMPILER_RT=ON \
+    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx"
+cmake --build build-runtimes
+cmake --install build-runtimes
+
+# (LLVM) LLVM Build
+# NOTE: For some reason, atomics cannot be found in compiler-rt, so we have to
+#       help it by specifying HAVE_CXX_ATOMICS_WITHOUT_LIB and
+#       HAVE_CXX_ATOMICS64_WITHOUT_LIB. ~ahill
+cmake -S llvm -B build-llvm \
+    $COMMON_LLVM_CMAKE \
     -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-	-DCLANG_DEFAULT_RTLIB=compiler-rt \
-	-DCLANG_DEFAULT_UNWINDLIB=libunwind \
-	-DCLANG_VENDOR=Maple \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-	-DCMAKE_INSTALL_BINDIR=$MAPLE/bin \
-	-DCMAKE_INSTALL_LIBDIR=$MAPLE/lib \
-	-DCMAKE_INSTALL_PREFIX=$MAPLE/usr \
-	-DCMAKE_INSTALL_RPATH=/lib \
-	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_TOOLCHAIN_FILE=$(pwd)/$TOOLCHAIN_FILE \
-	-DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
-	-DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
-	-DLIBCXX_CXX_ABI=libcxxabi \
-	-DLIBCXX_HAS_MUSL_LIBC=ON \
-	-DLIBCXX_USE_COMPILER_RT=ON \
-	-DLIBCXXABI_USE_COMPILER_RT=ON \
-	-DLIBCXXABI_USE_LLVM_UNWINDER=ON \
-	-DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
-	-DLIBUNWIND_USE_COMPILER_RT=ON \
-	-DLLVM_BUILD_LLVM_DYLIB=ON \
-	-DLLVM_ENABLE_LIBCXX=ON \
-	-DLLVM_ENABLE_LLD=ON \
-	-DLLVM_ENABLE_PROJECTS="clang;libclc;lld;lldb;llvm" \
-	-DLLVM_ENABLE_RTTI=ON \
-	-DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
-	-DLLVM_ENABLE_ZSTD=OFF \
-	-DLLVM_HOST_TRIPLE=$HOST \
-	-DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
-	-DLLVM_INSTALL_UTILS=ON \
-	-DLLVM_LINK_LLVM_DYLIB=ON
-cmake --build stage2
-cmake --install stage2
-ln -sf clang $MAPLE/bin/cc
-ln -sf clang++ $MAPLE/bin/c++
-ln -sf ld.lld $MAPLE/bin/ld
-# NOTE: Temporary workaround because builds that require __config fail
-#       otherwise. Is there a better solution for this? ~ahill
-mv $MAPLE/maple/tools/include/$HOST/c++/v1/__config_site $MAPLE/maple/tools/include/c++/v1/
-cd ..
-
-# Rust Build
-tar xf ../sources/rustc-*.tar*
-cd rustc-*/
+    -DCLANG_DEFAULT_RTLIB=compiler-rt \
+    -DCLANG_DEFAULT_UNWINDLIB=libunwind \
+    -DCLANG_VENDOR=Maple \
+    -DCMAKE_C_FLAGS="-fuse-ld=lld -Qunused-arguments -rtlib=compiler-rt -unwindlib=libunwind -Wl,--dynamic-linker=/lib/ld-musl-x86_64.so.1" \
+    -DCMAKE_CXX_FLAGS="-fuse-ld=lld -Qunused-arguments -rtlib=compiler-rt -stdlib=libc++ -unwindlib=libunwind -Wl,--dynamic-linker=/lib/ld-musl-x86_64.so.1" \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DCXX_SUPPORTS_CUSTOM_LINKER=ON \
+    -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
+    -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
+    -DLLVM_BUILD_LLVM_DYLIB=ON \
+    -DLLVM_ENABLE_LIBCXX=ON \
+    -DLLVM_ENABLE_PROJECTS="clang;libclc;lld;lldb;llvm" \
+    -DLLVM_ENABLE_RTTI=ON \
+    -DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
+    -DLLVM_INSTALL_UTILS=ON \
+    -DLLVM_LINK_LLVM_DYLIB=ON
+cmake --build build-llvm
 # ...
+
+# Finally done with LLVM ~ahill
 cd ..
 
-cd ..
-
-# Copy the necessary configuration files to the bootstrap
-cp -rv root/* maple/
-cp config/linux.$(uname -m).config $MAPLE/maple/
+# ...
