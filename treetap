@@ -1,0 +1,195 @@
+#!/bin/sh -e
+
+# Copyright (c) 2025 Alexander Hill
+
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+####################
+# Global Variables #
+####################
+
+[ -z "$TREETAP_DIR" ] && TREETAP_DIR="$(pwd)/.treetap"
+[ -z "$TREETAP_PKGDIR" ] && TREETAP_PKGDIR="$TREETAP_DIR/packages"
+[ -z "$TREETAP_SYSROOT" ] && TREETAP_SYSROOT=/
+TREETAP_VERSION="1.0.0"
+
+#####################
+# Utility Functions #
+#####################
+
+# Displays the usage information for treetap
+help_message() {
+    echo "treetap $TREETAP_VERSION"
+    echo
+    echo "Package Commands:"
+    echo "    $0 install <package> [sysroot]"
+    echo "    $0 uninstall <package> [sysroot]"
+    echo
+    echo "Source Commands:"
+    echo "    $0 build <spec>"
+    echo "    $0 clean <spec>"
+    echo "    $0 fetch <spec>"
+    echo "    $0 package <spec>"
+    echo "    $0 purge <spec>"
+    exit 1
+}
+
+# Confirms that the given strings are valid package and sysroot paths
+package_check() {
+    [ -z "$1" ] && (echo "package_check: Missing package file"; exit 1)
+    [ -z "$2" ] && (echo "package_check: Missing sysroot"; exit 1)
+    [ ! -f "$1" ] && (echo "package_check: Package file \"$1\" not found"; exit 1)
+    [ ! -d "$2" ] && (echo "package_check: Sysroot \"$2\" not found"; exit 1)
+    true
+}
+
+# Reads the source specification and ensures it includes the required data
+source_spec() {
+    # Sanity Check
+    [ -z "$1" ] && (echo "source_spec: Missing specification file"; exit 1)
+    [ ! -f "$1" ] && (echo "source_spec: Specification file \"$1\" not found"; exit 1)
+
+    # Zhu Li, do the thing!
+    source $1
+
+    # Required Fields
+    [ -z "$SRC_HASH" ] && (echo "source_spec: SRC_HASH is required but not defined"; exit 1)
+    [ -z "$SRC_NAME" ] && (echo "source_spec: SRC_NAME is required but not defined"; exit 1)
+    [ -z "$SRC_URL" ] && (echo "source_spec: SRC_URL is required but not defined"; exit 1)
+    [ -z "$SRC_VERSION" ] && (echo "source_spec: SRC_VERSION is required but not defined"; exit 1)
+
+    # Optional Fields
+    [ -z "$SRC_FILENAME" ] && SRC_FILENAME=$(basename $SRC_URL)
+
+    # Environmental Variables
+    [ -z "$TREETAP_BINDIR" ] && TREETAP_BINDIR=/bin
+    TREETAP_BUILD=$(clang -dumpmachine)
+    [ -z "$TREETAP_TARGET" ] && TREETAP_TARGET=$TREETAP_BUILD
+    TREETAP_BUILDDIR="$TREETAP_DIR/sources/$SRC_NAME/$SRC_VERSION/$TREETAP_TARGET"
+    [ -z "$TREETAP_INCLUDEDIR" ] && TREETAP_INCLUDEDIR=/usr/include
+    TREETAP_INSTALLDIR="$TREETAP_BUILDDIR/install"
+    [ -z "$TREETAP_LIBDIR" ] && TREETAP_LIBDIR=/lib
+    [ -z "$TREETAP_PREFIX" ] && TREETAP_PREFIX=/
+    [ -z "$TREETAP_PROCS" ] && TREETAP_PROCS=$(nproc)
+
+    true
+}
+
+###############
+# Subcommands #
+###############
+
+# Installs a package to the sysroot
+package_install() {
+    [ ! -z "$2" ] && TREETAP_SYSROOT=$2
+    package_check $1 $TREETAP_SYSROOT
+    echo "Installing $(basename $1)"
+    FULLPATH=$(pwd)/$1
+    pushd $TREETAP_SYSROOT > /dev/null
+    xz -cd $FULLPATH | cpio -idmu --quiet
+    popd > /dev/null
+    exit 0
+}
+
+# Uninstalls a package from the sysroot
+package_uninstall() {
+    [ ! -z "$2" ] && TREETAP_SYSROOT=$2
+    package_check $1 $TREETAP_SYSROOT
+    echo "Uninstalling $(basename $1)"
+    FULLPATH=$(pwd)/$1
+    pushd $TREETAP_SYSROOT > /dev/null
+    xz -cd $FULLPATH | cpio -it --quiet | tail -n +2 | sort -r | while read path; do
+        if [ -d $path ]; then
+            rmdir --ignore-fail-on-non-empty $path
+        else
+            rm -f $path
+        fi
+    done
+    popd > /dev/null
+    exit 0
+}
+
+# Builds the source from the previously fetched tarball
+source_build() {
+    source_spec $1
+    mkdir -p $TREETAP_BUILDDIR
+    pushd $TREETAP_BUILDDIR > /dev/null
+    echo "Building $SRC_NAME $SRC_VERSION"
+    build > build-$(date +%Y%m%d%H%M%S).log 2>&1
+    popd > /dev/null
+    exit 0
+}
+
+# Cleans the source from the previous build
+source_clean() {
+    source_spec $1
+    mkdir -p $TREETAP_BUILDDIR
+    pushd $TREETAP_BUILDDIR > /dev/null
+    echo "Cleaning $SRC_NAME $SRC_VERSION"
+    clean
+    rm -rf $TREETAP_INSTALLDIR
+    popd > /dev/null
+    exit 0
+}
+
+# Fetches and verifies the integrity of the source tarball
+source_fetch() {
+    source_spec $1
+    mkdir -p $TREETAP_BUILDDIR
+    pushd $TREETAP_BUILDDIR/.. > /dev/null
+    echo "Fetching $SRC_FILENAME"
+    curl -L -sS $SRC_URL -o $SRC_FILENAME
+    echo "Verifying $SRC_FILENAME"
+    echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null
+    popd > /dev/null
+    exit 0
+}
+
+# Packages the built artifacts for distribution
+source_package() {
+    source_spec $1
+    mkdir -p $TREETAP_BUILDDIR
+    mkdir -p $TREETAP_INSTALLDIR
+    mkdir -p $TREETAP_PKGDIR
+    pushd $TREETAP_BUILDDIR > /dev/null
+    echo "Moving artifacts for $SRC_NAME $SRC_VERSION"
+    package > package-$(date +%Y%m%d%H%M%S).log
+    echo "Archiving $SRC_NAME $SRC_VERSION"
+    cd $TREETAP_INSTALLDIR
+    find | cpio -o --quiet | xz -cz > "$TREETAP_PKGDIR/$SRC_NAME-$SRC_VERSION.cpio.xz"
+    rm -rf $TREETAP_INSTALLDIR
+    popd > /dev/null
+    exit 0
+}
+
+# Purges the entire build directory for a source
+source_purge() {
+    source_spec $1
+    rm -rf $TREETAP_BUILDDIR
+    exit 0
+}
+
+###############
+# Entry Point #
+###############
+
+case "$1" in
+"build") source_build $2 ;;
+"clean") source_clean $2 ;;
+"fetch") source_fetch $2 ;;
+"install") package_install $2 $3 ;;
+"package") source_package $2 ;;
+"purge") source_purge $2 ;;
+"uninstall") package_uninstall $2 $3 ;;
+*) help_message ;;
+esac
