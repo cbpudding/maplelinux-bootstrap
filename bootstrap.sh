@@ -1,10 +1,22 @@
 #!/bin/zsh -e
 
-BOOTSTRAP=$(pwd)/.bootstrap
 MICROARCH="skylake"
+TARGET=x86_64-maple-linux-musl
+
+# Set the environment up
+ARCH=$(echo $TARGET | cut -d"-" -f1)
+BOOTSTRAP=$(pwd)/.bootstrap
 PROCS=$(nproc)
 SOURCES=$(pwd)/.treetap/sources
-TARGET=x86_64-maple-linux-musl
+export AR=llvm-ar
+export CC=clang
+export CFLAGS="-fuse-ld=lld -O3 -march=$MICROARCH -pipe --sysroot=$BOOTSTRAP/root -Wno-unused-command-line-argument"
+export CXX=clang++
+export CXXFLAGS=$CFLAGS
+export RANLIB=llvm-ranlib
+export LD=ld.lld
+export TREETAP_SYSROOT=$BOOTSTRAP/root
+export TREETAP_TARGET=$TARGET
 
 # Fetch sources required for a bootstrap
 ./treetap fetch sources/busybox.spec
@@ -23,16 +35,6 @@ ln -sf ../run/lock $BOOTSTRAP/root/var/lock
 ln -sf ../run $BOOTSTRAP/root/var/run
 
 # Prepare for the build
-ARCH=$(echo $TARGET | cut -d"-" -f1)
-export AR=llvm-ar
-export CC=clang
-export CFLAGS="-fuse-ld=lld -O3 -march=$MICROARCH -pipe --sysroot=$BOOTSTRAP/root -Wno-unused-command-line-argument"
-export CXX=clang++
-export CXXFLAGS=$CFLAGS
-export RANLIB=llvm-ranlib
-export LD=ld.lld
-export TREETAP_SYSROOT=$BOOTSTRAP/root
-export TREETAP_TARGET=$TARGET
 mkdir -p $BOOTSTRAP/build
 cd $BOOTSTRAP/build
 
@@ -82,7 +84,8 @@ cd musl-*/
     --includedir=/usr/include \
     --libdir=/lib \
     --prefix=/
-make -O -j $PROCS
+# NOTE: The build is skipped here because we only care about the header files at
+#       this point. ~ahill
 make -O -j $PROCS install-headers DESTDIR=$BOOTSTRAP/root
 cd ..
 
@@ -100,7 +103,7 @@ cd ..
 
 # Build musl for real this time
 cd musl-*/
-# TODO: CVE-2025-26519
+# FIXME: Patch CVE-2025-26519 ~ahill
 make clean
 # NOTE: LIBCC is required here because it will attempt to link with the build
 #       system's runtime if this is not specified. ~ahill
@@ -124,9 +127,13 @@ export CXXFLAGS="$CXXFLAGS -Qunused-arguments -rtlib=compiler-rt -Wl,--dynamic-l
 #       setting CMAKE_CXX_COMPILER_WORKS, therefore tricking CMake into
 #       performing a successful build. Yet another instance where the genie in
 #       the bottle does exactly what we asked, and not what we wanted. ~ahill
+# NOTE: Not sure why this didn't show up before, but CMAKE_C_COMPILER_WORKS is
+#       is manually set because the C compiler attempts to link with libgcc_s or
+#       libunwind, even though it doesn't exist yet. ~ahill
 cd llvm-project-*/
 cmake -S runtimes -B build-runtimes \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_C_COMPILER_WORKS=ON \
     -DCMAKE_CXX_COMPILER_WORKS=ON \
     -DCMAKE_INSTALL_INCLUDEDIR=$BOOTSTRAP/root/usr/include \
     -DCMAKE_INSTALL_PREFIX=$BOOTSTRAP/root \
@@ -143,21 +150,28 @@ cmake --build build-runtimes --parallel $PROCS
 cmake --install build-runtimes --parallel $PROCS
 cd ..
 
-# Now we can introduce libc++ into the environment
+# Now we can introduce libunwind and libc++ into the environment
 # NOTE: clang++ attempts to build with headers from the build system rather than
 #       exclusively relying on the sysroot. Because of this, we must manually
 #       define the proper include path. ~ahill
-export CXXFLAGS="$CXXFLAGS -isystem $BOOTSTRAP/root/usr/include/c++/v1 -nostdinc++ -stdlib=libc++"
+export CFLAGS="$CFLAGS -unwindlib=libunwind"
+export CXXFLAGS="$CXXFLAGS -isystem $BOOTSTRAP/root/usr/include/c++/v1 -nostdinc++ -stdlib=libc++ -unwindlib=libunwind"
 
-# Build LLVM itself
+# Build clang/LLVM
 # NOTE: LLVM_ENABLE_ZSTD is disabled because we don't have zstd in the sysroot,
 #       and because I don't believe that a library created by Facebook should
 #       be required for an operating system to function. ~ahill
+# NOTE: If we don't do this, LLVM attempts to build its own copy of tblgen,
+#       which will cause the build to fail since we're cross-compiling and can't
+#       run programs built for another platform. LLVM_NATIVE_TOOL_DIR,
+#       LLVM_TABLEGEN, and CLANG_TABLEGEN are set based on this variable. ~ahill
+NATIVE_TOOL_DIR=$(dirname $(which llvm-tblgen))
 cd llvm-project-*/
 cmake -S llvm -B build-llvm \
     -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
     -DCLANG_DEFAULT_RTLIB=compiler-rt \
     -DCLANG_DEFAULT_UNWINDLIB=libunwind \
+    -DCLANG_TABLEGEN=$NATIVE_TOOL_DIR/clang-tblgen \
     -DCLANG_VENDOR=Maple \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=$BOOTSTRAP/root \
@@ -165,7 +179,32 @@ cmake -S llvm -B build-llvm \
     -DLLVM_ENABLE_LIBCXX=ON \
     -DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
     -DLLVM_ENABLE_ZSTD=OFF \
-    -DLLVM_HOST_TRIPLE=$TARGET
+    -DLLVM_HOST_TRIPLE=$TARGET \
+    -DLLVM_NATIVE_TOOL_DIR=$NATIVE_TOOL_DIR \
+    -DLLVM_TABLEGEN=$NATIVE_TOOL_DIR/llvm-tblgen
 cmake --build build-llvm --parallel $PROCS
-# ...
+cmake --install build-llvm --parallel $PROCS
 cd ..
+
+# Build Busybox
+tar xf $SOURCES/busybox/*/busybox-*.tar*
+cd busybox-*/
+# NOTE: Like we did with musl before, we don't set CROSS_COMPILE because LLVM is
+#       smart and doesn't need a compiler to cross-compile code. With that said,
+#       Busybox uses Kbuild, which hard-codes variables like CC to GNU-based
+#       tools, which is not what we want. The following sed hack should do the
+#       trick, but I wonder if there's a better solution. ~ahill
+sed -i "s/?*= \$(CROSS_COMPILE)/?= /" Makefile
+make -O -j $PROCS defconfig
+# NOTE: tc causes a LOT of issues due to undefined things. We don't really need
+#       "traffic control" at this time, and when we eventually do, we will
+#       likely use something else. ~ahill
+sed -i "s/CONFIG_TC=.*/CONFIG_TC=n/" .config
+make -O -j $PROCS
+# NOTE: Busybox doesn't appear to have a proper DESTDIR, so we just set
+#       CONFIG_PREFIX during the install step to work around this. ~ahill
+make -O -j $PROCS install CONFIG_PREFIX=$BOOTSTRAP/root
+cd ..
+
+# Install Treetap
+cp $BOOTSTRAP/../treetap $BOOTSTRAP/root/bin/

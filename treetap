@@ -14,6 +14,16 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
+#############
+# Changelog #
+#############
+
+# November 11, 2025 (1.0.1)
+# - Removed bashisms to become POSIX compliant
+
+# November 9, 2025 (1.0.0)
+# * Initial release
+
 ####################
 # Global Variables #
 ####################
@@ -21,7 +31,7 @@
 [ -z "$TREETAP_DIR" ] && TREETAP_DIR="$(pwd)/.treetap"
 [ -z "$TREETAP_PKGDIR" ] && TREETAP_PKGDIR="$TREETAP_DIR/packages"
 [ -z "$TREETAP_SYSROOT" ] && TREETAP_SYSROOT=/
-TREETAP_VERSION="1.0.0"
+TREETAP_VERSION="1.0.1"
 
 #####################
 # Utility Functions #
@@ -60,7 +70,7 @@ source_spec() {
     [ ! -f "$1" ] && (echo "source_spec: Specification file \"$1\" not found"; exit 1)
 
     # Zhu Li, do the thing!
-    source $1
+    . $1
 
     # Required Fields
     [ -z "$SRC_HASH" ] && (echo "source_spec: SRC_HASH is required but not defined"; exit 1)
@@ -95,9 +105,10 @@ package_install() {
     package_check $1 $TREETAP_SYSROOT
     echo "Installing $(basename $1)"
     FULLPATH=$(pwd)/$1
-    pushd $TREETAP_SYSROOT > /dev/null
+    PUSHD=$(pwd)
+    cd $TREETAP_SYSROOT
     xz -cd $FULLPATH | cpio -idmu --quiet
-    popd > /dev/null
+    cd $PUSHD
     exit 0
 }
 
@@ -107,7 +118,8 @@ package_uninstall() {
     package_check $1 $TREETAP_SYSROOT
     echo "Uninstalling $(basename $1)"
     FULLPATH=$(pwd)/$1
-    pushd $TREETAP_SYSROOT > /dev/null
+    PUSHD=$(pwd)
+    cd $TREETAP_SYSROOT
     xz -cd $FULLPATH | cpio -it --quiet | tail -n +2 | sort -r | while read path; do
         if [ -d $path ]; then
             rmdir --ignore-fail-on-non-empty $path
@@ -115,7 +127,7 @@ package_uninstall() {
             rm -f $path
         fi
     done
-    popd > /dev/null
+    cd $PUSHD
     exit 0
 }
 
@@ -123,10 +135,11 @@ package_uninstall() {
 source_build() {
     source_spec $1
     mkdir -p $TREETAP_BUILDDIR
-    pushd $TREETAP_BUILDDIR > /dev/null
+    PUSHD=$(pwd)
+    cd $TREETAP_BUILDDIR
     echo "Building $SRC_NAME $SRC_VERSION"
     build > build-$(date +%Y%m%d%H%M%S).log 2>&1
-    popd > /dev/null
+    cd $PUSHD
     exit 0
 }
 
@@ -134,11 +147,12 @@ source_build() {
 source_clean() {
     source_spec $1
     mkdir -p $TREETAP_BUILDDIR
-    pushd $TREETAP_BUILDDIR > /dev/null
+    PUSHD=$(pwd)
+    cd $TREETAP_BUILDDIR
     echo "Cleaning $SRC_NAME $SRC_VERSION"
     clean
     rm -rf $TREETAP_INSTALLDIR
-    popd > /dev/null
+    cd $PUSHD
     exit 0
 }
 
@@ -146,12 +160,13 @@ source_clean() {
 source_fetch() {
     source_spec $1
     mkdir -p $TREETAP_BUILDDIR
-    pushd $TREETAP_BUILDDIR/.. > /dev/null
+    PUSHD=$(pwd)
+    cd $TREETAP_BUILDDIR/..
     echo "Fetching $SRC_FILENAME"
     curl -L -sS $SRC_URL -o $SRC_FILENAME
     echo "Verifying $SRC_FILENAME"
     echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null
-    popd > /dev/null
+    cd $PUSHD
     exit 0
 }
 
@@ -161,14 +176,15 @@ source_package() {
     mkdir -p $TREETAP_BUILDDIR
     mkdir -p $TREETAP_INSTALLDIR
     mkdir -p $TREETAP_PKGDIR
-    pushd $TREETAP_BUILDDIR > /dev/null
+    PUSHD=$(pwd)
+    cd $TREETAP_BUILDDIR
     echo "Moving artifacts for $SRC_NAME $SRC_VERSION"
     package > package-$(date +%Y%m%d%H%M%S).log
     echo "Archiving $SRC_NAME $SRC_VERSION"
     cd $TREETAP_INSTALLDIR
     find | cpio -o --quiet | xz -cz > "$TREETAP_PKGDIR/$SRC_NAME-$SRC_VERSION.cpio.xz"
     rm -rf $TREETAP_INSTALLDIR
-    popd > /dev/null
+    cd $PUSHD
     exit 0
 }
 
