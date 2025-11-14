@@ -9,13 +9,13 @@ build() {
     tar xf ../musl-*.tar*
     cd musl-*/
     ./configure \
-        --bindir=$TREETAP_BINDIR \
-        --build=$TREETAP_BUILD \
-        --includedir=$TREETAP_INCLUDEDIR \
-        --libdir=$TREETAP_LIBDIR \
-        --prefix=$TREETAP_PREFIX \
-        --target=$TREETAP_TARGET
-    make -j $TREETAP_PROCS
+        --bindir=$TT_BINDIR \
+        --build=$TT_BUILD \
+        --includedir=$TT_INCLUDEDIR \
+        --libdir=$TT_LIBDIR \
+        --prefix=$TT_PREFIX \
+        --target=$TT_TARGET
+    make -O -j $TT_PROCS
 }
 
 clean() {
@@ -24,5 +24,5 @@ clean() {
 
 package() {
     cd musl-*/
-    DESTDIR=$TREETAP_INSTALLDIR make install
+    DESTDIR=$TT_INSTALLDIR make install
 }

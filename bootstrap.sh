@@ -8,6 +8,7 @@ ARCH=$(echo $TARGET | cut -d"-" -f1)
 BOOTSTRAP=$(pwd)/.bootstrap
 PROCS=$(nproc)
 SOURCES=$(pwd)/.treetap/sources
+SPEC=$(pwd)/sources
 export AR=llvm-ar
 export CC=clang
 export CFLAGS="-fuse-ld=lld -O3 -march=$MICROARCH -pipe --sysroot=$BOOTSTRAP/root -Wno-unused-command-line-argument"
@@ -15,8 +16,9 @@ export CXX=clang++
 export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
 export LD=ld.lld
-export TREETAP_SYSROOT=$BOOTSTRAP/root
-export TREETAP_TARGET=$TARGET
+export LDFLAGS="--sysroot=$BOOTSTRAP/root"
+export TT_SYSROOT=$BOOTSTRAP/root
+export TT_TARGET=$TARGET
 
 # Fetch sources required for a bootstrap
 ./treetap fetch sources/busybox.spec
@@ -57,7 +59,8 @@ set(CMAKE_SYSTEM_NAME Linux)
 EOF
 
 # Install headers for Linux
-tar xf $SOURCES/linux/*/linux-*.tar*
+LINUX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/linux.spec)
+tar xf $SOURCES/linux/$LINUX_VERSION/linux-*.tar*
 cd linux-*/
 # NOTE: LLVM=1 is required here because GCC and other GNU tools are required in
 #       some places still. This allows us to use LLVM and bypass the parts that
@@ -71,7 +74,8 @@ cp -r usr/include $BOOTSTRAP/root/usr
 cd ..
 
 # Install headers for musl
-tar xf $SOURCES/musl/*/musl-*.tar*
+MUSL_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/musl.spec)
+tar xf $SOURCES/musl/$MUSL_VERSION/musl-*.tar*
 cd musl-*/
 # NOTE: We are intentionally not passing --target here because musl follows the
 #       GNU approach when it comes to cross-compiling. This means the build
@@ -90,7 +94,8 @@ make -O -j $PROCS install-headers DESTDIR=$BOOTSTRAP/root
 cd ..
 
 # Build and install compiler-rt builtins
-tar xf $SOURCES/llvm/*/llvm-project-*.tar*
+LLVM_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/llvm.spec)
+tar xf $SOURCES/llvm/$LLVM_VERSION/llvm-project-*.tar*
 cd llvm-project-*/
 cmake -S compiler-rt/lib/builtins -B build-builtins \
     -DCMAKE_BUILD_TYPE=Release \
@@ -187,7 +192,8 @@ cmake --install build-llvm --parallel $PROCS
 cd ..
 
 # Build Busybox
-tar xf $SOURCES/busybox/*/busybox-*.tar*
+BUSYBOX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/busybox.spec)
+tar xf $SOURCES/busybox/$BUSYBOX_VERSION/busybox-*.tar*
 cd busybox-*/
 # NOTE: Like we did with musl before, we don't set CROSS_COMPILE because LLVM is
 #       smart and doesn't need a compiler to cross-compile code. With that said,

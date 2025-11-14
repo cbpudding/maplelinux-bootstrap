@@ -18,6 +18,11 @@
 # Changelog #
 #############
 
+# November 13, 2025 (1.0.2)
+# + Added the target triple to the package path
+# * Prevented fetch from re-downloading packages given a valid hash
+# * Renamed all TREETAP_* variables to TT_*
+
 # November 11, 2025 (1.0.1)
 # - Removed bashisms to become POSIX compliant
 
@@ -28,10 +33,10 @@
 # Global Variables #
 ####################
 
-[ -z "$TREETAP_DIR" ] && TREETAP_DIR="$(pwd)/.treetap"
-[ -z "$TREETAP_PKGDIR" ] && TREETAP_PKGDIR="$TREETAP_DIR/packages"
-[ -z "$TREETAP_SYSROOT" ] && TREETAP_SYSROOT=/
-TREETAP_VERSION="1.0.1"
+[ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
+[ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
+[ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
+TT_VERSION="1.0.2"
 
 #####################
 # Utility Functions #
@@ -39,7 +44,7 @@ TREETAP_VERSION="1.0.1"
 
 # Displays the usage information for treetap
 help_message() {
-    echo "treetap $TREETAP_VERSION"
+    echo "treetap $TT_VERSION"
     echo
     echo "Package Commands:"
     echo "    $0 install <package> [sysroot]"
@@ -82,15 +87,15 @@ source_spec() {
     [ -z "$SRC_FILENAME" ] && SRC_FILENAME=$(basename $SRC_URL)
 
     # Environmental Variables
-    [ -z "$TREETAP_BINDIR" ] && TREETAP_BINDIR=/bin
-    TREETAP_BUILD=$(clang -dumpmachine)
-    [ -z "$TREETAP_TARGET" ] && TREETAP_TARGET=$TREETAP_BUILD
-    TREETAP_BUILDDIR="$TREETAP_DIR/sources/$SRC_NAME/$SRC_VERSION/$TREETAP_TARGET"
-    [ -z "$TREETAP_INCLUDEDIR" ] && TREETAP_INCLUDEDIR=/usr/include
-    TREETAP_INSTALLDIR="$TREETAP_BUILDDIR/install"
-    [ -z "$TREETAP_LIBDIR" ] && TREETAP_LIBDIR=/lib
-    [ -z "$TREETAP_PREFIX" ] && TREETAP_PREFIX=/
-    [ -z "$TREETAP_PROCS" ] && TREETAP_PROCS=$(nproc)
+    [ -z "$TT_BINDIR" ] && TT_BINDIR=/bin
+    TT_BUILD=$(clang -dumpmachine)
+    [ -z "$TT_TARGET" ] && TT_TARGET=$TT_BUILD
+    TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_TARGET"
+    [ -z "$TT_INCLUDEDIR" ] && TT_INCLUDEDIR=/usr/include
+    TT_INSTALLDIR="$TT_BUILDDIR/install"
+    [ -z "$TT_LIBDIR" ] && TT_LIBDIR=/lib
+    [ -z "$TT_PREFIX" ] && TT_PREFIX=/
+    [ -z "$TT_PROCS" ] && TT_PROCS=$(nproc)
 
     true
 }
@@ -101,12 +106,12 @@ source_spec() {
 
 # Installs a package to the sysroot
 package_install() {
-    [ ! -z "$2" ] && TREETAP_SYSROOT=$2
-    package_check $1 $TREETAP_SYSROOT
+    [ ! -z "$2" ] && TT_SYSROOT=$2
+    package_check $1 $TT_SYSROOT
     echo "Installing $(basename $1)"
     FULLPATH=$(pwd)/$1
     PUSHD=$(pwd)
-    cd $TREETAP_SYSROOT
+    cd $TT_SYSROOT
     xz -cd $FULLPATH | cpio -idmu --quiet
     cd $PUSHD
     exit 0
@@ -114,12 +119,12 @@ package_install() {
 
 # Uninstalls a package from the sysroot
 package_uninstall() {
-    [ ! -z "$2" ] && TREETAP_SYSROOT=$2
-    package_check $1 $TREETAP_SYSROOT
+    [ ! -z "$2" ] && TT_SYSROOT=$2
+    package_check $1 $TT_SYSROOT
     echo "Uninstalling $(basename $1)"
     FULLPATH=$(pwd)/$1
     PUSHD=$(pwd)
-    cd $TREETAP_SYSROOT
+    cd $TT_SYSROOT
     xz -cd $FULLPATH | cpio -it --quiet | tail -n +2 | sort -r | while read path; do
         if [ -d $path ]; then
             rmdir --ignore-fail-on-non-empty $path
@@ -134,9 +139,9 @@ package_uninstall() {
 # Builds the source from the previously fetched tarball
 source_build() {
     source_spec $1
-    mkdir -p $TREETAP_BUILDDIR
+    mkdir -p $TT_BUILDDIR
     PUSHD=$(pwd)
-    cd $TREETAP_BUILDDIR
+    cd $TT_BUILDDIR
     echo "Building $SRC_NAME $SRC_VERSION"
     build > build-$(date +%Y%m%d%H%M%S).log 2>&1
     cd $PUSHD
@@ -146,12 +151,12 @@ source_build() {
 # Cleans the source from the previous build
 source_clean() {
     source_spec $1
-    mkdir -p $TREETAP_BUILDDIR
+    mkdir -p $TT_BUILDDIR
     PUSHD=$(pwd)
-    cd $TREETAP_BUILDDIR
+    cd $TT_BUILDDIR
     echo "Cleaning $SRC_NAME $SRC_VERSION"
     clean
-    rm -rf $TREETAP_INSTALLDIR
+    rm -rf $TT_INSTALLDIR
     cd $PUSHD
     exit 0
 }
@@ -159,9 +164,17 @@ source_clean() {
 # Fetches and verifies the integrity of the source tarball
 source_fetch() {
     source_spec $1
-    mkdir -p $TREETAP_BUILDDIR
+    mkdir -p $TT_BUILDDIR
     PUSHD=$(pwd)
-    cd $TREETAP_BUILDDIR/..
+    cd $TT_BUILDDIR/..
+    if [ -f $SRC_FILENAME ]; then
+        if (echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null); then
+            echo "Skipping $SRC_FILENAME"
+            exit 0
+        else
+            rm -f $SRC_FILENAME
+        fi
+    fi
     echo "Fetching $SRC_FILENAME"
     curl -L -sS $SRC_URL -o $SRC_FILENAME
     echo "Verifying $SRC_FILENAME"
@@ -173,17 +186,17 @@ source_fetch() {
 # Packages the built artifacts for distribution
 source_package() {
     source_spec $1
-    mkdir -p $TREETAP_BUILDDIR
-    mkdir -p $TREETAP_INSTALLDIR
-    mkdir -p $TREETAP_PKGDIR
+    mkdir -p $TT_BUILDDIR
+    mkdir -p $TT_INSTALLDIR
+    mkdir -p $TT_PKGDIR/$TT_TARGET
     PUSHD=$(pwd)
-    cd $TREETAP_BUILDDIR
+    cd $TT_BUILDDIR
     echo "Moving artifacts for $SRC_NAME $SRC_VERSION"
     package > package-$(date +%Y%m%d%H%M%S).log
     echo "Archiving $SRC_NAME $SRC_VERSION"
-    cd $TREETAP_INSTALLDIR
-    find | cpio -o --quiet | xz -cz > "$TREETAP_PKGDIR/$SRC_NAME-$SRC_VERSION.cpio.xz"
-    rm -rf $TREETAP_INSTALLDIR
+    cd $TT_INSTALLDIR
+    find | cpio -o --quiet | xz -cz > "$TT_PKGDIR/$TT_TARGET/$SRC_NAME-$SRC_VERSION.cpio.xz"
+    rm -rf $TT_INSTALLDIR
     cd $PUSHD
     exit 0
 }
@@ -191,7 +204,7 @@ source_package() {
 # Purges the entire build directory for a source
 source_purge() {
     source_spec $1
-    rm -rf $TREETAP_BUILDDIR
+    rm -rf $TT_BUILDDIR
     exit 0
 }
 
