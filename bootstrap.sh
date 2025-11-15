@@ -21,10 +21,10 @@ export TT_SYSROOT=$BOOTSTRAP/root
 export TT_TARGET=$TARGET
 
 # Fetch sources required for a bootstrap
-./treetap fetch sources/busybox.spec
-./treetap fetch sources/linux.spec
-./treetap fetch sources/llvm.spec
-./treetap fetch sources/musl.spec
+./treetap fetch sources/busybox/busybox.spec
+./treetap fetch sources/linux/linux.spec
+./treetap fetch sources/llvm/llvm.spec
+./treetap fetch sources/musl/musl.spec
 
 # Simplified filesystem heirarchy with symlinks for compatibility
 mkdir -p $BOOTSTRAP/root/{bin,boot/EFI/BOOT,dev,etc,home,lib,proc,run,sys,tmp,usr/{include,share},var/{cache,lib,log,spool,tmp}}

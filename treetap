@@ -18,16 +18,19 @@
 # Changelog #
 #############
 
+# November 14, 2025 (1.1.0)
+# + Added the ability to incorporate patches into the build [ahill]
+
 # November 13, 2025 (1.0.2)
-# + Added the target triple to the package path
-# * Prevented fetch from re-downloading packages given a valid hash
-# * Renamed all TREETAP_* variables to TT_*
+# + Added the target triple to the package path [ahill]
+# * Prevented fetch from re-downloading packages given a valid hash [ahill]
+# * Renamed all TREETAP_* variables to TT_* [ahill]
 
 # November 11, 2025 (1.0.1)
-# - Removed bashisms to become POSIX compliant
+# - Removed bashisms to become POSIX compliant [ahill]
 
 # November 9, 2025 (1.0.0)
-# * Initial release
+# * Initial release [ahill]
 
 ####################
 # Global Variables #
@@ -36,7 +39,7 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.0.2"
+TT_VERSION="1.1.0"
 
 #####################
 # Utility Functions #
@@ -140,9 +143,22 @@ package_uninstall() {
 source_build() {
     source_spec $1
     mkdir -p $TT_BUILDDIR
+    if [ ! -z "$SRC_PATCHES" ]; then
+        echo "Validating patches for $SRC_NAME $SRC_VERSION"
+        cd $(dirname $1)
+        echo $SRC_PATCHES | sha256sum -c - > /dev/null
+        # Is this even the right way to check a return value? ~ahill
+        if [ ! "$?" = "0" ]; then
+            echo "Failed to validate patches for $SRC_NAME $SRC_VERSION"
+            exit 1
+        fi
+        echo $SRC_PATCHES | while read line; do
+            cp $(echo $line | cut -d" " -f2) $TT_BUILDDIR/
+        done
+    fi
+    echo "Building $SRC_NAME $SRC_VERSION"
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    echo "Building $SRC_NAME $SRC_VERSION"
     build > build-$(date +%Y%m%d%H%M%S).log 2>&1
     cd $PUSHD
     exit 0
