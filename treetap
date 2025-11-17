@@ -18,8 +18,10 @@
 # Changelog #
 #############
 
-# November 14, 2025 (1.1.0)
+# November 15, 2025 (1.1.0)
 # + Added the ability to incorporate patches into the build [ahill]
+# + Added TT_CONFDIR [ahill]
+# * Replaced curl with wget to rely purely on Busybox [ahill]
 
 # November 13, 2025 (1.0.2)
 # + Added the target triple to the package path [ahill]
@@ -94,6 +96,7 @@ source_spec() {
     TT_BUILD=$(clang -dumpmachine)
     [ -z "$TT_TARGET" ] && TT_TARGET=$TT_BUILD
     TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_TARGET"
+    [ -z "$TT_CONFDIR" ] && TT_CONFDIR=/etc
     [ -z "$TT_INCLUDEDIR" ] && TT_INCLUDEDIR=/usr/include
     TT_INSTALLDIR="$TT_BUILDDIR/install"
     [ -z "$TT_LIBDIR" ] && TT_LIBDIR=/lib
@@ -192,7 +195,7 @@ source_fetch() {
         fi
     fi
     echo "Fetching $SRC_FILENAME"
-    curl -L -sS $SRC_URL -o $SRC_FILENAME
+    wget -O $SRC_FILENAME $SRC_URL
     echo "Verifying $SRC_FILENAME"
     echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null
     cd $PUSHD

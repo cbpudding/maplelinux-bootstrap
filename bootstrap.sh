@@ -24,7 +24,14 @@ export TT_TARGET=$TARGET
 ./treetap fetch sources/busybox/busybox.spec
 ./treetap fetch sources/linux/linux.spec
 ./treetap fetch sources/llvm/llvm.spec
+./treetap fetch sources/make/make.spec
 ./treetap fetch sources/musl/musl.spec
+
+# Make sure both clang-tblgen and llvm-tblgen are in the PATH. ~ahill
+which clang-tblgen > /dev/null
+[ ! "$?" = "0" ] && (echo "Unable to find clang-tblgen"; exit 1)
+which llvm-tblgen > /dev/null
+[ ! "$?" = "0" ] && (echo "Unable to find llvm-tblgen"; exit 1)
 
 # Simplified filesystem heirarchy with symlinks for compatibility
 mkdir -p $BOOTSTRAP/root/{bin,boot/EFI/BOOT,dev,etc,home,lib,proc,run,sys,tmp,usr/{include,share},var/{cache,lib,log,spool,tmp}}
@@ -59,7 +66,7 @@ set(CMAKE_SYSTEM_NAME Linux)
 EOF
 
 # Install headers for Linux
-LINUX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/linux.spec)
+LINUX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/linux/linux.spec)
 tar xf $SOURCES/linux/$LINUX_VERSION/linux-*.tar*
 cd linux-*/
 # NOTE: LLVM=1 is required here because GCC and other GNU tools are required in
@@ -74,9 +81,12 @@ cp -r usr/include $BOOTSTRAP/root/usr
 cd ..
 
 # Install headers for musl
-MUSL_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/musl.spec)
+MUSL_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/musl/musl.spec)
 tar xf $SOURCES/musl/$MUSL_VERSION/musl-*.tar*
 cd musl-*/
+# NOTE: Patch for musl 1.2.5 to prevent a character encoding vulnerability. This
+#       should be safe to remove after the next release. ~ahill
+patch -p1 < $BOOTSTRAP/../sources/musl/CVE-2025-26519.patch
 # NOTE: We are intentionally not passing --target here because musl follows the
 #       GNU approach when it comes to cross-compiling. This means the build
 #       script prefaces the name of every build tool with the target triple
@@ -94,12 +104,13 @@ make -O -j $PROCS install-headers DESTDIR=$BOOTSTRAP/root
 cd ..
 
 # Build and install compiler-rt builtins
-LLVM_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/llvm.spec)
+LLVM_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/llvm/llvm.spec)
+LLVM_MAJOR_VERSION=$(echo $LLVM_VERSION | cut -d"." -f1)
 tar xf $SOURCES/llvm/$LLVM_VERSION/llvm-project-*.tar*
 cd llvm-project-*/
 cmake -S compiler-rt/lib/builtins -B build-builtins \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=$BOOTSTRAP/root \
+    -DCMAKE_INSTALL_PREFIX=$BOOTSTRAP/root/lib/clang/$LLVM_MAJOR_VERSION \
     -DCMAKE_TOOLCHAIN_FILE=$BOOTSTRAP/$TARGET.cmake \
     -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON
 cmake --build build-builtins --parallel $PROCS
@@ -108,11 +119,10 @@ cd ..
 
 # Build musl for real this time
 cd musl-*/
-# FIXME: Patch CVE-2025-26519 ~ahill
 make clean
 # NOTE: LIBCC is required here because it will attempt to link with the build
 #       system's runtime if this is not specified. ~ahill
-LIBCC="$BOOTSTRAP/root/lib/linux/libclang_rt.builtins-x86_64.a" \
+LIBCC="$BOOTSTRAP/root/lib/clang/$LLVM_MAJOR_VERSION/lib/linux/libclang_rt.builtins-x86_64.a" \
 ./configure \
     --bindir=/bin \
     --includedir=/usr/include \
@@ -143,14 +153,13 @@ cmake -S runtimes -B build-runtimes \
     -DCMAKE_INSTALL_INCLUDEDIR=$BOOTSTRAP/root/usr/include \
     -DCMAKE_INSTALL_PREFIX=$BOOTSTRAP/root \
     -DCMAKE_TOOLCHAIN_FILE=$BOOTSTRAP/$TARGET.cmake \
-    -DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
     -DLIBCXX_CXX_ABI=libcxxabi \
     -DLIBCXX_HAS_MUSL_LIBC=ON \
     -DLIBCXX_USE_COMPILER_RT=ON \
     -DLIBCXXABI_USE_COMPILER_RT=ON \
     -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
     -DLIBUNWIND_USE_COMPILER_RT=ON \
-    -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind"
+    -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"
 cmake --build build-runtimes --parallel $PROCS
 cmake --install build-runtimes --parallel $PROCS
 cd ..
@@ -166,14 +175,20 @@ export CXXFLAGS="$CXXFLAGS -isystem $BOOTSTRAP/root/usr/include/c++/v1 -nostdinc
 # NOTE: LLVM_ENABLE_ZSTD is disabled because we don't have zstd in the sysroot,
 #       and because I don't believe that a library created by Facebook should
 #       be required for an operating system to function. ~ahill
-# NOTE: If we don't do this, LLVM attempts to build its own copy of tblgen,
-#       which will cause the build to fail since we're cross-compiling and can't
-#       run programs built for another platform. LLVM_NATIVE_TOOL_DIR,
-#       LLVM_TABLEGEN, and CLANG_TABLEGEN are set based on this variable. ~ahill
-NATIVE_TOOL_DIR=$(dirname $(which llvm-tblgen))
+# NOTE: LLVM attempts to build its own copy of tblgen, which will cause the
+#       build to fail since we're cross-compiling and can't run programs built
+#       for another platform. LLVM_NATIVE_TOOL_DIR, LLVM_TABLEGEN, and
+#       CLANG_TABLEGEN are set to remedy this issue. ~ahill
+# NOTE: Without CLANG_DEFAULT_LINKER, clang attempts to invoke "ld" to link
+#       programs, which doesn't exist on Maple Linux (at least not yet). ~ahill
+# NOTE: We're using sed to remove newlines instead of dirname's own -z switch
+#       because -z adds a null byte, which messes with the files generated by
+#       LLVM's build process. ~ahill
+NATIVE_TOOL_DIR=$(dirname $(which llvm-tblgen) | sed -z "s/\n//g")
 cd llvm-project-*/
 cmake -S llvm -B build-llvm \
     -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+    -DCLANG_DEFAULT_LINKER=lld \
     -DCLANG_DEFAULT_RTLIB=compiler-rt \
     -DCLANG_DEFAULT_UNWINDLIB=libunwind \
     -DCLANG_TABLEGEN=$NATIVE_TOOL_DIR/clang-tblgen \
@@ -187,12 +202,12 @@ cmake -S llvm -B build-llvm \
     -DLLVM_HOST_TRIPLE=$TARGET \
     -DLLVM_NATIVE_TOOL_DIR=$NATIVE_TOOL_DIR \
     -DLLVM_TABLEGEN=$NATIVE_TOOL_DIR/llvm-tblgen
-cmake --build build-llvm --parallel $PROCS
+cmake --build build-llvm
 cmake --install build-llvm --parallel $PROCS
 cd ..
 
 # Build Busybox
-BUSYBOX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/busybox.spec)
+BUSYBOX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/busybox/busybox.spec)
 tar xf $SOURCES/busybox/$BUSYBOX_VERSION/busybox-*.tar*
 cd busybox-*/
 # NOTE: Like we did with musl before, we don't set CROSS_COMPILE because LLVM is
