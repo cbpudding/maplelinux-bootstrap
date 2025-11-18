@@ -17,6 +17,8 @@ export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
 export LD=ld.lld
 export LDFLAGS="--sysroot=$BOOTSTRAP/root"
+export TREETAP=$(pwd)/treetap
+export TT_DIR=$(pwd)/.treetap
 export TT_SYSROOT=$BOOTSTRAP/root
 export TT_TARGET=$TARGET
 
@@ -24,7 +26,6 @@ export TT_TARGET=$TARGET
 ./treetap fetch sources/busybox/busybox.spec
 ./treetap fetch sources/linux/linux.spec
 ./treetap fetch sources/llvm/llvm.spec
-./treetap fetch sources/make/make.spec
 ./treetap fetch sources/musl/musl.spec
 
 # Make sure both clang-tblgen and llvm-tblgen are in the PATH. ~ahill
@@ -234,25 +235,10 @@ make -O -j $PROCS install CONFIG_PREFIX=$BOOTSTRAP/root
 cd ..
 
 # Build Make
-MAKE_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/make/make.spec)
-tar xf $SOURCES/make/$MAKE_VERSION/make-*.tar*
-cd make-*/
-./configure \
-    --bindir=/bin \
-    --datarootdir=/usr/share \
-    --enable-year2038 \
-    --host=$TARGET \
-    --includedir=/usr/include \
-    --libdir=/lib \
-    --libexecdir=/lib \
-    --localstatedir=/var \
-    --prefix=/ \
-    --runstatedir=/run \
-    --sbindir=/bin \
-    --sysconfdir=/etc
-make -O -j $PROCS
-make -O -j $PROCS install DESTDIR=$BOOTSTRAP/root
-cd ..
+$TREETAP fetch $SPEC/make/make.spec
+$TREETAP build $SPEC/make/make.spec
+$TREETAP package $SPEC/make/make.spec
+$TREETAP install .treetap/packages/$TARGET/make-*.cpio.xz $BOOTSTRAP/root
 
 # Install Treetap
 cp $BOOTSTRAP/../treetap $BOOTSTRAP/root/bin/

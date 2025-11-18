@@ -34,6 +34,41 @@
 # November 9, 2025 (1.0.0)
 # * Initial release [ahill]
 
+########################
+# .spec File Reference #
+########################
+
+# For everyone trying to build .spec files (including myself), this is the list
+# of useful variables to take advantage of. ~ahill
+
+# Specification Functions:
+#   build   - Builds the package
+#   clean   - Cleans $TT_BUILDDIR for the next build
+#   package - Installs the package contents to $TT_INSTALLDIR
+
+# Specification Variables:
+#   SRC_FILENAME - The name of the tarball to extract (optional)
+#   SRC_HASH     - The hash of the tarball for verification purposes (required)
+#   SRC_NAME     - The name of the package being built (required)
+#   SRC_URL      - The URL of the tarball to be downloaded (required)
+#   SRC_VERSION  - The version of the package being built (required)
+
+# Treetap Variables:
+#   TT_BINDIR     - The desired path for binaries [scope: source] [default: /bin]
+#   TT_BUILD      - The target triple of the build system [scope: source]
+#   TT_BUILDDIR   - The path to the build directory [scope: source]
+#   TT_CONFDIR    - The desired path for configuration files [scope: source] [default: /etc]
+#   TT_DIR        - The path to the treetap directory [scope: global]
+#   TT_INCLUDEDIR - The desired path for header files [scope: source] [default: /usr/include]
+#   TT_INSTALLDIR - The path to the install directory [scope: source]
+#   TT_LIBDIR     - The desired path for libraries [scope: source] [default: /lib]
+#   TT_PKGDIR     - The path to the package directory [scope: global]
+#   TT_PREFIX     - The desired prefix for the package [scope: source] [default: /]
+#   TT_PROCS      - The number of processors on the build system [scope: source]
+#   TT_SYSROOT    - The sysroot of the target system [scope: global]
+#   TT_TARGET     - The target triple of the target system [scope: source]
+#   TT_VERSION    - The version of treetap being used [scope: global]
+
 ####################
 # Global Variables #
 ####################
