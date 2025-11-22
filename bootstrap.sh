@@ -23,7 +23,6 @@ export TT_SYSROOT=$BOOTSTRAP/root
 export TT_TARGET=$TARGET
 
 # Fetch sources required for a bootstrap
-./treetap fetch sources/busybox/busybox.spec
 ./treetap fetch sources/linux/linux.spec
 ./treetap fetch sources/llvm/llvm.spec
 ./treetap fetch sources/musl/musl.spec
@@ -84,6 +83,7 @@ cd ..
 # Install headers for musl
 MUSL_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/musl/musl.spec)
 tar xf $SOURCES/musl/$MUSL_VERSION/musl-*.tar*
+./treetap fetch sources/busybox/busybox.spec
 cd musl-*/
 # NOTE: Patch for musl 1.2.5 to prevent a character encoding vulnerability. This
 #       should be safe to remove after the next release. ~ahill
@@ -211,34 +211,21 @@ cmake -S llvm -B build-llvm \
     -DLLVM_TABLEGEN=$NATIVE_TOOL_DIR/llvm-tblgen
 cmake --build build-llvm
 cmake --install build-llvm --parallel $PROCS
+# NOTE: LLVM doesn't add symlinks for clang/ld, so we'll make them ourselves.
+#       ~ahill
+ln -s clang $BOOTSTRAP/root/bin/cc
+ln -s clang++ $BOOTSTRAP/root/bin/c++
+ln -s ld.lld $BOOTSTRAP/root/bin/ld
 cd ..
 
-# Build Busybox
-BUSYBOX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/busybox/busybox.spec)
-tar xf $SOURCES/busybox/$BUSYBOX_VERSION/busybox-*.tar*
-cd busybox-*/
-# NOTE: Like we did with musl before, we don't set CROSS_COMPILE because LLVM is
-#       smart and doesn't need a compiler to cross-compile code. With that said,
-#       Busybox uses Kbuild, which hard-codes variables like CC to GNU-based
-#       tools, which is not what we want. The following sed hack should do the
-#       trick, but I wonder if there's a better solution. ~ahill
-sed -i "s/?*= \$(CROSS_COMPILE)/?= /" Makefile
-make -O -j $PROCS defconfig
-# NOTE: tc causes a LOT of issues due to undefined things. We don't really need
-#       "traffic control" at this time, and when we eventually do, we will
-#       likely use something else. ~ahill
-sed -i "s/CONFIG_TC=.*/CONFIG_TC=n/" .config
-make -O -j $PROCS
-# NOTE: Busybox doesn't appear to have a proper DESTDIR, so we just set
-#       CONFIG_PREFIX during the install step to work around this. ~ahill
-make -O -j $PROCS install CONFIG_PREFIX=$BOOTSTRAP/root
-cd ..
-
-# Build Make
-$TREETAP fetch $SPEC/make/make.spec
-$TREETAP build $SPEC/make/make.spec
-$TREETAP package $SPEC/make/make.spec
-$TREETAP install .treetap/packages/$TARGET/make-*.cpio.xz $BOOTSTRAP/root
+# Build remaining software with treetap
+SOURCES=(busybox make)
+for name in $SOURCES; do
+    $TREETAP fetch $SPEC/$name/$name.spec
+    $TREETAP build $SPEC/$name/$name.spec
+    $TREETAP package $SPEC/$name/$name.spec
+    $TREETAP install .treetap/packages/$TARGET/$name-*.cpio.xz $BOOTSTRAP/root
+done
 
 # Install Treetap
 cp $BOOTSTRAP/../treetap $BOOTSTRAP/root/bin/
