@@ -26,4 +26,7 @@ clean() {
 package() {
     cd musl-*/
     DESTDIR=$TT_INSTALLDIR make install
+    # NOTE: Apparently, the linker library has an entry point that we can use as
+    #       ldd. What kind of black magic is this? ~ahill
+    ln -sf /lib/ld-musl-$TT_ARCH.so.1 $TT_INSTALLDIR/bin/ldd
 }
