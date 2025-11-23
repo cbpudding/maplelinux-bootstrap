@@ -2,10 +2,10 @@
 SRC_HASH="b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314"
 SRC_NAME="busybox"
 SRC_PATCHES="
-0aabaf4254dc544a2e91aea2de91d0d4da95bfa54dfbc54852a21fe8eff3d30f  .config
+63478e21fdb8a1aa13d5f98c6a599e6ed040deb79707677f6186083c826a2824  .config
 "
 SRC_URL="https://busybox.net/downloads/busybox-1.36.1.tar.bz2"
-SRC_VERSION="1.36.1r1"
+SRC_VERSION="1.36.1r2"
 
 build() {
     tar xf ../$SRC_FILENAME
