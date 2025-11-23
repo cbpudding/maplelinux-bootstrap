@@ -15,13 +15,7 @@ build() {
     # https://www.openwall.com/lists/musl/2025/02/13/1/1
     # https://www.openwall.com/lists/musl/2025/02/13/1/2
     patch -p1 < ../CVE-2025-26519.patch
-    ./configure \
-        --bindir=$TT_BINDIR \
-        --build=$TT_BUILD \
-        --includedir=$TT_INCLUDEDIR \
-        --libdir=$TT_LIBDIR \
-        --prefix=$TT_PREFIX \
-        --target=$TT_TARGET
+    ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS
 }
 

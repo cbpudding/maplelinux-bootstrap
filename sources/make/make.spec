@@ -7,20 +7,7 @@ SRC_VERSION="4.4.1"
 build() {
     tar xf ../$SRC_FILENAME
     cd make-*/
-    ./configure \
-        --bindir=$TT_BINDIR \
-        --build=$TT_BUILD \
-        --datarootdir=/usr/share \
-        --enable-year2038 \
-        --host=$TT_TARGET \
-        --includedir=$TT_INCLUDEDIR \
-        --libdir=$TT_LIBDIR \
-        --libexecdir=$TT_LIBDIR \
-        --localstatedir=/var \
-        --prefix=$TT_PREFIX \
-        --runstatedir=/run \
-        --sbindir=$TT_BINDIR \
-        --sysconfdir=$TT_CONFDIR
+    ./configure $TT_AUTOCONF_COMMON --enable-year2038
     make -O -j $TT_PROCS
 }
 
@@ -29,5 +16,6 @@ clean() {
 }
 
 package() {
+    cd make-*/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

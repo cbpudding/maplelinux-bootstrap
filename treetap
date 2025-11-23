@@ -18,6 +18,18 @@
 # Changelog #
 #############
 
+# November 22, 2025 (1.2.0)
+# + Added support for the CCACHE environment variable [ahill]
+# + Added TT_ARCH [ahill]
+# + Added TT_AUTOCONF_COMMON for easy autoconf integration [ahill]
+# + Added TT_CMAKE_COMMON for easy CMake integration [ahill]
+# + Added TT_MICROARCH for micro-optimization support [ahill]
+# * Changed the build path to use TT_MICROARCH instead of TT_TARGET [ahill]
+# * Fixed "missing package" error when passing absolute paths to the install
+#   subcommand [ahill]
+# * Prevented xz from deleting package files [ahill]
+# + Started printing the version number in the build logs [ahill]
+
 # November 15, 2025 (1.1.0)
 # + Added the ability to incorporate patches into the build [ahill]
 # + Added TT_CONFDIR [ahill]
@@ -56,20 +68,42 @@
 #   SRC_VERSION  - The version of the package being built (required)
 
 # Treetap Variables:
-#   TT_BINDIR     - The desired path for binaries [scope: source] [default: /bin]
-#   TT_BUILD      - The target triple of the build system [scope: source]
-#   TT_BUILDDIR   - The path to the build directory [scope: source]
-#   TT_CONFDIR    - The desired path for configuration files [scope: source] [default: /etc]
-#   TT_DIR        - The path to the treetap directory [scope: global]
-#   TT_INCLUDEDIR - The desired path for header files [scope: source] [default: /usr/include]
-#   TT_INSTALLDIR - The path to the install directory [scope: source]
-#   TT_LIBDIR     - The desired path for libraries [scope: source] [default: /lib]
-#   TT_PKGDIR     - The path to the package directory [scope: global]
-#   TT_PREFIX     - The desired prefix for the package [scope: source] [default: /]
-#   TT_PROCS      - The number of processors on the build system [scope: source]
-#   TT_SYSROOT    - The sysroot of the target system [scope: global]
-#   TT_TARGET     - The target triple of the target system [scope: source]
-#   TT_VERSION    - The version of treetap being used [scope: global]
+#   TT_ARCH            - The architecture portion of TT_TARGET
+#                        [scope: source]
+#   TT_AUTOCONF_COMMON - The default autoconf arguments based on the environment
+#                        [scope: source]
+#   TT_BINDIR          - The desired path for binaries
+#                        [scope: source] [default: /bin]
+#   TT_BUILD           - The target triple of the build system
+#                        [scope: source]
+#   TT_BUILDDIR        - The path to the build directory
+#                        [scope: source]
+#   TT_CMAKE_COMMON    - The default CMake arguments based on the environment
+#                        [scope: source]
+#   TT_CONFDIR         - The desired path for configuration files
+#                        [scope: source] [default: /etc]
+#   TT_DIR             - The path to the treetap directory
+#                        [scope: global]
+#   TT_INCLUDEDIR      - The desired path for header files
+#                        [scope: source] [default: /usr/include]
+#   TT_INSTALLDIR      - The path to the install directory
+#                        [scope: source]
+#   TT_LIBDIR          - The desired path for libraries
+#                        [scope: source] [default: /lib]
+#   TT_MICROARCH       - The microarchitecture to optimize for
+#                        [scope: source]
+#   TT_PKGDIR          - The path to the package directory
+#                        [scope: global]
+#   TT_PREFIX          - The desired prefix for the package
+#                        [scope: source] [default: /]
+#   TT_PROCS           - The number of processors on the build system
+#                        [scope: source]
+#   TT_SYSROOT         - The sysroot of the target system
+#                        [scope: global]
+#   TT_TARGET          - The target triple of the target system
+#                        [scope: source]
+#   TT_VERSION         - The version of treetap being used
+#                        [scope: global]
 
 ####################
 # Global Variables #
@@ -78,7 +112,7 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.1.0"
+TT_VERSION="1.2.0"
 
 #####################
 # Utility Functions #
@@ -107,6 +141,10 @@ package_check() {
     [ -z "$2" ] && (echo "package_check: Missing sysroot"; exit 1)
     [ ! -f "$1" ] && (echo "package_check: Package file \"$1\" not found"; exit 1)
     [ ! -d "$2" ] && (echo "package_check: Sysroot \"$2\" not found"; exit 1)
+    case "$1" in
+    "/"*) PKG_FULLPATH=$1 ;;
+    *) PKG_FULLPATH=$(pwd)/$1 ;;
+    esac
     true
 }
 
@@ -132,13 +170,64 @@ source_spec() {
     [ -z "$TT_BINDIR" ] && TT_BINDIR=/bin
     TT_BUILD=$(clang -dumpmachine)
     [ -z "$TT_TARGET" ] && TT_TARGET=$TT_BUILD
-    TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_TARGET"
     [ -z "$TT_CONFDIR" ] && TT_CONFDIR=/etc
     [ -z "$TT_INCLUDEDIR" ] && TT_INCLUDEDIR=/usr/include
-    TT_INSTALLDIR="$TT_BUILDDIR/install"
     [ -z "$TT_LIBDIR" ] && TT_LIBDIR=/lib
     [ -z "$TT_PREFIX" ] && TT_PREFIX=/
     [ -z "$TT_PROCS" ] && TT_PROCS=$(nproc)
+
+    # Attempt to guess TT_MICROARCH if it isn't defined
+    TT_ARCH=$(echo $TT_TARGET | cut -d"-" -f1)
+    if [ -z "$TT_MICROARCH" ]; then
+        case "$TT_ARCH" in
+        "x86_64") TT_MICROARCH="skylake";;
+        *)
+            echo "TT_MICROARCH not defined for $TT_ARCH"
+            exit 1
+            ;;
+        esac
+    fi
+
+    # Apply TT_MICROARCH to CFLAGS/CXXFLAGS
+    CFLAGS="-march=$TT_MICROARCH $CFLAGS"
+    CXXFLAGS="-march=$TT_MICROARCH $CXXFLAGS"
+
+    # Last, but certainly not least, let's define where we want the build to
+    # occur and where to put the artifacts. ~ahill
+    TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_MICROARCH"\
+    TT_INSTALLDIR="$TT_BUILDDIR/install"
+
+    # Create convenience variables
+    TT_AUTOCONF_COMMON=$(echo "--bindir=$TT_BINDIR \
+        --build=$TT_BUILD \
+        --datarootdir=/usr/share \
+        --host=$TT_TARGET \
+        --includedir=$TT_INCLUDEDIR \
+        --libdir=$TT_LIBDIR \
+        --libexecdir=$TT_LIBDIR \
+        --localstatedir=/var \
+        --prefix=$TT_PREFIX \
+        --runstatedir=/run \
+        --sbindir=$TT_BINDIR \
+        --sysconfdir=$TT_CONFDIR \
+        --target=$TT_TARGET \
+        --with-sysroot=$TT_SYSROOT" | xargs)
+
+    TT_CMAKE_COMMON=$(echo "-DCMAKE_ASM_COMPILER_TARGET=$TT_TARGET \
+        -DCMAKE_C_COMPILER_TARGET=$TT_TARGET \
+        -DCMAKE_CXX_COMPILER_TARGET=$TT_TARGET \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=$TT_INSTALLDIR" | xargs)
+
+    # NOTE: CMake doesn't like having a space in CC and CXX, so we manually
+    #       define a few things if CCACHE is set. ~ahill
+    if [ ! -z "$CCACHE" ]; then
+        TT_CMAKE_COMMON=$(echo "$TT_CMAKE_COMMON \
+            -DCMAKE_C_COMPILER=$(echo $CC | cut -d" " -f2) \
+            -DCMAKE_C_COMPILER_LAUNCHER=$CCACHE \
+            -DCMAKE_CXX_COMPILER=$(echo $CXX | cut -d" " -f2)
+            -DCMAKE_CXX_COMPILER_LAUNCHER=$CCACHE" | xargs)
+    fi
 
     true
 }
@@ -152,10 +241,9 @@ package_install() {
     [ ! -z "$2" ] && TT_SYSROOT=$2
     package_check $1 $TT_SYSROOT
     echo "Installing $(basename $1)"
-    FULLPATH=$(pwd)/$1
     PUSHD=$(pwd)
     cd $TT_SYSROOT
-    xz -cd $FULLPATH | cpio -idmu --quiet
+    xz -cdk $PKG_FULLPATH | cpio -idmu --quiet
     cd $PUSHD
     exit 0
 }
@@ -165,10 +253,9 @@ package_uninstall() {
     [ ! -z "$2" ] && TT_SYSROOT=$2
     package_check $1 $TT_SYSROOT
     echo "Uninstalling $(basename $1)"
-    FULLPATH=$(pwd)/$1
     PUSHD=$(pwd)
     cd $TT_SYSROOT
-    xz -cd $FULLPATH | cpio -it --quiet | tail -n +2 | sort -r | while read path; do
+    xz -cdk $PKG_FULLPATH | cpio -it --quiet | tail -n +2 | sort -r | while read path; do
         if [ -d $path ]; then
             rmdir --ignore-fail-on-non-empty $path
         else
@@ -189,17 +276,22 @@ source_build() {
         echo $SRC_PATCHES | sha256sum -c - > /dev/null
         # Is this even the right way to check a return value? ~ahill
         if [ ! "$?" = "0" ]; then
-            echo "Failed to validate patches for $SRC_NAME $SRC_VERSION"
+            echo "Failed to validate patches for $SRC_NAME $SRC_VERSION for $TT_MICROARCH ($TT_TARGET)"
             exit 1
         fi
         echo $SRC_PATCHES | while read line; do
             cp $(echo $line | cut -d" " -f2) $TT_BUILDDIR/
         done
     fi
-    echo "Building $SRC_NAME $SRC_VERSION"
+    echo "Building $SRC_NAME $SRC_VERSION for $TT_MICROARCH"
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    build > build-$(date +%Y%m%d%H%M%S).log 2>&1
+    # Please don't use this in your build script. This is meant for
+    # troubleshooting purposes. ~ahill
+    TT_BUILD_LOG=build-$(date +%Y%m%d%H%M%S).log
+    echo "Build started with treetap $TT_VERSION at $(date)" > $TT_BUILD_LOG
+    build >> $TT_BUILD_LOG 2>&1
+    echo "Build finished at $(date)" >> $TT_BUILD_LOG
     cd $PUSHD
     exit 0
 }
@@ -244,14 +336,13 @@ source_package() {
     source_spec $1
     mkdir -p $TT_BUILDDIR
     mkdir -p $TT_INSTALLDIR
-    mkdir -p $TT_PKGDIR/$TT_TARGET
+    mkdir -p $TT_PKGDIR/$TT_MICROARCH
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    echo "Moving artifacts for $SRC_NAME $SRC_VERSION"
+    echo "Archiving $SRC_NAME $SRC_VERSION for $TT_MICROARCH"
     package > package-$(date +%Y%m%d%H%M%S).log
-    echo "Archiving $SRC_NAME $SRC_VERSION"
     cd $TT_INSTALLDIR
-    find | cpio -o --quiet | xz -cz > "$TT_PKGDIR/$TT_TARGET/$SRC_NAME-$SRC_VERSION.cpio.xz"
+    find | cpio -o --quiet | xz -cz > "$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_VERSION-$TT_MICROARCH.cpio.xz"
     rm -rf $TT_INSTALLDIR
     cd $PUSHD
     exit 0

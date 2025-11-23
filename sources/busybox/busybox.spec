@@ -10,6 +10,7 @@ SRC_VERSION="1.36.1"
 build() {
     tar xf ../$SRC_FILENAME
     cd busybox-*/
+    cp ../.config .
     # NOTE: Like we did with musl before, we don't set CROSS_COMPILE because
     #       LLVM is smart and doesn't need a compiler to cross-compile code.
     #       With that said, Busybox uses Kbuild, which hard-codes variables like
@@ -31,6 +32,7 @@ clean() {
 }
 
 package() {
+    cd busybox-*/
     # NOTE: Busybox doesn't have a proper DESTDIR, so we just set CONFIG_PREFIX
     #       during the install to work around this limitation. ~ahill
     make -O -j $TT_PROCS install CONFIG_PREFIX=$TT_INSTALLDIR
