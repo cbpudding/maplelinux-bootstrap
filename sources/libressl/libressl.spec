@@ -19,5 +19,5 @@ clean() {
 
 package() {
     cd libressl-*/
-    make -j $TT_PROCS install DESTDIR=$TT_SYSROOT
+    make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

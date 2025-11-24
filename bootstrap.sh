@@ -236,3 +236,13 @@ done
 
 # Install Treetap
 cp $TREETAP $BOOTSTRAP/root/bin/
+
+# Prepare for chroot build
+mkdir -p $BOOTSTRAP/root/maple/
+cp rootbuild.sh $BOOTSTRAP/root/maple/
+export TT_DIR=$BOOTSTRAP/root/maple/.treetap
+SOURCES=(libarchive libressl xz)
+for name in $SOURCES; do
+    $TREETAP fetch $SPEC/$name/$name.spec
+done
+cp -r $SPEC $BOOTSTRAP/root/maple/
