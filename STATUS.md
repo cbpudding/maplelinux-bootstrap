@@ -4,13 +4,13 @@ This document tracks which packages can be built and packaged within the chroot.
 | ------------ | ---------- | ------------ |
 | `busybox`    | No         | No           |
 | `bzip2`      | Yes        | Yes          |
-| `cmake`      | Yes        | No           |
+| `cmake`      | Yes        | Yes          |
 | `libarchive` | Yes        | Yes          |
 | `libressl`   | Yes        | Yes          |
 | `linux`      | No         | No           |
 | `llvm`       | No         | No           |
 | `make`       | Yes        | Yes          |
-| `mold`       | No         | No           |
+| `mold`       | Yes        | Yes          |
 | `musl`       | Yes        | Yes          |
 | `xz`         | Yes        | Yes          |
 | `zlib`       | Yes        | Yes          |

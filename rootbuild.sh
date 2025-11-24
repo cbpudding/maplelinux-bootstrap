@@ -19,7 +19,8 @@ make -j $(nproc) install DESTDIR=/
 #       missing functionality! ~ahill
 # NOTE: CMake requires LibreSSL and libarchive to function properly so it is
 #       built after that. ~ahill
-PACKAGES="bzip2 libressl make musl xz zlib libarchive cmake"
+# NOTE: mold requires CMake to build. ~ahill
+PACKAGES="bzip2 libressl make musl xz zlib libarchive cmake mold"
 for pkg in $PACKAGES; do
     treetap fetch sources/$pkg/$pkg.spec
     treetap build sources/$pkg/$pkg.spec

@@ -6,7 +6,6 @@ SRC_URL="https://github.com/rui314/mold/archive/refs/tags/v2.40.4.tar.gz"
 SRC_VERSION="2.40.4"
 
 build() {
-    echo "DEBUG: $TT_CMAKE_COMMON"
     tar xf ../$SRC_FILENAME
     cd mold-*/
     cmake -B build $TT_CMAKE_COMMON
