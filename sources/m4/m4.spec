@@ -1,13 +1,14 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="e4315fef49b08912b1d1db3774dd98f971397b2751c648512b6c8d852590dc50"
+SRC_HASH="e236ea3a1ccf5f6c270b1c4bb60726f371fa49459a8eaaebc90b216b328daf2b"
 SRC_NAME="m4"
-SRC_URL="http://haddonthethird.net/m4/m4-2.tar.bz2"
-SRC_VERSION="2"
+SRC_URL="https://ftp.gnu.org/gnu/m4/m4-1.4.20.tar.xz"
+SRC_VERSION="1.4.20"
 
 build() {
     tar xf ../$SRC_FILENAME
     cd m4-*/
-    make -O -j $TT_PROCS
+    ./configure $TT_AUTOCONF_COMMON --enable-year2038
+    make -j $TT_PROCS
 }
 
 clean() {
@@ -16,5 +17,5 @@ clean() {
 
 package() {
     cd m4-*/
-    make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
+    make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

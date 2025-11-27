@@ -2,6 +2,9 @@ This document tracks which packages can be built and packaged within the chroot.
 
 | Package      | Can Build? | Can Package? |
 | ------------ | ---------- | ------------ |
+| `autoconf`   | Yes        | Yes          |
+| `automake`   | Yes        | Yes          |
+| `bsdutils`   | Yes        | Yes          |
 | `busybox`    | No         | No           |
 | `byacc`      | Yes        | Yes          |
 | `bzip2`      | Yes        | Yes          |
@@ -17,6 +20,9 @@ This document tracks which packages can be built and packaged within the chroot.
 | `mold`       | Yes        | Yes          |
 | `muon`       | Yes        | Yes          |
 | `musl`       | Yes        | Yes          |
+| `musl-fts`   | Yes        | Yes          |
 | `ncurses`    | Yes        | Yes          |
+| `perl`       | Yes        | Yes          |
+| `pkgconf`    | Yes        | Yes          |
 | `xz`         | Yes        | Yes          |
 | `zlib`       | Yes        | Yes          |

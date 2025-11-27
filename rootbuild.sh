@@ -25,8 +25,11 @@ make -j $(nproc) install DESTDIR=/
 # NOTE: mold requires CMake to build. ~ahill
 # NOTE: flex requires byacc and m4 to build. ~ahill
 # NOTE: editline requires ncurses to build. ~ahill
+# NOTE: autoconf requires GNU m4 and perl to build. ~ahill
+# NOTE: automake requires m4 to build. ~ahill
+# NOTE: musl-fts requires autoconf, automake, and libtool to build. ~ahill
 cd /maple
-PACKAGES="byacc bzip2 libressl m4 make muon musl ncurses xz zlib editline flex libarchive cmake mold"
+PACKAGES="byacc bzip2 libressl m4 make muon musl ncurses perl pkgconf xz zlib autoconf automake editline flex libarchive libtool musl-fts cmake mold"
 for pkg in $PACKAGES; do
     treetap fetch sources/$pkg/$pkg.spec
     treetap build sources/$pkg/$pkg.spec

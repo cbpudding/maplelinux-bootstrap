@@ -241,7 +241,33 @@ cp $TREETAP $BOOTSTRAP/root/bin/
 mkdir -p $BOOTSTRAP/root/maple/
 cp rootbuild.sh $BOOTSTRAP/root/maple/
 export TT_DIR=$BOOTSTRAP/root/maple/.treetap
-SOURCES=(busybox byacc bzip2 cmake editline flex libarchive libressl linux llvm m4 make mold muon musl ncurses xz zlib)
+SOURCES=(
+    autoconf
+    automake
+    bsdutils
+    busybox
+    byacc
+    bzip2
+    cmake
+    editline
+    flex
+    libarchive
+    libressl
+    libtool
+    linux
+    llvm
+    m4
+    make
+    mold
+    muon
+    musl
+    musl-fts
+    ncurses
+    perl
+    pkgconf
+    xz
+    zlib
+)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
 done
