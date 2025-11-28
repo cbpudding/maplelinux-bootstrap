@@ -1,8 +1,8 @@
 This document tracks which packages can be built and packaged within the chroot.
 
 Definitions:
-  Can Build - The software can be both compiled via treetap on Maple Linux and run on Maple Linux
-  Can Package - The software can be packaged by treetap under Maple Linux, while using none of the deprecated paths (/usr/bin, /usr/lib, /usr/libexec, /sbin, etc.) and without conflicting with another package
+- Can Build - The software can be both compiled via treetap on Maple Linux and run on Maple Linux
+- Can Package - The software can be packaged by treetap under Maple Linux, while using none of the deprecated paths (/usr/bin, /usr/lib, /usr/libexec, /sbin, etc.) and without conflicting with another package
 
 | Package      | Can Build? | Can Package? |
 | ------------ | ---------- | ------------ |
