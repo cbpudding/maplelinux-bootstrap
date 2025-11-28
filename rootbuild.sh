@@ -1,5 +1,7 @@
 #!/bin/sh -e
+export CC=clang
 export CFLAGS="-O3 -pipe"
+export CXX=clang++
 export CXXFLAGS=$CFLAGS
 
 # xz Build
@@ -7,7 +9,8 @@ export CXXFLAGS=$CFLAGS
 cd /maple
 treetap build sources/xz/xz.spec
 cd .treetap/sources/xz/*/*/xz-*/
-make -j $(nproc) install DESTDIR=/
+echo "Bootstrapping xz"
+make -j $(nproc) install DESTDIR=/ > /dev/null 2>&1
 
 # libarchive Build
 # NOTE: bsdcpio is needed to run "treetap package", so we manually install.
@@ -15,7 +18,8 @@ make -j $(nproc) install DESTDIR=/
 cd /maple
 treetap build sources/libarchive/libarchive.spec
 cd .treetap/sources/libarchive/*/*/libarchive-*/
-make -j $(nproc) install DESTDIR=/
+echo "Bootstrapping libarchive"
+make -j $(nproc) install DESTDIR=/ > /dev/null 2>&1
 
 # Now we can build stuff exclusively with treetap
 # NOTE: bzip2, xz, and zlib need to be built before libarchive or we will be
@@ -31,8 +35,8 @@ make -j $(nproc) install DESTDIR=/
 cd /maple
 PACKAGES="byacc bzip2 libressl m4 make muon musl ncurses perl pkgconf xz zlib autoconf automake editline flex libarchive libtool musl-fts cmake mold"
 for pkg in $PACKAGES; do
-    treetap fetch sources/$pkg/$pkg.spec
-    treetap build sources/$pkg/$pkg.spec
-    treetap package sources/$pkg/$pkg.spec
-    treetap install .treetap/packages/*/$pkg-*.cpio.xz
+    treetap fetch /maple/sources/$pkg/$pkg.spec
+    treetap build /maple/sources/$pkg/$pkg.spec
+    treetap package /maple/sources/$pkg/$pkg.spec
+    treetap install /maple/.treetap/packages/*/$pkg-*.cpio.xz
 done

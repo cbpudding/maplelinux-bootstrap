@@ -14,7 +14,7 @@ build() {
     #       which requires musl-fts to function, which we can't build without
     #       libtoolize. Strangely enough, libtool is hard-coded to /bin/sh, so
     #       I don't know why libtoolize uses /usr/bin/env. ~ahill
-    sed -i "s|/usr/bin/env sh|/bin/sh" libtoolize
+    sed -i "s|/usr/bin/env sh|/bin/sh|" libtoolize
 }
 
 clean() {

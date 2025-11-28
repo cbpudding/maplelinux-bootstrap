@@ -28,5 +28,6 @@ package() {
     DESTDIR=$TT_INSTALLDIR make install
     # NOTE: Apparently, the linker library has an entry point that we can use as
     #       ldd. What kind of black magic is this? ~ahill
+    mkdir -p $TT_INSTALLDIR/bin
     ln -sf /lib/ld-musl-$TT_ARCH.so.1 $TT_INSTALLDIR/bin/ldd
 }
