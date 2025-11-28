@@ -4,6 +4,9 @@ SRC_NAME="cmake"
 SRC_URL="https://github.com/Kitware/CMake/releases/download/v4.2.0/cmake-4.2.0.tar.gz"
 SRC_VERSION="4.2.0"
 
+# TODO: Move executables from /usr/bin to $TT_BINDIR ~ahill
+# TODO: Place all documentation under $TT_DATADIR/doc ~ahill
+
 build() {
     tar xf ../$SRC_FILENAME
     cd cmake-*/

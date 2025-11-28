@@ -5,6 +5,8 @@ SRC_NAME="muon"
 SRC_URL="https://git.sr.ht/~lattis/muon/archive/0.5.0.tar.gz"
 SRC_VERSION="0.5.0"
 
+# TODO: Make sure the muon command is installed to $TT_BINDIR ~ahill
+
 build() {
     tar xf ../$SRC_FILENAME
     cd muon-*/

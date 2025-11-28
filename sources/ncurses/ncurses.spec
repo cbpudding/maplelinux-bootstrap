@@ -4,6 +4,8 @@ SRC_NAME="ncurses"
 SRC_URL="https://invisible-island.net/archives/ncurses/ncurses-6.5.tar.gz"
 SRC_VERSION="6.5"
 
+# TODO: Remove the target triple prefix from all of ncurses' executables ~ahill
+
 build() {
     tar xf ../$SRC_FILENAME
     cd ncurses-*/

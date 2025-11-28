@@ -5,6 +5,9 @@ SRC_NAME="mold"
 SRC_URL="https://github.com/rui314/mold/archive/refs/tags/v2.40.4.tar.gz"
 SRC_VERSION="2.40.4"
 
+# TODO: Merge the contents from /lib64 and /libexec into $TT_LIBDIR ~ahill
+# TODO: Move /share to $TT_DATADIR ~ahill
+
 build() {
     tar xf ../$SRC_FILENAME
     cd mold-*/

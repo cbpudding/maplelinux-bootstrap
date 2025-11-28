@@ -4,6 +4,10 @@ SRC_NAME="libressl"
 SRC_URL="https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-4.2.1.tar.gz"
 SRC_VERSION="4.2.1"
 
+# TODO: Should the openssl command be a symlink? For the sake of transparency,
+#       it may make sense to rename the command to "libressl" and make "openssl"
+#       a symlink for compatibility's sake. ~ahill
+
 build() {
     tar xf ../$SRC_FILENAME
     cd libressl-*/

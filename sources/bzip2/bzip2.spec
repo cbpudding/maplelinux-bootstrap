@@ -4,6 +4,9 @@ SRC_NAME="bzip2"
 SRC_URL="https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
 SRC_VERSION="1.0.8"
 
+# TODO: Move bzlib.h to $TT_INCLUDEDIR ~ahill
+# TODO: Prevent the static library from being installed ~ahill
+
 build() {
     tar xf ../$SRC_FILENAME
     cd bzip2-*/
