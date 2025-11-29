@@ -11,7 +11,7 @@ Definitions:
 | `bsdutils`   | Yes        | No           |
 | `busybox`    | No         | No           |
 | `byacc`      | Yes        | Yes          |
-| `bzip2`      | Yes        | No           |
+| `bzip2`      | Yes        | Yes          |
 | `cmake`      | Yes        | No           |
 | `editline`   | Yes        | Yes          |
 | `flex`       | Yes        | Yes          |
