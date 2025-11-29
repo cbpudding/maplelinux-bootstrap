@@ -26,7 +26,7 @@ Definitions:
 | `muon`       | Yes        | No           |
 | `musl`       | Yes        | Yes          |
 | `musl-fts`   | Yes        | Yes          |
-| `ncurses`    | Yes        | No           |
+| `ncurses`    | Yes        | Yes          |
 | `perl`       | Yes        | Yes          |
 | `pkgconf`    | Yes        | Yes          |
 | `xz`         | Yes        | Yes          |
