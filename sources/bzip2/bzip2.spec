@@ -2,7 +2,7 @@
 SRC_HASH="ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269"
 SRC_NAME="bzip2"
 SRC_URL="https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
-SRC_VERSION="1.0.8r1"
+SRC_VERSION="1.0.8r2"
 
 # TODO: Install the man pages ~ahill
 
@@ -44,7 +44,11 @@ package() {
     ln -sf bzip2 $TT_INSTALLDIR$TT_BINDIR/bunzip2
     ln -sf bzip2 $TT_INSTALLDIR$TT_BINDIR/bzcat
     mkdir -p $TT_INSTALLDIR$TT_LIBDIR
-    cp libbz2.so* $TT_INSTALLDIR$TT_LIBDIR/
+    SO_NAME=libbz2.so.$(echo $SRC_VERSION | cut -d"r" -f1)
+    cp $SO_NAME $TT_INSTALLDIR$TT_LIBDIR/
+    ln -sf $SO_NAME $TT_INSTALLDIR$TT_LIBDIR/libbz2.so.$(echo $SRC_VERSION | cut -d"." -f1,2)
+    ln -sf $SO_NAME $TT_INSTALLDIR$TT_LIBDIR/libbz2.so.$(echo $SRC_VERSION | cut -d"." -f1)
+    ln -sf $SO_NAME $TT_INSTALLDIR$TT_LIBDIR/libbz2.so
     mkdir -p $TT_INSTALLDIR$TT_INCLUDEDIR
     cp bzlib.h $TT_INSTALLDIR$TT_INCLUDEDIR/
 }
