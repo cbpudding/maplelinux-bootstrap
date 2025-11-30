@@ -28,7 +28,7 @@ Definitions:
 | `m4`          | Yes        | Yes          |
 | `make`        | Yes        | Yes          |
 | `mold`        | Yes        | Yes          |
-| `muon`        | Yes        | No           |
+| `muon`        | Yes        | Yes          |
 | `musl`        | Yes        | Yes          |
 | `musl-fts`    | Yes        | Yes          |
 | `nano`        | Yes        | Yes          |

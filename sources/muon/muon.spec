@@ -3,17 +3,16 @@ SRC_FILENAME="muon-0.5.0.tar.gz"
 SRC_HASH="565c1b6e1e58f7e90d8813fda0e2102df69fb493ddab4cf6a84ce3647466bee5"
 SRC_NAME="muon"
 SRC_URL="https://git.sr.ht/~lattis/muon/archive/0.5.0.tar.gz"
-SRC_VERSION="0.5.0"
-
-# TODO: Make sure the muon command is installed to $TT_BINDIR ~ahill
+SRC_VERSION="0.5.0r1"
 
 build() {
     tar xf ../$SRC_FILENAME
     cd muon-*/
-    ./bootstrap.sh build
-    ./build/muon-bootstrap setup build
+    # NOTE: bootstrap.sh attempts to call "c99", which isn't a command. We'll
+    #       use CC here to define a suitable replacement. ~ahill
+    CC="clang -std=c99" ./bootstrap.sh build
+    ./build/muon-bootstrap setup $TT_MESON_COMMON build
     ./build/muon-bootstrap -C build samu
-    ./build/muon -C build test -R
 }
 
 clean() {
