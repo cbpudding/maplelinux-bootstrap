@@ -12,17 +12,12 @@ Definitions:
 | `busybox`     | No         | No           |
 | `byacc`       | Yes        | Yes          |
 | `bzip2`       | Yes        | Yes          |
-| `clang`       | No         | No           |
 | `cmake`       | Yes        | Yes          |
-| `compiler-rt` | No         | No           |
 | `editline`    | Yes        | Yes          |
 | `flex`        | Yes        | Yes          |
 | `libarchive`  | Yes        | Yes          |
-| `libcxx`      | No         | No           |
-| `libcxxabi`   | No         | No           |
 | `libressl`    | Yes        | Yes          |
 | `libtool`     | Yes        | Yes          |
-| `libunwind`   | No         | No           |
 | `linux`       | No         | No           |
 | `llvm`        | No         | No           |
 | `m4`          | Yes        | Yes          |
