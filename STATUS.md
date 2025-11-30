@@ -18,6 +18,7 @@ Definitions:
 | `libarchive`  | Yes        | Yes          |
 | `libressl`    | Yes        | Yes          |
 | `libtool`     | Yes        | Yes          |
+| `libyaml`     | Yes        | Yes          |
 | `linux`       | No         | No           |
 | `llvm`        | No         | No           |
 | `m4`          | Yes        | Yes          |
@@ -30,5 +31,6 @@ Definitions:
 | `ncurses`     | Yes        | Yes          |
 | `perl`        | Yes        | Yes          |
 | `pkgconf`     | Yes        | Yes          |
+| `ruby`        | Yes        | Yes          |
 | `xz`          | Yes        | Yes          |
 | `zlib`        | Yes        | Yes          |
