@@ -13,7 +13,7 @@ Definitions:
 | `byacc`       | Yes        | Yes          |
 | `bzip2`       | Yes        | Yes          |
 | `clang`       | No         | No           |
-| `cmake`       | Yes        | No           |
+| `cmake`       | Yes        | Yes          |
 | `compiler-rt` | No         | No           |
 | `editline`    | Yes        | Yes          |
 | `flex`        | Yes        | Yes          |
