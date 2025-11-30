@@ -5,9 +5,6 @@ SRC_NAME="mold"
 SRC_URL="https://github.com/rui314/mold/archive/refs/tags/v2.40.4.tar.gz"
 SRC_VERSION="2.40.4"
 
-# TODO: Merge the contents from /lib64 and /libexec into $TT_LIBDIR ~ahill
-# TODO: Move /share to $TT_DATADIR ~ahill
-
 build() {
     tar xf ../$SRC_FILENAME
     cd mold-*/
@@ -21,6 +18,11 @@ clean() {
 
 package() {
     cd mold-*/
+    # NOTE: Setting --prefix here is ineffective because GNUInstallDirs are used
+    #       in install functions despite CMake's documentation warning against
+    #       such a thing for this exact reason. ~ahill
+    # See also: https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
     cmake --install build --parallel $TT_PROCS
-    ln -sf mold $TT_INSTALLDIR/bin/ld
+    mkdir -p $TT_INSTALLDIR$TT_BINDIR
+    ln -sf mold $TT_INSTALLDIR$TT_BINDIR/ld
 }

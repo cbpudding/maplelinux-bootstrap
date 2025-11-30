@@ -22,7 +22,7 @@ Definitions:
 | `llvm`       | No         | No           |
 | `m4`         | Yes        | Yes          |
 | `make`       | Yes        | Yes          |
-| `mold`       | Yes        | No           |
+| `mold`       | Yes        | Yes          |
 | `muon`       | Yes        | No           |
 | `musl`       | Yes        | Yes          |
 | `musl-fts`   | Yes        | Yes          |

@@ -18,6 +18,11 @@
 # Changelog #
 #############
 
+# November 29, 2025 (1.3.1)
+# + Added GNUInstallDirs to TT_CMAKE_COMMON [ahill]
+# * Tweaked the messages to make it easier to see that treetap exited
+#   unexpectedly [ahill]
+
 # November 24, 2025 (1.3.0)
 # + Added TT_DATADIR [ahill]
 # + Added TT_MESON_COMMON for easy Meson integration [ahill]
@@ -129,7 +134,7 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.3.0"
+TT_VERSION="1.3.1"
 
 #####################
 # Utility Functions #
@@ -214,7 +219,7 @@ source_spec() {
 
     # Last, but certainly not least, let's define where we want the build to
     # occur and where to put the artifacts. ~ahill
-    TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_MICROARCH"\
+    TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_MICROARCH"
     TT_INSTALLDIR="$TT_BUILDDIR/install"
 
     # Create convenience variables
@@ -239,11 +244,25 @@ source_spec() {
             --target=$TT_TARGET" | xargs)
     fi
 
+    # TODO: What should CMAKE_INSTALL_SHAREDSTATEDIR be? ~ahill
+    # NOTE: TT_INSTALLDIR is used here because CMake treats / as a special case
+    #       and sets the prefix to /usr anyways, completely defeating the point
+    #       of setting it to / to begin with. ~ahill
+    # See also: https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html#special-cases
     TT_CMAKE_COMMON=$(echo "-DCMAKE_ASM_COMPILER_TARGET=$TT_TARGET \
         -DCMAKE_C_COMPILER_TARGET=$TT_TARGET \
         -DCMAKE_CXX_COMPILER_TARGET=$TT_TARGET \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=$TT_INSTALLDIR" | xargs)
+        -DCMAKE_INSTALL_BINDIR=$TT_INSTALLDIR$TT_BINDIR \
+        -DCMAKE_INSTALL_DATAROOTDIR=$TT_INSTALLDIR$TT_DATADIR \
+        -DCMAKE_INSTALL_INCLUDEDIR=$TT_INSTALLDIR$TT_INCLUDEDIR \
+        -DCMAKE_INSTALL_LIBDIR=$TT_INSTALLDIR$TT_LIBDIR \
+        -DCMAKE_INSTALL_LIBEXECDIR=$TT_INSTALLDIR$TT_LIBDIR \
+        -DCMAKE_INSTALL_LOCALSTATEDIR=$TT_INSTALLDIR$TT_STATEDIR \
+        -DCMAKE_INSTALL_PREFIX=$TT_INSTALLDIR$TT_PREFIX \
+        -DCMAKE_INSTALL_RUNSTATEDIR=$TT_INSTALLDIR$TT_RUNDIR \
+        -DCMAKE_INSTALL_SBINDIR=$TT_INSTALLDIR$TT_BINDIR \
+        -DCMAKE_INSTALL_SYSCONFDIR=$TT_INSTALLDIR$TT_CONFDIR" | xargs)
 
     # NOTE: CMake doesn't like having a space in CC and CXX, so we manually
     #       define a few things if CCACHE is set. ~ahill
@@ -279,7 +298,7 @@ source_spec() {
 package_install() {
     [ ! -z "$2" ] && TT_SYSROOT=$2
     package_check $1 $TT_SYSROOT
-    echo "Installing $(basename $1)"
+    echo -n "Installing $(basename $1)... "
     PUSHD=$(pwd)
     cd $TT_SYSROOT
     bsdcpio -iJ < $PKG_FULLPATH
@@ -291,7 +310,7 @@ package_install() {
 package_uninstall() {
     [ ! -z "$2" ] && TT_SYSROOT=$2
     package_check $1 $TT_SYSROOT
-    echo "Uninstalling $(basename $1)"
+    echo -n "Uninstalling $(basename $1)... "
     PUSHD=$(pwd)
     cd $TT_SYSROOT
     bsdcpio -iJt < $PKG_FULLPATH | tail -n +2 | sort -r | while read path; do
@@ -310,7 +329,7 @@ source_build() {
     source_spec $1
     mkdir -p $TT_BUILDDIR
     if [ ! -z "$SRC_PATCHES" ]; then
-        echo "Validating patches for $SRC_NAME $SRC_VERSION"
+        echo -n "Validating patches for $SRC_NAME $SRC_VERSION... "
         cd $(dirname $1)
         echo $SRC_PATCHES | sha256sum -c - > /dev/null
         # Is this even the right way to check a return value? ~ahill
@@ -321,8 +340,9 @@ source_build() {
         echo $SRC_PATCHES | while read line; do
             cp $(echo $line | cut -d" " -f2) $TT_BUILDDIR/
         done
+        echo "Done!"
     fi
-    echo "Building $SRC_NAME $SRC_VERSION for $TT_MICROARCH"
+    echo -n "Building $SRC_NAME $SRC_VERSION for $TT_MICROARCH... "
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
     # Please don't use this in your build script. This is meant for
@@ -332,6 +352,7 @@ source_build() {
     build >> $TT_BUILD_LOG 2>&1
     echo "Build finished at $(date)" >> $TT_BUILD_LOG
     cd $PUSHD
+    echo "Done!"
     exit 0
 }
 
@@ -341,10 +362,11 @@ source_clean() {
     mkdir -p $TT_BUILDDIR
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    echo "Cleaning $SRC_NAME $SRC_VERSION"
+    echo -n "Cleaning $SRC_NAME $SRC_VERSION for $TT_MICROARCH... "
     clean
     rm -rf $TT_INSTALLDIR
     cd $PUSHD
+    echo "Done!"
     exit 0
 }
 
@@ -362,11 +384,13 @@ source_fetch() {
             rm -f $SRC_FILENAME
         fi
     fi
-    echo "Fetching $SRC_FILENAME"
+    echo -n "Fetching $SRC_FILENAME... "
     wget -O $SRC_FILENAME $SRC_URL
-    echo "Verifying $SRC_FILENAME"
+    echo "Done!"
+    echo -n "Verifying $SRC_FILENAME... "
     echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null
     cd $PUSHD
+    echo "Done!"
     exit 0
 }
 
@@ -378,7 +402,7 @@ source_package() {
     mkdir -p $TT_PKGDIR/$TT_MICROARCH
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    echo "Archiving $SRC_NAME $SRC_VERSION for $TT_MICROARCH"
+    echo -n "Archiving $SRC_NAME $SRC_VERSION for $TT_MICROARCH... "
     package > package-$(date +%Y%m%d%H%M%S).log
     cd $TT_INSTALLDIR
     find | bsdcpio -Jo > "$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_VERSION-$TT_MICROARCH.cpio.xz"
