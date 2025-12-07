@@ -8,13 +8,14 @@ Definitions:
 | ------------- | ---------- | ------------ |
 | `autoconf`    | Yes        | Yes          |
 | `automake`    | Yes        | Yes          |
-| `bsdutils`    | Yes        | No           |
+| `bsdutils`    | Yes        | Yes          |
 | `busybox`     | No         | No           |
 | `byacc`       | Yes        | Yes          |
 | `bzip2`       | Yes        | Yes          |
 | `cmake`       | Yes        | Yes          |
 | `editline`    | Yes        | Yes          |
 | `flex`        | Yes        | Yes          |
+| `groff`       | Yes        | Yes          |
 | `libarchive`  | Yes        | Yes          |
 | `libressl`    | Yes        | Yes          |
 | `libtool`     | Yes        | Yes          |
@@ -28,6 +29,7 @@ Definitions:
 | `musl`        | Yes        | Yes          |
 | `musl-fts`    | Yes        | Yes          |
 | `nano`        | Yes        | Yes          |
+| `nasm`        | Yes        | Yes          |
 | `ncurses`     | Yes        | Yes          |
 | `perl`        | Yes        | Yes          |
 | `pkgconf`     | Yes        | Yes          |
