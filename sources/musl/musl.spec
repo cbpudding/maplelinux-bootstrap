@@ -4,8 +4,9 @@ SRC_NAME="musl"
 SRC_PATCHES="
 c0ffd0493dcde91850e39428a31577892aad20e83bc4bf4a5c37350649ce7932  CVE-2025-26519.patch
 "
+SRC_REVISION=1
 SRC_URL="https://musl.libc.org/releases/musl-1.2.5.tar.gz"
-SRC_VERSION="1.2.5r1"
+SRC_VERSION="1.2.5"
 
 build() {
     tar xf ../$SRC_FILENAME

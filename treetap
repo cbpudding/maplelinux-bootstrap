@@ -18,6 +18,12 @@
 # Changelog #
 #############
 
+# December 6, 2025 (1.4.0)
+# + Added sane defaults for the environment if they are not defined [ahill]
+# + Added SRC_REVISION and SRC_FULLVERSION to prevent issues related to
+#   SRC_VERSION [ahill]
+# * Fixed an issue where uninstalls fail due to spaces in the filename [ahill]
+
 # November 29, 2025 (1.3.1)
 # + Added GNUInstallDirs to TT_CMAKE_COMMON [ahill]
 # * Tweaked the messages to make it easier to see that treetap exited
@@ -73,13 +79,19 @@
 #   package - Installs the package contents to $TT_INSTALLDIR
 
 # Specification Variables:
-#   SRC_FILENAME - The name of the tarball to extract (optional)
-#   SRC_HASH     - The hash of the tarball for verification purposes (required)
-#   SRC_NAME     - The name of the package being built (required)
-#   SRC_PATCHES  - A list of SHA256 hashes followed by their filenames to be
+#   SRC_FILENAME    - The name of the tarball to extract (optional)
+#   SRC_FULLVERSION - The full version of the package, which is automatically
+#                     set to SRC_VERSION, or "(SRC_VERSION)r(SRC_REVISION)" if
+#                     SRC_REVISION is set.
+#   SRC_HASH        - The hash of the tarball for verification purposes
+#                     (required)
+#   SRC_NAME        - The name of the package being built (required)
+#   SRC_PATCHES     - A list of SHA256 hashes followed by their filenames to be
 #                  copied to the build directory (optional)
-#   SRC_URL      - The URL of the tarball to be downloaded (required)
-#   SRC_VERSION  - The version of the package being built (required)
+#   SRC_REVISION    - The package revision number to denote changes specifically
+#                  made for Maple Linux (optional)
+#   SRC_URL         - The URL of the tarball to be downloaded (required)
+#   SRC_VERSION     - The version of the package being built (required)
 
 # Treetap Variables:
 #   TT_ARCH            - The architecture portion of TT_TARGET
@@ -134,7 +146,22 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.3.1"
+TT_VERSION="1.4.0"
+
+#########################
+# Environment Variables #
+#########################
+
+[ -z "$AR" ] && export AR=ar
+[ -z "$AS" ] && export AS=nasm
+[ -z "$CC" ] && export CC=clang
+[ -z "$CXX" ] && export CXX=clang++
+[ -z "$LD" ] && export LD=mold
+[ -z "$NM" ] && export NM=nm
+[ -z "$OBJCOPY" ] && export OBJCOPY=objcopy
+[ -z "$OBJDUMP" ] && export OBJDUMP=objdump
+[ -z "$PKG_CONFIG" ] && export PKG_CONFIG=pkgconf
+[ -z "$STRIP" ] && export STRIP=strip
 
 #####################
 # Utility Functions #
@@ -184,6 +211,11 @@ source_spec() {
     [ -z "$SRC_NAME" ] && (echo "source_spec: SRC_NAME is required but not defined"; exit 1)
     [ -z "$SRC_URL" ] && (echo "source_spec: SRC_URL is required but not defined"; exit 1)
     [ -z "$SRC_VERSION" ] && (echo "source_spec: SRC_VERSION is required but not defined"; exit 1)
+    if [ -z "$SRC_REVISION" ]; then
+        SRC_FULLVERSION=$SRC_VERSION
+    else
+        SRC_FULLVERSION="${SRC_VERSION}r${SRC_REVISION}"
+    fi
 
     # Optional Fields
     [ -z "$SRC_FILENAME" ] && SRC_FILENAME=$(basename $SRC_URL)
@@ -314,10 +346,10 @@ package_uninstall() {
     PUSHD=$(pwd)
     cd $TT_SYSROOT
     bsdcpio -iJt < $PKG_FULLPATH | tail -n +2 | sort -r | while read path; do
-        if [ -d $path ]; then
-            rmdir --ignore-fail-on-non-empty $path
+        if [ -d "$path" ]; then
+            rmdir --ignore-fail-on-non-empty "$path"
         else
-            rm -f $path
+            rm -f "$path"
         fi
     done
     cd $PUSHD
@@ -329,12 +361,12 @@ source_build() {
     source_spec $1
     mkdir -p $TT_BUILDDIR
     if [ ! -z "$SRC_PATCHES" ]; then
-        echo -n "Validating patches for $SRC_NAME $SRC_VERSION... "
+        echo -n "Validating patches for $SRC_NAME $SRC_FULLVERSION... "
         cd $(dirname $1)
         echo $SRC_PATCHES | sha256sum -c - > /dev/null
         # Is this even the right way to check a return value? ~ahill
         if [ ! "$?" = "0" ]; then
-            echo "Failed to validate patches for $SRC_NAME $SRC_VERSION for $TT_MICROARCH ($TT_TARGET)"
+            echo "Failed to validate patches for $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH ($TT_TARGET)"
             exit 1
         fi
         echo $SRC_PATCHES | while read line; do
@@ -342,7 +374,7 @@ source_build() {
         done
         echo "Done!"
     fi
-    echo -n "Building $SRC_NAME $SRC_VERSION for $TT_MICROARCH... "
+    echo -n "Building $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
     # Please don't use this in your build script. This is meant for
@@ -362,7 +394,7 @@ source_clean() {
     mkdir -p $TT_BUILDDIR
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    echo -n "Cleaning $SRC_NAME $SRC_VERSION for $TT_MICROARCH... "
+    echo -n "Cleaning $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
     clean
     rm -rf $TT_INSTALLDIR
     cd $PUSHD
@@ -402,10 +434,10 @@ source_package() {
     mkdir -p $TT_PKGDIR/$TT_MICROARCH
     PUSHD=$(pwd)
     cd $TT_BUILDDIR
-    echo -n "Archiving $SRC_NAME $SRC_VERSION for $TT_MICROARCH... "
+    echo -n "Archiving $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
     package > package-$(date +%Y%m%d%H%M%S).log
     cd $TT_INSTALLDIR
-    find | bsdcpio -Jo > "$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_VERSION-$TT_MICROARCH.cpio.xz"
+    find | bsdcpio -Jo > "$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_FULLVERSION-$TT_MICROARCH.cpio.xz"
     rm -rf $TT_INSTALLDIR
     cd $PUSHD
     exit 0

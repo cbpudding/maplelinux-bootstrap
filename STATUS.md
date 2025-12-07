@@ -9,7 +9,7 @@ Definitions:
 | `autoconf`    | Yes        | Yes          |
 | `automake`    | Yes        | Yes          |
 | `bsdutils`    | Yes        | Yes          |
-| `busybox`     | No         | No           |
+| `busybox`     | Yes        | Yes          |
 | `byacc`       | Yes        | Yes          |
 | `bzip2`       | Yes        | Yes          |
 | `cmake`       | Yes        | Yes          |

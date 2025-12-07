@@ -1,8 +1,9 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="ab5a03176ee106d3f0fa90e381da478ddae405918153cca248e682cd0c4a2269"
 SRC_NAME="bzip2"
+SRC_REVISION=2
 SRC_URL="https://sourceware.org/pub/bzip2/bzip2-1.0.8.tar.gz"
-SRC_VERSION="1.0.8r2"
+SRC_VERSION="1.0.8"
 
 # TODO: Install the man pages ~ahill
 

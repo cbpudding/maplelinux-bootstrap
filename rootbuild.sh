@@ -32,8 +32,9 @@ make -j $(nproc) install DESTDIR=/ > /dev/null 2>&1
 # NOTE: autoconf requires GNU m4 and perl to build. ~ahill
 # NOTE: automake requires m4 to build. ~ahill
 # NOTE: musl-fts requires autoconf, automake, and libtool to build. ~ahill
+# NOTE: bsdutils requires musl-fts and muon to build. ~ahill
 cd /maple
-PACKAGES="byacc bzip2 libressl m4 make muon musl ncurses perl pkgconf xz zlib autoconf automake editline flex libarchive libtool musl-fts cmake mold"
+PACKAGES="busybox byacc bzip2 groff libressl m4 make muon musl nasm ncurses perl pkgconf xz zlib autoconf automake editline flex libarchive libtool musl-fts bsdutils cmake mold"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
     treetap build /maple/sources/$pkg/$pkg.spec
