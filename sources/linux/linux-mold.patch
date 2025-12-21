@@ -1,0 +1,28 @@
+diff -ruN vanilla/ld-version.sh maple/ld-version.sh
+--- vanilla/scripts/ld-version.sh	2025-12-20 22:21:33.612821362 -0500
++++ maple/scripts/ld-version.sh	2025-12-20 22:26:22.501951110 -0500
+@@ -41,6 +41,11 @@
+ elif [ "$1" = GNU -a "$2" = gold ]; then
+ 	echo "gold linker is not supported as it is not capable of linking the kernel proper." >&2
+ 	exit 1
++elif [ "$1" = mold ]; then
++    version=$2
++	min_version=$($min_tool_version mold)
++	name=mold
++	disp_name=mold
+ else
+ 	while [ $# -gt 1 -a "$1" != "LLD" ]; do
+ 		shift
+diff -ruN vanilla/min-tool-version.sh maple/min-tool-version.sh
+--- vanilla/scripts/min-tool-version.sh	2025-12-20 22:21:43.939683406 -0500
++++ maple/scripts/min-tool-version.sh	2025-12-20 22:22:08.348357201 -0500
+@@ -36,6 +36,9 @@
+ bindgen)
+ 	echo 0.65.1
+ 	;;
++mold)
++    echo 2.40.4
++    ;;
+ *)
+ 	echo "$1: unknown tool" >&2
+ 	exit 1
