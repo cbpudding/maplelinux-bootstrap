@@ -239,17 +239,15 @@ cp $TREETAP $BOOTSTRAP/root/bin/
 
 # Prepare for chroot build
 mkdir -p $BOOTSTRAP/root/maple/
-cp rootbuild.sh $BOOTSTRAP/root/maple/
+cp $BOOTSTRAP/../rootbuild.sh $BOOTSTRAP/root/maple/
 export TT_DIR=$BOOTSTRAP/root/maple/.treetap
 SOURCES=(
     autoconf
     automake
-    bsdutils
     busybox
     byacc
     bzip2
     cmake
-    editline
     flex
     libarchive
     libressl
@@ -261,8 +259,6 @@ SOURCES=(
     mold
     muon
     musl
-    musl-fts
-    ncurses
     perl
     pkgconf
     xz

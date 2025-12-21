@@ -2,9 +2,9 @@
 SRC_HASH="b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314"
 SRC_NAME="busybox"
 SRC_PATCHES="
-59d4edffe7f191fa3c8ae519ca62ea6cff77e5c9ae0945fd381570e884065975  .config
+a35fa3d6687d7cbcaa2d8675208392086d56df0c8719ddbde9f46373b189d0d4  .config
 "
-SRC_REVISION=3
+SRC_REVISION=4
 SRC_URL="https://busybox.net/downloads/busybox-1.36.1.tar.bz2"
 SRC_VERSION="1.36.1"
 
