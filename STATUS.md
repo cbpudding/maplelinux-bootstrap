@@ -15,6 +15,7 @@ Definitions:
 | `flex`        | Yes        | Yes          |
 | `groff`       | Yes        | Yes          |
 | `libarchive`  | Yes        | Yes          |
+| `libelf`      | Yes        | Yes          |
 | `libressl`    | Yes        | Yes          |
 | `libtool`     | Yes        | Yes          |
 | `libyaml`     | Yes        | Yes          |
