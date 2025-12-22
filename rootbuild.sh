@@ -24,7 +24,6 @@ make -j $(nproc) install DESTDIR=/ > /dev/null 2>&1
 echo "Done!"
 
 # Now we can build stuff exclusively with treetap
-# NOTE: bzip2 needs to be built before Busybox ~ahill
 # NOTE: bzip2, xz, and zlib need to be built before libarchive or we will be
 #       missing functionality! ~ahill
 # NOTE: CMake requires LibreSSL and libarchive to function properly so it is
@@ -36,7 +35,7 @@ echo "Done!"
 # NOTE: groff requires Perl to build. ~ahill
 # NOTE: nasm requires autoconf and automake to build. ~ahill
 cd /maple
-PACKAGES="bzip2 busybox byacc libelf libressl m4 make muon musl perl pkgconf xz zlib autoconf automake flex groff libarchive libtool nasm cmake mold"
+PACKAGES="byacc bzip2 libelf libressl m4 make muon musl perl pkgconf toybox xz zlib autoconf automake flex groff libarchive libtool nasm cmake mold"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
     treetap build /maple/sources/$pkg/$pkg.spec

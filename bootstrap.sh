@@ -210,7 +210,7 @@ cmake -S llvm -B build-llvm \
     -DCMAKE_INSTALL_PREFIX=$BOOTSTRAP/root \
     -DCMAKE_TOOLCHAIN_FILE=$BOOTSTRAP/$TARGET.cmake \
     -DLLVM_ENABLE_LIBCXX=ON \
-    -DLLVM_ENABLE_PROJECTS="clang;llvm" \
+    -DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
     -DLLVM_ENABLE_ZSTD=OFF \
     -DLLVM_HOST_TRIPLE=$TARGET \
     -DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
@@ -226,7 +226,7 @@ ln -s clang++ $BOOTSTRAP/root/bin/c++
 cd ..
 
 # Build remaining software with treetap
-SOURCES=(busybox make mold)
+SOURCES=(make mold toybox)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
@@ -244,7 +244,6 @@ export TT_DIR=$BOOTSTRAP/root/maple/.treetap
 SOURCES=(
     autoconf
     automake
-    busybox
     byacc
     bzip2
     cmake
@@ -261,6 +260,7 @@ SOURCES=(
     musl
     perl
     pkgconf
+    toybox
     xz
     zlib
 )
