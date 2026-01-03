@@ -28,14 +28,13 @@ echo "Done!"
 #       missing functionality! ~ahill
 # NOTE: CMake requires LibreSSL and libarchive to function properly so it is
 #       built after them. ~ahill
-# NOTE: mold requires CMake to build. ~ahill
 # NOTE: flex requires byacc and m4 to build. ~ahill
 # NOTE: autoconf requires GNU m4 and perl to build. ~ahill
 # NOTE: automake requires m4 to build. ~ahill
 # NOTE: groff requires Perl to build. ~ahill
 # NOTE: nasm requires autoconf and automake to build. ~ahill
 cd /maple
-PACKAGES="byacc bzip2 libelf libressl m4 make muon musl perl pkgconf toybox xz zlib autoconf automake flex groff libarchive libtool nasm cmake mold"
+PACKAGES="byacc bzip2 libelf libressl m4 make muon musl perl pkgconf xz zlib autoconf automake flex groff libarchive libtool nasm cmake"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
     treetap build /maple/sources/$pkg/$pkg.spec

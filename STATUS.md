@@ -8,28 +8,50 @@ Definitions:
 | ------------- | ---------- | ------------ |
 | `autoconf`    | Yes        | Yes          |
 | `automake`    | Yes        | Yes          |
-| `busybox`     | Yes        | Yes          |
+| `bc`          |
 | `byacc`       | Yes        | Yes          |
 | `bzip2`       | Yes        | Yes          |
+| `chrony`      |
 | `cmake`       | Yes        | Yes          |
+| `coreutils`   |
+| `dhcpcd`      |
+| `diffutils`   |
+| `findutils`   |
 | `flex`        | Yes        | Yes          |
+| `gettext`     |
+| `grep`        |
 | `groff`       | Yes        | Yes          |
+| `gzip`        |
+| `iproute2`    |
+| `kbd`         |
+| `kmod`        |
+| `less`        |
 | `libarchive`  | Yes        | Yes          |
+| `libcap2`     |
 | `libelf`      | Yes        | Yes          |
+| `libmnl`      |
+| `libnftnl`    |
 | `libressl`    | Yes        | Yes          |
 | `libtool`     | Yes        | Yes          |
-| `libyaml`     | Yes        | Yes          |
+| `limine`      |
 | `linux`       | No         | No           |
 | `llvm`        | No         | No           |
 | `m4`          | Yes        | Yes          |
 | `make`        | Yes        | Yes          |
-| `mold`        | Yes        | Yes          |
+| `mawk`        |
 | `muon`        | Yes        | Yes          |
 | `musl`        | Yes        | Yes          |
-| `nano`        | Yes        | Yes          |
+| `nano`        |
 | `nasm`        | Yes        | Yes          |
+| `ncurses`     |
+| `nftables`    |
+| `openrc`      |
+| `patch`       |
 | `perl`        | Yes        | Yes          |
 | `pkgconf`     | Yes        | Yes          |
-| `ruby`        | Yes        | Yes          |
+| `sed`         |
+| `shadow`      |
+| `tar`         |
 | `xz`          | Yes        | Yes          |
 | `zlib`        | Yes        | Yes          |
+| `zsh`         |

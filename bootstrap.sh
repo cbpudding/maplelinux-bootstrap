@@ -18,10 +18,10 @@ else
     export CC=clang
     export CXX=clang++
 fi
-export CFLAGS="-fuse-ld=mold -O3 -march=$MICROARCH -pipe --sysroot=$BOOTSTRAP/root -Wno-unused-command-line-argument"
+export CFLAGS="-fuse-ld=lld -O3 -march=$MICROARCH -pipe --sysroot=$BOOTSTRAP/root -Wno-unused-command-line-argument"
 export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
-export LD=mold
+export LD=ld.lld
 export LDFLAGS="--sysroot=$BOOTSTRAP/root"
 export TREETAP=$(pwd)/treetap
 export TT_DIR=$(pwd)/.treetap
@@ -68,7 +68,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_LINKER_TYPE MOLD)
+set(CMAKE_LINKER_TYPE LLD)
 set(CMAKE_SYSROOT "$BOOTSTRAP/root")
 set(CMAKE_SYSTEM_NAME Linux)
 EOF
@@ -201,7 +201,7 @@ NATIVE_TOOL_DIR=$(dirname $(which llvm-tblgen) | sed -z "s/\n//g")
 cd llvm-project-*/
 cmake -S llvm -B build-llvm \
     -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-    -DCLANG_DEFAULT_LINKER=mold \
+    -DCLANG_DEFAULT_LINKER=lld \
     -DCLANG_DEFAULT_RTLIB=compiler-rt \
     -DCLANG_DEFAULT_UNWINDLIB=libunwind \
     -DCLANG_TABLEGEN=$NATIVE_TOOL_DIR/clang-tblgen \
@@ -226,7 +226,7 @@ ln -s clang++ $BOOTSTRAP/root/bin/c++
 cd ..
 
 # Build remaining software with treetap
-SOURCES=(make mold toybox)
+SOURCES=(make)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
@@ -255,12 +255,10 @@ SOURCES=(
     llvm
     m4
     make
-    mold
     muon
     musl
     perl
     pkgconf
-    toybox
     xz
     zlib
 )
