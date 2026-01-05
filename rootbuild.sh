@@ -34,7 +34,7 @@ echo "Done!"
 # NOTE: groff requires Perl to build. ~ahill
 # NOTE: nasm requires autoconf and automake to build. ~ahill
 cd /maple
-PACKAGES="byacc bzip2 libelf libressl m4 make muon musl perl pkgconf xz zlib autoconf automake flex groff libarchive libtool nasm cmake"
+PACKAGES="byacc bzip2 coreutils dash findutils grep gzip libelf libressl m4 make mawk muon musl perl pkgconf sed tar xz zlib autoconf automake flex groff libarchive libtool nasm cmake"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
     treetap build /maple/sources/$pkg/$pkg.spec

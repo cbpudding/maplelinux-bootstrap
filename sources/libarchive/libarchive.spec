@@ -7,8 +7,6 @@ SRC_VERSION="3.8.4"
 build() {
     tar xf ../$SRC_FILENAME
     cd libarchive-*/
-    # NOTE: bsdtar is disabled here because Busybox's implementation is complete
-    #       enough to be useful and bootstrapping libarchive is a pain. ~ahill
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -j $TT_PROCS
 }

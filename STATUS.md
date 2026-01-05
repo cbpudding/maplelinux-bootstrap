@@ -14,10 +14,12 @@ Definitions:
 | `chrony`          |
 | `cmake`           | Yes        | Yes          |
 | `coreutils`       |
+| `dash`            |
 | `dhcpcd`          |
 | `diffutils`       |
 | `findutils`       |
 | `flex`            | Yes        | Yes          |
+| `fortune-mod`     |
 | `gettext`         |
 | `grep`            |
 | `groff`           | Yes        | Yes          |
@@ -53,6 +55,8 @@ Definitions:
 | `sed`             |
 | `shadow`          |
 | `tar`             |
+| `texinfo`         |
+| `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |
 | `zsh`             |

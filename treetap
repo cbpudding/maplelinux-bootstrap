@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-# Copyright (c) 2025 Alexander Hill
+# Copyright (c) 2025-2026 Alexander Hill
 
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -17,6 +17,11 @@
 #############
 # Changelog #
 #############
+
+# January 4, 2026 (1.4.1)
+# * Set LD to ld.lld after mold was removed from Maple Linux. [ahill]
+# - Replaced clean with purge, since the current implementation of clean isn't
+#   effective. [ahill]
 
 # December 6, 2025 (1.4.0)
 # + Added sane defaults for the environment if they are not defined [ahill]
@@ -75,7 +80,6 @@
 
 # Specification Functions:
 #   build   - Builds the package
-#   clean   - Cleans $TT_BUILDDIR for the next build
 #   package - Installs the package contents to $TT_INSTALLDIR
 
 # Specification Variables:
@@ -87,9 +91,9 @@
 #                     (required)
 #   SRC_NAME        - The name of the package being built (required)
 #   SRC_PATCHES     - A list of SHA256 hashes followed by their filenames to be
-#                  copied to the build directory (optional)
+#                     copied to the build directory (optional)
 #   SRC_REVISION    - The package revision number to denote changes specifically
-#                  made for Maple Linux (optional)
+#                     made for Maple Linux (optional)
 #   SRC_URL         - The URL of the tarball to be downloaded (required)
 #   SRC_VERSION     - The version of the package being built (required)
 
@@ -146,7 +150,7 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.4.0"
+TT_VERSION="1.4.1"
 
 #########################
 # Environment Variables #
@@ -156,7 +160,7 @@ TT_VERSION="1.4.0"
 [ -z "$AS" ] && export AS=nasm
 [ -z "$CC" ] && export CC=clang
 [ -z "$CXX" ] && export CXX=clang++
-[ -z "$LD" ] && export LD=mold
+[ -z "$LD" ] && export LD=ld.lld
 [ -z "$NM" ] && export NM=nm
 [ -z "$OBJCOPY" ] && export OBJCOPY=objcopy
 [ -z "$OBJDUMP" ] && export OBJDUMP=objdump
@@ -388,20 +392,6 @@ source_build() {
     exit 0
 }
 
-# Cleans the source from the previous build
-source_clean() {
-    source_spec $1
-    mkdir -p $TT_BUILDDIR
-    PUSHD=$(pwd)
-    cd $TT_BUILDDIR
-    echo -n "Cleaning $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
-    clean
-    rm -rf $TT_INSTALLDIR
-    cd $PUSHD
-    echo "Done!"
-    exit 0
-}
-
 # Fetches and verifies the integrity of the source tarball
 source_fetch() {
     source_spec $1
@@ -456,7 +446,7 @@ source_purge() {
 
 case "$1" in
 "build") source_build $2 ;;
-"clean") source_clean $2 ;;
+"clean") source_purge $2 ;;
 "fetch") source_fetch $2 ;;
 "install") package_install $2 $3 ;;
 "package") source_package $2 ;;

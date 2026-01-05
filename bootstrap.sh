@@ -35,10 +35,8 @@ $TREETAP fetch sources/llvm/llvm.spec
 $TREETAP fetch sources/musl/musl.spec
 
 # Make sure both clang-tblgen and llvm-tblgen are in the PATH. ~ahill
-which clang-tblgen > /dev/null
-[ ! "$?" = "0" ] && (echo "Unable to find clang-tblgen"; exit 1)
-which llvm-tblgen > /dev/null
-[ ! "$?" = "0" ] && (echo "Unable to find llvm-tblgen"; exit 1)
+[ -z "$(which clang-tblgen)" ] && (echo "Unable to find clang-tblgen"; exit 1)
+[ -z "$(which llvm-tblgen)" ] && (echo "Unable to find llvm-tblgen"; exit 1)
 
 # Simplified filesystem heirarchy with symlinks for compatibility
 mkdir -p $BOOTSTRAP/root/{bin,boot/EFI/BOOT,dev,etc,home,lib,proc,run,sys,tmp,usr/{include,share},var/{cache,lib,log,spool,tmp}}
@@ -226,7 +224,7 @@ ln -s clang++ $BOOTSTRAP/root/bin/c++
 cd ..
 
 # Build remaining software with treetap
-SOURCES=(make)
+SOURCES=(coreutils dash grep findutils gzip make mawk sed tar xz)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
@@ -247,18 +245,29 @@ SOURCES=(
     byacc
     bzip2
     cmake
+    coreutils
+    dash
+    findutils
     flex
+    grep
+    groff
+    gzip
     libarchive
+    libelf
     libressl
     libtool
     linux
     llvm
     m4
     make
+    mawk
     muon
     musl
+    nasm
     perl
     pkgconf
+    sed
+    tar
     xz
     zlib
 )
