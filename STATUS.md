@@ -13,17 +13,17 @@ Definitions:
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
 | `cmake`           | Yes        | Yes          |
-| `coreutils`       | Yes        |
-| `dash`            | Yes        |
+| `coreutils`       | Yes        | Yes          |
+| `dash`            | Yes        | Yes          |
 | `dhcpcd`          |
-| `diffutils`       | Yes        |
-| `findutils`       | Yes        |
+| `diffutils`       | Yes        | Yes          |
+| `findutils`       | Yes        | Yes          |
 | `flex`            | Yes        | Yes          |
 | `fortune-mod`     |
 | `gettext`         |
-| `grep`            | Yes        |
+| `grep`            | Yes        | Yes          |
 | `groff`           | Yes        | Yes          |
-| `gzip`            | Yes        |
+| `gzip`            | Yes        | Yes          |
 | `initramfs-tools` | Yes        | Yes          |
 | `iproute2`        |
 | `kbd`             |
@@ -41,7 +41,7 @@ Definitions:
 | `llvm`            | No         | No           |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
-| `mawk`            | Yes        |
+| `mawk`            | Yes        | Yes          |
 | `muon`            | Yes        | Yes          |
 | `musl`            | Yes        | Yes          |
 | `nano`            |
@@ -49,12 +49,12 @@ Definitions:
 | `ncurses`         |
 | `nftables`        |
 | `openrc`          |
-| `patch`           | Yes        |
+| `patch`           | Yes        | Yes          |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
-| `sed`             | Yes        |
+| `sed`             | Yes        | Yes          |
 | `shadow`          |
-| `tar`             | Yes        |
+| `tar`             | Yes        | Yes          |
 | `texinfo`         |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
