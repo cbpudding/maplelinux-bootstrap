@@ -1,14 +1,14 @@
 #!/bin/zsh -e
 
-MICROARCH=skylake
-TARGET=x86_64-maple-linux-musl
+export MICROARCH=skylake
+export TARGET=x86_64-maple-linux-musl
 
 # Set the environment up
-ARCH=$(echo $TARGET | cut -d"-" -f1)
-BOOTSTRAP=$(pwd)/.bootstrap
-PROCS=$(nproc)
-SOURCES=$(pwd)/.treetap/sources
-SPEC=$(pwd)/sources
+export ARCH=$(echo $TARGET | cut -d"-" -f1)
+export BOOTSTRAP=$(pwd)/.bootstrap
+export PROCS=$(nproc)
+export SOURCES=$(pwd)/.treetap/sources
+export SPEC=$(pwd)/sources
 export AR=llvm-ar
 export AS=llvm-as
 if [ ! -z "$CCACHE" ]; then
@@ -35,8 +35,8 @@ $TREETAP fetch sources/llvm/llvm.spec
 $TREETAP fetch sources/musl/musl.spec
 
 # Make sure both clang-tblgen and llvm-tblgen are in the PATH. ~ahill
-[ -z "$(which clang-tblgen)" ] && (echo "Unable to find clang-tblgen"; exit 1)
-[ -z "$(which llvm-tblgen)" ] && (echo "Unable to find llvm-tblgen"; exit 1)
+! which clang-tblgen && exit 1
+! which llvm-tblgen && exit 1
 
 # Simplified filesystem heirarchy with symlinks for compatibility
 mkdir -p $BOOTSTRAP/root/{bin,boot/EFI/BOOT,dev,etc,home,lib,proc,run,sys,tmp,usr/{include,share},var/{cache,lib,log,spool,tmp}}
@@ -219,12 +219,12 @@ cmake --build build-llvm --parallel $PROCS
 cmake --install build-llvm --parallel $PROCS
 # NOTE: LLVM doesn't add symlinks for clang, so we'll make them ourselves.
 #       ~ahill
-ln -s clang $BOOTSTRAP/root/bin/cc
-ln -s clang++ $BOOTSTRAP/root/bin/c++
+ln -sf clang $BOOTSTRAP/root/bin/cc
+ln -sf clang++ $BOOTSTRAP/root/bin/c++
 cd ..
 
 # Build remaining software with treetap
-SOURCES=(coreutils dash grep findutils gzip make mawk sed tar xz)
+SOURCES=(coreutils dash diffutils findutils grep gzip make mawk patch sed tar)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
@@ -247,6 +247,7 @@ SOURCES=(
     cmake
     coreutils
     dash
+    diffutils
     findutils
     flex
     grep
@@ -264,6 +265,7 @@ SOURCES=(
     muon
     musl
     nasm
+    patch
     perl
     pkgconf
     sed

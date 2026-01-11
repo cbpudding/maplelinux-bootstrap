@@ -33,8 +33,13 @@ echo "Done!"
 # NOTE: automake requires m4 to build. ~ahill
 # NOTE: groff requires Perl to build. ~ahill
 # NOTE: nasm requires autoconf and automake to build. ~ahill
+# NOTE: dash requires flex and mawk to build. ~ahill
+# NOTE: libelf requires zlib to build. ~ahill
 cd /maple
-PACKAGES="byacc bzip2 coreutils dash findutils grep gzip libelf libressl m4 make mawk muon musl perl pkgconf sed tar xz zlib autoconf automake flex groff libarchive libtool nasm cmake"
+LAYER0="byacc bzip2 coreutils diffutils findutils grep gzip libressl m4 make mawk muon musl patch perl pkgconf sed tar xz zlib"
+LAYER1="autoconf automake flex groff libarchive libelf libtool"
+LAYER2="dash nasm cmake"
+PACKAGES="$LAYER0 $LAYER1 $LAYER2"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
     treetap build /maple/sources/$pkg/$pkg.spec

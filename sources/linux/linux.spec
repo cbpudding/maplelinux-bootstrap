@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="7a8879167b89c4bae077d6f39c4f2130769f05dbdad2aad914adab9afb7d7f9a"
+SRC_HASH="f850139ca5f79c1bf6bb8b32f92e212aadca97bdaef8a83a7cf4ac4d6a525fab"
 SRC_NAME="linux"
-SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.3.tar.xz"
-SRC_VERSION="6.18.3"
+SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.4.tar.xz"
+SRC_VERSION="6.18.4"
 
 build() {
     tar xf ../$SRC_FILENAME

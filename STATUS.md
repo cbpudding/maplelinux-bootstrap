@@ -13,17 +13,17 @@ Definitions:
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
 | `cmake`           | Yes        | Yes          |
-| `coreutils`       |
-| `dash`            |
+| `coreutils`       | Yes        |
+| `dash`            | Yes        |
 | `dhcpcd`          |
-| `diffutils`       |
-| `findutils`       |
+| `diffutils`       | Yes        |
+| `findutils`       | Yes        |
 | `flex`            | Yes        | Yes          |
 | `fortune-mod`     |
 | `gettext`         |
-| `grep`            |
+| `grep`            | Yes        |
 | `groff`           | Yes        | Yes          |
-| `gzip`            |
+| `gzip`            | Yes        |
 | `initramfs-tools` | Yes        | Yes          |
 | `iproute2`        |
 | `kbd`             |
@@ -41,7 +41,7 @@ Definitions:
 | `llvm`            | No         | No           |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
-| `mawk`            |
+| `mawk`            | Yes        |
 | `muon`            | Yes        | Yes          |
 | `musl`            | Yes        | Yes          |
 | `nano`            |
@@ -49,12 +49,12 @@ Definitions:
 | `ncurses`         |
 | `nftables`        |
 | `openrc`          |
-| `patch`           |
+| `patch`           | Yes        |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
-| `sed`             |
+| `sed`             | Yes        |
 | `shadow`          |
-| `tar`             |
+| `tar`             | Yes        |
 | `texinfo`         |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
