@@ -19,7 +19,7 @@ Definitions:
 | `diffutils`       | Yes        | Yes          |
 | `findutils`       | Yes        | Yes          |
 | `flex`            | Yes        | Yes          |
-| `fortune-mod`     |
+| `fortune-mod`     | Yes        | Yes          |
 | `gettext`         |
 | `grep`            | Yes        | Yes          |
 | `groff`           | Yes        | Yes          |
