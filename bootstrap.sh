@@ -255,6 +255,7 @@ SOURCES=(
     grep
     groff
     gzip
+    kmod
     libarchive
     libelf
     libressl

@@ -27,7 +27,7 @@ Definitions:
 | `initramfs-tools` | Yes        | Yes          |
 | `iproute2`        |
 | `kbd`             |
-| `kmod`            |
+| `kmod`            | Yes        | Yes          |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
 | `libcap2`         |
