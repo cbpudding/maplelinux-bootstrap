@@ -44,7 +44,7 @@ Definitions:
 | `mawk`            | Yes        | Yes          |
 | `muon`            | Yes        | Yes          |
 | `musl`            | Yes        | Yes          |
-| `nano`            |
+| `nano`            | Yes        | Yes          |
 | `nasm`            | Yes        | Yes          |
 | `ncurses`         | Yes        | Yes          |
 | `nftables`        |

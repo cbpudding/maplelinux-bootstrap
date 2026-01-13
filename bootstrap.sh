@@ -267,6 +267,7 @@ SOURCES=(
     mawk
     muon
     musl
+    nano
     nasm
     ncurses
     patch
