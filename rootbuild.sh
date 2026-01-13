@@ -38,7 +38,7 @@ echo "Done!"
 # NOTE: fortune-mod requires cmake to build. ~ahill
 cd /maple
 LAYER0="bc byacc bzip2 coreutils diffutils findutils grep gzip libressl m4 make mawk muon musl patch perl pkgconf sed tar xz zlib"
-LAYER1="autoconf automake flex groff libarchive libelf libtool"
+LAYER1="autoconf automake flex groff libarchive libelf libtool linux"
 LAYER2="dash nasm cmake fortune-mod"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2"
 for pkg in $PACKAGES; do

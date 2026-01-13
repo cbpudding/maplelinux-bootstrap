@@ -37,7 +37,7 @@ Definitions:
 | `libressl`        | Yes        | Yes          |
 | `libtool`         | Yes        | Yes          |
 | `limine`          |
-| `linux`           | No         | No           |
+| `linux`           | Yes        | Yes          |
 | `llvm`            | No         | No           |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
