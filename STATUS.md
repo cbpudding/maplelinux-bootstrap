@@ -8,7 +8,7 @@ Definitions:
 | ----------------- | ---------- | ------------ |
 | `autoconf`        | Yes        | Yes          |
 | `automake`        | Yes        | Yes          |
-| `bc`              |
+| `bc`              | Yes        | Yes          |
 | `byacc`           | Yes        | Yes          |
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
@@ -55,7 +55,6 @@ Definitions:
 | `sed`             | Yes        | Yes          |
 | `shadow`          |
 | `tar`             | Yes        | Yes          |
-| `texinfo`         |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |

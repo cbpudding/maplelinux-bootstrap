@@ -242,6 +242,7 @@ export TT_DIR=$BOOTSTRAP/root/maple/.treetap
 SOURCES=(
     autoconf
     automake
+    bc
     byacc
     bzip2
     cmake
@@ -250,6 +251,7 @@ SOURCES=(
     diffutils
     findutils
     flex
+    fortune-mod
     grep
     groff
     gzip
