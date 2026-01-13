@@ -268,6 +268,7 @@ SOURCES=(
     muon
     musl
     nasm
+    ncurses
     patch
     perl
     pkgconf

@@ -46,7 +46,7 @@ Definitions:
 | `musl`            | Yes        | Yes          |
 | `nano`            |
 | `nasm`            | Yes        | Yes          |
-| `ncurses`         |
+| `ncurses`         | Yes        | Yes          |
 | `nftables`        |
 | `openrc`          |
 | `patch`           | Yes        | Yes          |
