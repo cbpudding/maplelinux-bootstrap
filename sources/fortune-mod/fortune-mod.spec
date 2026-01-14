@@ -1,6 +1,9 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="1f387877254e95eab61f937257b42609f29b994ef0571531655bbfc3a2ac74ac"
 SRC_NAME="fortune-mod"
+SRC_PATCHES="
+1dde7a66dcf9033227a4747b5e892cc1845a77f025d6c5d3c6f49c15dee7c239  maple
+"
 SRC_URL="https://github.com/shlomif/fortune-mod/releases/download/fortune-mod-3.24.0/fortune-mod-3.24.0.tar.xz"
 SRC_VERSION="3.24.0"
 

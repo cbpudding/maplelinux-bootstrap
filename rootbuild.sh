@@ -37,10 +37,12 @@ echo "Done!"
 # NOTE: libelf requires zlib to build. ~ahill
 # NOTE: fortune-mod requires cmake to build. ~ahill
 # NOTE: nano requires ncurses to build. ~ahill
+# NOTE: kmod requires autoconf, automake, libtool to build. ~ahill
+# NOTE: Linux requires bc, byacc, flex, kmod, ... ~ahill
 cd /maple
-LAYER0="bc byacc bzip2 coreutils diffutils findutils grep gzip kmod libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib"
-LAYER1="autoconf automake flex groff libarchive libelf libtool linux nano"
-LAYER2="dash nasm cmake fortune-mod"
+LAYER0="bc byacc bzip2 coreutils diffutils findutils grep gzip libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib"
+LAYER1="autoconf automake flex groff libarchive libelf libtool nano"
+LAYER2="dash nasm cmake fortune-mod kmod linux"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
