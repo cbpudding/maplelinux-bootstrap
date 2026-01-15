@@ -277,6 +277,7 @@ SOURCES=(
     tar
     xz
     zlib
+    zsh
 )
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec

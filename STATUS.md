@@ -58,4 +58,4 @@ Definitions:
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |
-| `zsh`             |
+| `zsh`             | Yes        | Yes          |

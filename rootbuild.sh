@@ -43,7 +43,7 @@ echo "Done!"
 # NOTE: kmod requires autoconf, automake, libtool to build. ~ahill
 # NOTE: Linux requires bc, byacc, flex, kmod, ... ~ahill
 cd /maple
-LAYER0="bc byacc bzip2 coreutils diffutils findutils grep gzip libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib"
+LAYER0="bc byacc bzip2 coreutils diffutils findutils grep gzip libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib zsh"
 LAYER1="autoconf automake flex groff libarchive libelf libtool nano"
 LAYER2="dash nasm cmake fortune-mod kmod linux"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2"
