@@ -30,7 +30,7 @@ Definitions:
 | `kmod`            | Yes        | Yes          |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
-| `libcap2`         |
+| `libcap2`         | Yes        | Yes          |
 | `libelf`          | Yes        | Yes          |
 | `libmnl`          |
 | `libnftnl`        |
@@ -52,6 +52,7 @@ Definitions:
 | `patch`           | Yes        | Yes          |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
+| `pipewire`        |
 | `sed`             | Yes        | Yes          |
 | `shadow`          |
 | `tar`             | Yes        | Yes          |
