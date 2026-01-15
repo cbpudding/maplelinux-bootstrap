@@ -4,6 +4,9 @@ export CFLAGS="-O3 -pipe"
 export CXX=clang++
 export CXXFLAGS=$CFLAGS
 
+# Temporary workaround since root is the only user. ~ahill
+export FORCE_UNSAFE_CONFIGURE=1
+
 # xz Build
 # NOTE: xz is needed to run "treetap package", so we manually install. ~ahill
 cd /maple

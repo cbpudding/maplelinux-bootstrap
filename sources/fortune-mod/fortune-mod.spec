@@ -27,7 +27,6 @@ build() {
         -DNO_OFFENSIVE=OFF
     cmake --build build-$SRC_VERSION --parallel $TT_PROCS
     # Finally, we add our custom fortunefile into the mix. ~ahill
-    cp ../maple .
     # NOTE: Is there a better way to do this? This probably won't survive
     #       cross-compilation. ~ahill
     ./build-$SRC_VERSION/strfile maple
