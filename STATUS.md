@@ -48,7 +48,7 @@ Definitions:
 | `nasm`            | Yes        | Yes          |
 | `ncurses`         | Yes        | Yes          |
 | `nftables`        |
-| `openrc`          |
+| `openrc`          | Yes        | Yes          |
 | `patch`           | Yes        | Yes          |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
