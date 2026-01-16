@@ -18,6 +18,7 @@ Definitions:
 | `dhcpcd`          |
 | `diffutils`       | Yes        | Yes          |
 | `findutils`       | Yes        | Yes          |
+| `flatpak`         |
 | `flex`            | Yes        | Yes          |
 | `fortune-mod`     | Yes        | Yes          |
 | `gettext`         |
@@ -36,7 +37,7 @@ Definitions:
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
 | `libtool`         | Yes        | Yes          |
-| `limine`          |
+| `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
 | `llvm`            | No         | No           |
 | `m4`              | Yes        | Yes          |
