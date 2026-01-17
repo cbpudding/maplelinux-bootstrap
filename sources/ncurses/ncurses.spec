@@ -13,9 +13,5 @@ build() {
         --without-normal \
         --with-shared
     make -O -j $TT_PROCS
-}
-
-package() {
-    cd ncurses-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

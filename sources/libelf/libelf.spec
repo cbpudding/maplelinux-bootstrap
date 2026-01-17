@@ -19,13 +19,5 @@ build() {
     sed -i "s/-lzstd//" Makefile
     sed -i "/#define USE_ZSTD/d" src/config.h
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf libelf-$SRC_VERSION/
-}
-
-package() {
-    cd libelf-$SRC_VERSION/
-    make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR INCDIR=/usr/include
+    make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR INCDIR=$TT_INCLUDEDIR
 }

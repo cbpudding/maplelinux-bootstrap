@@ -9,13 +9,5 @@ build() {
     cd groff-*/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf groff-*/
-}
-
-package() {
-    cd groff-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

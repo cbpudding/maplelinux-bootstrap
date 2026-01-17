@@ -80,7 +80,7 @@ EOF
 fi
 
 # Install headers for Linux
-LINUX_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/linux/linux.spec)
+LINUX_VERSION=$($TREETAP variable $SPEC/linux/linux.spec SRC_VERSION)
 tar xf $SOURCES/linux/$LINUX_VERSION/linux-*.tar*
 cd linux-*/
 # NOTE: LLVM=1 is required here because GCC and other GNU tools are required in
@@ -95,7 +95,7 @@ cp -r usr/include $BOOTSTRAP/root/usr
 cd ..
 
 # Install headers for musl
-MUSL_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/musl/musl.spec)
+MUSL_VERSION=$($TREETAP variable $SPEC/musl/musl.spec SRC_VERSION)
 tar xf $SOURCES/musl/$MUSL_VERSION/musl-*.tar*
 cd musl-*/
 # NOTE: Patch for musl 1.2.5 to prevent a character encoding vulnerability. This
@@ -118,7 +118,7 @@ make -O -j $PROCS install-headers DESTDIR=$BOOTSTRAP/root
 cd ..
 
 # Build and install compiler-rt builtins
-LLVM_VERSION=$(sed -En "s/SRC_VERSION=\"?(.+)\"/\1/p" $SPEC/llvm/llvm.spec)
+LLVM_VERSION=$($TREETAP variable $SPEC/llvm/llvm.spec SRC_VERSION)
 LLVM_MAJOR_VERSION=$(echo $LLVM_VERSION | cut -d"." -f1)
 tar xf $SOURCES/llvm/$LLVM_VERSION/llvm-project-*.tar*
 cd llvm-project-*/
@@ -136,8 +136,7 @@ cd ..
 #       system's runtime if this is not specified. ~ahill
 LIBCC="$BOOTSTRAP/root/lib/clang/$LLVM_MAJOR_VERSION/lib/linux/libclang_rt.builtins-x86_64.a" \
 $TREETAP build $SPEC/musl/musl.spec
-$TREETAP package $SPEC/musl/musl.spec
-$TREETAP install $TT_DIR/packages/$MICROARCH/musl-*.cpio.xz $BOOTSTRAP/root
+$TREETAP install $($TREETAP variable $SPEC/musl/musl.spec TT_PACKAGE) $BOOTSTRAP/root
 
 # Include compiler-rt and musl in our environment
 export CFLAGS="$CFLAGS -Qunused-arguments -rtlib=compiler-rt -Wl,--dynamic-linker=/lib/ld-musl-$ARCH.so.1"
@@ -228,8 +227,7 @@ SOURCES=(coreutils dash diffutils findutils grep gzip make mawk patch sed tar)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
-    $TREETAP package $SPEC/$name/$name.spec
-    $TREETAP install $TT_DIR/packages/$MICROARCH/$name-*.cpio.xz $BOOTSTRAP/root
+    $TREETAP install $($TREETAP variable $SPEC/$name/$name.spec TT_PACKAGE) $BOOTSTRAP/root
 done
 
 # Install Treetap

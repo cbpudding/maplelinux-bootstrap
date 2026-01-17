@@ -9,14 +9,6 @@ build() {
     cd byacc-*/
     ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf byacc-*/
-}
-
-package() {
-    cd byacc-*/
     # NOTE: byacc's "make install" calls diff -c, which is unsupported by
     #       Busybox. Unfortunately, our other implementation of diff requires
     #       byacc to build, meaning we'll need to do a manual install to prevent

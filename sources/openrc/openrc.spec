@@ -14,9 +14,5 @@ build() {
         -Dzsh-completions=true \
         build
     muon samu -C build
-}
-
-package() {
-    cd openrc-$SRC_VERSION/
     muon -C build install -d $TT_INSTALLDIR
 }

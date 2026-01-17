@@ -14,13 +14,5 @@ build() {
     CC="clang -std=c99" ./bootstrap.sh build
     ./build/muon-bootstrap setup $TT_MESON_COMMON build
     ./build/muon-bootstrap -C build samu
-}
-
-clean() {
-    rm -rf muon-*/
-}
-
-package() {
-    cd muon-*/
     DESTDIR=$TT_INSTALLDIR ./build/muon -C build install
 }

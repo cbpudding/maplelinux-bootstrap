@@ -14,9 +14,5 @@ build() {
     #       ~ahill
     ./configure $TT_AUTOCONF_COMMON --disable-manpages --enable-year2038
     make -j $TT_PROCS
-}
-
-package() {
-    cd kmod-$SRC_VERSION/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

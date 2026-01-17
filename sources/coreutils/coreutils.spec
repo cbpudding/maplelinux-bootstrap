@@ -9,13 +9,5 @@ build() {
     cd coreutils-*/
     ./configure $TT_AUTOCONF_COMMON --disable-year2038
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf coreutils-*/
-}
-
-package() {
-    cd coreutils-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

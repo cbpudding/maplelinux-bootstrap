@@ -10,10 +10,6 @@ build() {
     cd mawk-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS
-}
-
-package() {
-    cd mawk-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     ln -s mawk $TT_INSTALLDIR/bin/awk
 }

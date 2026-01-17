@@ -30,9 +30,6 @@ build() {
     # NOTE: Is there a better way to do this? This probably won't survive
     #       cross-compilation. ~ahill
     ./build-$SRC_VERSION/strfile maple
-}
-
-package() {
     cmake --install build-$SRC_VERSION --parallel $TT_PROCS
     cp maple $TT_INSTALLDIR/usr/share/games/fortunes/
     cp maple.dat $TT_INSTALLDIR/usr/share/games/fortunes/

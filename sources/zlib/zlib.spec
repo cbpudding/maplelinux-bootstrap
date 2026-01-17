@@ -24,9 +24,5 @@ build() {
         --prefix=/usr \
         --shared
     make -O -j $TT_PROCS
-}
-
-package() {
-    cd zlib-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

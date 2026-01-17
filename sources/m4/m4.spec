@@ -9,13 +9,5 @@ build() {
     cd m4-*/
     ./configure $TT_AUTOCONF_COMMON --enable-year2038
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf m4-*/
-}
-
-package() {
-    cd m4-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

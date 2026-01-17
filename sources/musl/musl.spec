@@ -18,14 +18,6 @@ build() {
     patch -p1 < ../CVE-2025-26519.patch
     ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf musl-*/
-}
-
-package() {
-    cd musl-*/
     DESTDIR=$TT_INSTALLDIR make install
     # NOTE: Apparently, the linker library has an entry point that we can use as
     #       ldd. What kind of black magic is this? ~ahill

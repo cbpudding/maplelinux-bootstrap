@@ -15,13 +15,5 @@ build() {
     #       libtoolize. Strangely enough, libtool is hard-coded to /bin/sh, so
     #       I don't know why libtoolize uses /usr/bin/env. ~ahill
     sed -i "s|/usr/bin/env sh|/bin/sh|" libtoolize
-}
-
-clean() {
-    rm -rf libtool-*/
-}
-
-package() {
-    cd libtool-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

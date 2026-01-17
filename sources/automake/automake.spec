@@ -9,13 +9,5 @@ build() {
     cd automake-*/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf automake-*/
-}
-
-package() {
-    cd automake-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

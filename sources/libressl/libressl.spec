@@ -15,13 +15,5 @@ build() {
     #       ~ahill
     ./configure $TT_AUTOCONF_COMMON --disable-static
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf libressl-*/
-}
-
-package() {
-    cd libressl-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

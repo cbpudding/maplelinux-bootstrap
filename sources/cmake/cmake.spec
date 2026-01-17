@@ -22,13 +22,5 @@ build() {
         --system-zlib \
         --xdgdatadir=$TT_DATADIR
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf cmake-*/
-}
-
-package() {
-    cd cmake-*/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

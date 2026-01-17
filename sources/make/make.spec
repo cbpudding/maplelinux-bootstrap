@@ -9,13 +9,5 @@ build() {
     cd make-*/
     ./configure $TT_AUTOCONF_COMMON --enable-year2038
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf make-*/
-}
-
-package() {
-    cd make-*/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

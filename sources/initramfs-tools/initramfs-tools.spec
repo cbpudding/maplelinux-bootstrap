@@ -10,14 +10,6 @@ build() {
     cd initramfs-tools-*/
     # NOTE: Since this is for a single file, we don't pass TT_PROC. ~ahill
     make
-}
-
-clean() {
-    rm -rf initramfs-tools-*/
-}
-
-package() {
-    cd initramfs-tools-*/
 
     # NOTE: There's no make install! ~ahill
     mkdir -p $TT_INSTALLDIR/bin

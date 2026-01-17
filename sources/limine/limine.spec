@@ -10,9 +10,5 @@ build() {
     # TODO: How should other architectures be handled? ~ahill
     ./configure $TT_AUTOCONF_COMMON --enable-uefi-x86-64
     make -O -j $TT_PROCS
-}
-
-package() {
-    cd limine-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

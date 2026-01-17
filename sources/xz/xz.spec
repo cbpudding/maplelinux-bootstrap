@@ -13,13 +13,5 @@ build() {
     cd xz-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf xz-*/
-}
-
-package() {
-    cd xz-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

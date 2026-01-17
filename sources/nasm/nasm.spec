@@ -14,13 +14,5 @@ build() {
     #       attempting to redefine a C++ keyword in include/compiler.h.
     sed -i "/#  ifdef bool/,/#  endif/d" include/compiler.h
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf nasm-$SRC_VERSION/
-}
-
-package() {
-    cd nasm-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

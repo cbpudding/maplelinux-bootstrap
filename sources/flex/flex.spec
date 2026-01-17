@@ -9,13 +9,5 @@ build() {
     cd flex-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf flex-*/
-}
-
-package() {
-    cd flex-*/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

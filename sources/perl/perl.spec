@@ -20,13 +20,5 @@ build() {
         -D usrinc=$TT_INCLUDEDIR \
         -D vendorprefix=$TT_PREFIX
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf perl-*/
-}
-
-package() {
-    cd perl-*/
     make -O -j $TT_PROCS install.perl DESTDIR=$TT_INSTALLDIR
 }

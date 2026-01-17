@@ -9,9 +9,5 @@ build() {
     cd patch-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS
-}
-
-package() {
-    cd patch-$SRC_VERSION/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

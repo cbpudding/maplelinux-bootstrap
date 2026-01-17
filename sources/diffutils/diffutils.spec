@@ -15,9 +15,5 @@ build() {
     # See also: https://lists.gnu.org/archive/html/bug-gnulib/2025-04/msg00056.html
     ./configure $TT_AUTOCONF_COMMON gl_cv_func_strcasecmp_works=y
     make -j $TT_PROCS
-}
-
-package() {
-    cd diffutils-$SRC_VERSION/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

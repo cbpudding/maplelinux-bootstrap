@@ -19,10 +19,6 @@ build() {
         --enable-multibyte \
         --enable-libc-musl
     make -O -j $TT_PROCS
-}
-
-package() {
-    cd zsh-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     ln -sf zsh $TT_INSTALLDIR/bin/bash
 }

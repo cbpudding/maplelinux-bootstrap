@@ -50,6 +50,5 @@ PACKAGES="$LAYER0 $LAYER1 $LAYER2"
 for pkg in $PACKAGES; do
     treetap fetch /maple/sources/$pkg/$pkg.spec
     treetap build /maple/sources/$pkg/$pkg.spec
-    treetap package /maple/sources/$pkg/$pkg.spec
-    treetap install /maple/.treetap/packages/*/$pkg-*.cpio.xz
+    treetap install $(treetap variable /maple/sources/$pkg/$pkg.spec TT_PACKAGE)
 done

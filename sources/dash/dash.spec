@@ -10,14 +10,6 @@ build() {
     cd dash-*/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf dash-*/
-}
-
-package() {
-    cd dash-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     ln -s dash $TT_INSTALLDIR/bin/sh
 }

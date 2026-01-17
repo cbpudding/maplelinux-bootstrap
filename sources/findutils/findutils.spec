@@ -9,13 +9,5 @@ build() {
     cd findutils-*/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf findutils-*/
-}
-
-package() {
-    cd findutils-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

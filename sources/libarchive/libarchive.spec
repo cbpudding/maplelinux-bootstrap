@@ -9,13 +9,5 @@ build() {
     cd libarchive-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf libarchive-*/
-}
-
-package() {
-    cd libarchive-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

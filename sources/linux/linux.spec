@@ -15,10 +15,6 @@ build() {
     #       where to find the parser generator manually. ~ahill
     LLVM=1 make -j $TT_PROCS defconfig YACC=byacc
     LLVM=1 make -j $TT_PROCS YACC=byacc
-}
-
-package() {
-    cd linux-$SRC_VERSION/
     make -j $TT_PROCS install INSTALL_PATH=$TT_INSTALLDIR/boot
     make -j $TT_PROCS modules_install INSTALL_MOD_PATH=$TT_INSTALLDIR
     # TODO: Run dtbs_install on non-x86 systems ~ahill

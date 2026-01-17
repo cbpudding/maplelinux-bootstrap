@@ -9,13 +9,5 @@ build() {
     cd autoconf-*/
     ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS
-}
-
-clean() {
-    rm -rf autoconf-*/
-}
-
-package() {
-    cd autoconf-*/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

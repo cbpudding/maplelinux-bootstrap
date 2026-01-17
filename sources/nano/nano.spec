@@ -9,9 +9,5 @@ build() {
     cd nano-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON --enable-utf8 --enable-year2038
     make -O -j $TT_PROCS
-}
-
-package() {
-    cd nano-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }

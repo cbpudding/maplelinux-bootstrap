@@ -18,6 +18,14 @@
 # Changelog #
 #############
 
+# January 16, 2026 (1.5.0)
+# + Added TT_PACKAGE [ahill]
+# + Added variable subcommand [ahill]
+# * Converted the build log path to an absolute path [ahill]
+# * Merged the functionality of the package verb into the build command [ahill]
+# * Packages are no longer built if the package file exists already [ahill]
+# - Removed the purge subcommand in favor of clean [ahill]
+
 # January 4, 2026 (1.4.1)
 # * Set LD to ld.lld after mold was removed from Maple Linux. [ahill]
 # - Replaced clean with purge, since the current implementation of clean isn't
@@ -79,8 +87,7 @@
 # of useful variables to take advantage of. ~ahill
 
 # Specification Functions:
-#   build   - Builds the package
-#   package - Installs the package contents to $TT_INSTALLDIR
+#   build   - Builds the package and installs it to $TT_INSTALLDIR
 
 # Specification Variables:
 #   SRC_FILENAME    - The name of the tarball to extract (optional)
@@ -126,6 +133,8 @@
 #                        [scope: source]
 #   TT_MICROARCH       - The microarchitecture to optimize for
 #                        [scope: source]
+#   TT_PACKAGE         - The path to the package being built
+#                        [scope: source]
 #   TT_PKGDIR          - The path to the package directory
 #                        [scope: global]
 #   TT_PREFIX          - The desired prefix for the package
@@ -150,7 +159,7 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.4.1"
+TT_VERSION="1.5.0"
 
 #########################
 # Environment Variables #
@@ -183,8 +192,7 @@ help_message() {
     echo "    $0 build <spec>"
     echo "    $0 clean <spec>"
     echo "    $0 fetch <spec>"
-    echo "    $0 package <spec>"
-    echo "    $0 purge <spec>"
+    echo "    $0 variable <spec> <name>"
     exit 1
 }
 
@@ -257,6 +265,7 @@ source_spec() {
     # occur and where to put the artifacts. ~ahill
     TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_MICROARCH"
     TT_INSTALLDIR="$TT_BUILDDIR/install"
+    TT_PACKAGE="$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_FULLVERSION-$TT_MICROARCH.cpio.xz"
 
     # Create convenience variables
     TT_AUTOCONF_COMMON=$(echo "--bindir=$TT_BINDIR \
@@ -363,7 +372,12 @@ package_uninstall() {
 # Builds the source from the previously fetched tarball
 source_build() {
     source_spec $1
+    if [ -f "$TT_PACKAGE" ]; then
+        echo "Skipping build for $SRC_NAME $SRC_FULLVERSION"
+        exit 0
+    fi
     mkdir -p $TT_BUILDDIR
+    mkdir -p $TT_INSTALLDIR
     if [ ! -z "$SRC_PATCHES" ]; then
         echo -n "Validating patches for $SRC_NAME $SRC_FULLVERSION... "
         cd $(dirname $1)
@@ -383,12 +397,18 @@ source_build() {
     cd $TT_BUILDDIR
     # Please don't use this in your build script. This is meant for
     # troubleshooting purposes. ~ahill
-    TT_BUILD_LOG=build-$(date +%Y%m%d%H%M%S).log
+    TT_BUILD_LOG=$TT_BUILDDIR/build-$(date +%Y%m%d%H%M%S).log
     echo "Build started with treetap $TT_VERSION at $(date)" > $TT_BUILD_LOG
     build >> $TT_BUILD_LOG 2>&1
     echo "Build finished at $(date)" >> $TT_BUILD_LOG
-    cd $PUSHD
     echo "Done!"
+    cd $TT_INSTALLDIR
+    echo -n "Archiving $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
+    mkdir -p $TT_PKGDIR/$TT_MICROARCH
+    find | bsdcpio -Jo > $TT_PACKAGE
+    rm -rf $TT_INSTALLDIR
+    echo "Done!"
+    cd $PUSHD
     exit 0
 }
 
@@ -416,27 +436,18 @@ source_fetch() {
     exit 0
 }
 
-# Packages the built artifacts for distribution
-source_package() {
+# Purges the entire build directory for a source
+source_clean() {
     source_spec $1
-    mkdir -p $TT_BUILDDIR
-    mkdir -p $TT_INSTALLDIR
-    mkdir -p $TT_PKGDIR/$TT_MICROARCH
-    PUSHD=$(pwd)
-    cd $TT_BUILDDIR
-    echo -n "Archiving $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
-    package > package-$(date +%Y%m%d%H%M%S).log
-    cd $TT_INSTALLDIR
-    find | bsdcpio -Jo > "$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_FULLVERSION-$TT_MICROARCH.cpio.xz"
-    rm -rf $TT_INSTALLDIR
-    cd $PUSHD
+    rm -rf $TT_BUILDDIR
     exit 0
 }
 
-# Purges the entire build directory for a source
-source_purge() {
+# Prints a variable defined by treetap
+source_variable() {
     source_spec $1
-    rm -rf $TT_BUILDDIR
+    [ -z "$2" ] && (echo "source_variable: Variable name not given"; exit 1)
+    eval "echo \${$2}"
     exit 0
 }
 
@@ -446,11 +457,10 @@ source_purge() {
 
 case "$1" in
 "build") source_build $2 ;;
-"clean") source_purge $2 ;;
+"clean") source_clean $2 ;;
 "fetch") source_fetch $2 ;;
 "install") package_install $2 $3 ;;
-"package") source_package $2 ;;
-"purge") source_purge $2 ;;
 "uninstall") package_uninstall $2 $3 ;;
+"variable") source_variable $2 $3 ;;
 *) help_message ;;
 esac

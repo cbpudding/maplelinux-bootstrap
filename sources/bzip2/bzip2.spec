@@ -19,14 +19,6 @@ build() {
     # NOTE: bzip2recover is part of the first Makefile, so we need to invoke
     #       that to build the command. ~ahill
     make -O -j $TT_PROCS bzip2recover CC=$CC CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
-}
-
-clean() {
-    rm -rf bzip2-*/
-}
-
-package() {
-    cd bzip2-*/
     # NOTE: The shared Makefile doesn't have an "install" target, so we just
     #       copy the files over ourselves. ~ahill
     mkdir -p $TT_INSTALLDIR$TT_BINDIR

@@ -9,14 +9,6 @@ build() {
     cd pkgconf-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -j $TT_PROCS
-}
-
-clean() {
-    rm -rf pkgconf-*/
-}
-
-package() {
-    cd pkgconf-*/
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     # NOTE: Symlink for compatibility's sake. Currently being used by Muon.
     #       ~ahill

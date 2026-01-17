@@ -13,9 +13,5 @@ build() {
     #       package on Maple Linux, so it doesn't make sense to include it for
     #       the sole purpose of building bc. ~ahill
     make -O -j $TT_PROCS MAKEINFO=true
-}
-
-package() {
-    cd bc-$SRC_VERSION/
     make -O -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR MAKEINFO=true
 }

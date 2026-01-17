@@ -17,10 +17,6 @@ build() {
         INCDIR=$TT_INCLUDEDIR \
         exec_prefix=$TT_PREFIX \
         prefix=$TT_PREFIX
-}
-
-package() {
-    cd libcap-$SRC_VERSION/
     make -O \
         -C libcap \
         -j $TT_PROCS \
