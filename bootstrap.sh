@@ -253,11 +253,14 @@ SOURCES=(
     grep
     groff
     gzip
+    initramfs-tools
     kmod
     libarchive
+    libcap2
     libelf
     libressl
     libtool
+    limine
     linux
     llvm
     m4
@@ -268,6 +271,7 @@ SOURCES=(
     nano
     nasm
     ncurses
+    openrc
     patch
     perl
     pkgconf
