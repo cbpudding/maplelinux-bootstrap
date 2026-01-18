@@ -59,9 +59,12 @@ echo "Done!"
 # NOTE: Linux requires bc, byacc, flex, kmod, ... ~ahill
 # NOTE: Limine requires nasm to build. ~ahill
 # NOTE: OpenRC requires libcap2 and muon to build. ~ahill
+# NOTE: curl requires LibreSSL and zlib to build. ~ahill
+# NOTE: gettext requires ncurses to build. ~ahill
+# NOTE: git requires curl, expat, and gettext to build. ~ahill
 cd /maple
-LAYER0="bc byacc bzip2 coreutils diffutils findutils grep gzip initramfs-tools libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib zsh"
-LAYER1="autoconf automake flex groff libarchive libcap2 libelf libtool nano openrc"
+LAYER0="bc byacc bzip2 coreutils diffutils expat findutils grep gzip initramfs-tools libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib zsh"
+LAYER1="autoconf automake curl flex gettext groff libarchive libcap2 libelf libtool nano openrc"
 LAYER2="cmake dash fortune-mod kmod nasm"
 LAYER3="limine linux"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2 $LAYER3"

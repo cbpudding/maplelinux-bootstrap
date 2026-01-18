@@ -1,9 +1,9 @@
 <svg height="16" version="1.1" width="1024" xmlns="http://www.w3.org/2000/svg">
 <rect fill="black" height="100%" width="100%" />
-<rect fill="blue" height="10" width="545" x="3" y="3" />
-<rect fill="cornflowerblue" height="10" width="95" x="548" y="3" />
-<rect fill="white" height="10" width="355" x="643" y="3" />
-<rect fill="mediumpurple" height="10" width="0" x="998" y="3" />
-<rect fill="indianred" height="10" width="24" x="998" y="3" />
-<rect fill="crimson" height="10" width="0" x="1022" y="3" />
+<rect fill="blue" height="10" width="541" x="3" y="3" />
+<rect fill="cornflowerblue" height="10" width="87" x="544" y="3" />
+<rect fill="white" height="10" width="368" x="631" y="3" />
+<rect fill="mediumpurple" height="10" width="0" x="999" y="3" />
+<rect fill="indianred" height="10" width="22" x="999" y="3" />
+<rect fill="crimson" height="10" width="0" x="1021" y="3" />
 </svg>

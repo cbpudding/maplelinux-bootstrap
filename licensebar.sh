@@ -1,9 +1,16 @@
 #!/bin/sh -e
-# Usage: ./licensebar.sh <copyleft count> <slightly copyleft count> <free count> <mixed count> <slightly copyright count> <copyright count>
+# Usage: ./licensebar.sh
 # Yes, this is cursed, but it was the simplest way I could think of automating this. ~ahill
+COPYLEFT_COUNT=$(grep "| Copyleft  " README.md | wc -l)
+SLIGHTLY_COPYLEFT_COUNT=$(grep "| Slightly Copyleft  " README.md | wc -l)
+FREE_COUNT=$(grep "| Free  " README.md | wc -l)
+MIXED_COUNT=$(grep "| Mixed  " README.md | wc -l)
+SLIGHTLY_COPYRIGHT_COUNT=$(grep "| Slightly Copyright |" README.md | wc -l)
+COPYRIGHT_COUNT=$(grep "| Copyright  " README.md | wc -l)
+
 BAR_BORDER=3
 BAR_HEIGHT=16
-BAR_TOTAL=$(expr $1 + $2 + $3 + $4 + $5 + $6)
+BAR_TOTAL=$(expr $COPYLEFT_COUNT + $SLIGHTLY_COPYLEFT_COUNT + $FREE_COUNT + $MIXED_COUNT + $SLIGHTLY_COPYRIGHT_COUNT + $COPYRIGHT_COUNT)
 BAR_WIDTH=1024
 
 BAR_END=$(expr $BAR_WIDTH - $BAR_BORDER)
@@ -19,11 +26,11 @@ render_segment() {
 echo "<svg height=\"$BAR_HEIGHT\" version=\"1.1\" width=\"$BAR_WIDTH\" xmlns=\"http://www.w3.org/2000/svg\">"
 echo "<rect fill=\"black\" height=\"100%\" width=\"100%\" />"
 
-render_segment blue $1
-render_segment cornflowerblue $2
-render_segment white $3
-render_segment mediumpurple $4
-render_segment indianred $5
-render_segment crimson $6
+render_segment blue $COPYLEFT_COUNT
+render_segment cornflowerblue $SLIGHTLY_COPYLEFT_COUNT
+render_segment white $FREE_COUNT
+render_segment mediumpurple $MIXED_COUNT
+render_segment indianred $SLIGHTLY_COPYRIGHT_COUNT
+render_segment crimson $COPYRIGHT_COUNT
 
 echo "</svg>"

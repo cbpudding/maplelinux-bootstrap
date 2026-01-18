@@ -31,11 +31,15 @@ Maple Linux is built upon software created by various developers, and is distrib
 | bzip2                         | Julian R. Seward                                    | Modified Zlib license                                                                  | Free               |
 | CMake                         | Kitware, Inc. and Contributors                      | BSD 3-Clause license                                                                   | Free               |
 | Coreutils                     | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| curl                          | Daniel Stenberg and many contributors               | The curl license                                                                       | Free               |
 | Debian Almquist Shell         | Various                                             | Modified BSD 3-Clause license(?) *and* GNU General Public License version 3            | Slightly Copyleft  |
 | GNU Diffutils                 | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| Expat                         | Various                                             | MIT License                                                                            | Free               |
 | GNU Find Utilities            | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Flex                          | Various                                             | BSD 2-Clause license                                                                   | Free               |
 | fortune-mod                   | Various                                             | BSD 4-Clause license                                                                   | Free               |
+| gettext                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| git                           | Linus Torvalds and Contributors                     | GNU General Public License version 2                                                   | Copyleft           |
 | GNU Grep                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU roff                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU Gzip                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |

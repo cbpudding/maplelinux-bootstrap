@@ -14,14 +14,17 @@ Definitions:
 | `chrony`          |
 | `cmake`           | Yes        | Yes          |
 | `coreutils`       | Yes        | Yes          |
+| `curl`            | Yes        | Yes          |
 | `dash`            | Yes        | Yes          |
 | `dhcpcd`          |
 | `diffutils`       | Yes        | Yes          |
+| `expat`           | Yes        | Yes          |
 | `findutils`       | Yes        | Yes          |
 | `flatpak`         |
 | `flex`            | Yes        | Yes          |
 | `fortune-mod`     | Yes        | Yes          |
-| `gettext`         |
+| `gettext`         | Yes        | Yes          |
+| `git`             | Yes        |
 | `grep`            | Yes        | Yes          |
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
