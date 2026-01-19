@@ -7,8 +7,10 @@ SRC_VERSION="2.52.0"
 build() {
     tar xf ../$SRC_FILENAME
     cd git-$SRC_VERSION/
-    # TODO: What breaks if I pass NO_CURL or NO_EXPAT? ~ahill
-    make -j $TT_PROCS NO_REGEX=NeedsStartEnd NO_TCLTK=1
-    # TODO: How do we tell git where to install components? ~ahill
-    make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR NO_REGEX=NeedsStartEnd NO_TCLTK=1
+    ./configure $TT_AUTOCONF_COMMON --without-tcltk
+    make -j $TT_PROCS NO_GITWEB=YesPlease NO_PERL=YesPlease NO_REGEX=NeedsStartEnd
+    make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR NO_GITWEB=YesPlease NO_PERL=YesPlease NO_REGEX=NeedsStartEnd
+    # Another package ignoring proper paths? Unacceptable! ~ahill
+    mv $TT_INSTALLDIR/share/* $TT_INSTALLDIR/usr/share/
+    rm -rf $TT_INSTALLDIR/share
 }

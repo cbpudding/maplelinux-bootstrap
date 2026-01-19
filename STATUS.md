@@ -24,7 +24,7 @@ Definitions:
 | `flex`            | Yes        | Yes          |
 | `fortune-mod`     | Yes        | Yes          |
 | `gettext`         | Yes        | Yes          |
-| `git`             | Yes        |
+| `git`             | Yes        | Yes          |
 | `grep`            | Yes        | Yes          |
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
