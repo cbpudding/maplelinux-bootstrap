@@ -57,6 +57,7 @@ Definitions:
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
 | `pipewire`        |
+| `python`          | Yes        | Yes          |
 | `sed`             | Yes        | Yes          |
 | `shadow`          |
 | `tar`             | Yes        | Yes          |

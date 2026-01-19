@@ -66,6 +66,7 @@ Maple Linux is built upon software created by various developers, and is distrib
 | GNU patch                     | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Perl                          | Larry Wall and others                               | GNU General Public License version 1                                                   | Copyleft           |
 | pkgconf                       | Various                                             | ISC License                                                                            | Free               |
+| Python                        | Python Software Foundation, BeOpen, and CWI         | Python Software Foundation License Version 2                                           | Copyleft           |
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | xz                            | Various                                             | Mostly BSD 0-Clause license                                                            | Slightly Copyleft  |
