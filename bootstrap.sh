@@ -245,11 +245,15 @@ SOURCES=(
     bzip2
     cmake
     coreutils
+    curl
     dash
     diffutils
+    expat
     findutils
     flex
     fortune-mod
+    gettext
+    git
     grep
     groff
     gzip
@@ -275,6 +279,7 @@ SOURCES=(
     patch
     perl
     pkgconf
+    python
     sed
     tar
     xz

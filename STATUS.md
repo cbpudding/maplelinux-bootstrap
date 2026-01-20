@@ -42,7 +42,7 @@ Definitions:
 | `libtool`         | Yes        | Yes          |
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
-| `llvm`            | No         | No           |
+| `llvm`            | Yes        | No           |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
 | `mawk`            | Yes        | Yes          |
