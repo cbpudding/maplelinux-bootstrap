@@ -18,6 +18,8 @@ Definitions:
 | `dash`            | Yes        | Yes          |
 | `dhcpcd`          |
 | `diffutils`       | Yes        | Yes          |
+| `dosfstools`      |
+| `efibootmgr`      |
 | `expat`           | Yes        | Yes          |
 | `findutils`       | Yes        | Yes          |
 | `flatpak`         |
@@ -40,8 +42,10 @@ Definitions:
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
 | `libtool`         | Yes        | Yes          |
+| `libyaml`         |
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
+| `liquid`          |
 | `llvm`            | Yes        | No           |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
@@ -52,12 +56,14 @@ Definitions:
 | `nasm`            | Yes        | Yes          |
 | `ncurses`         | Yes        | Yes          |
 | `nftables`        |
+| `nilfs-utils`     |
 | `openrc`          | Yes        | Yes          |
 | `patch`           | Yes        | Yes          |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
+| `ruby`            |
 | `sed`             | Yes        | Yes          |
 | `shadow`          |
 | `tar`             | Yes        | Yes          |
