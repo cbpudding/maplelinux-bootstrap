@@ -64,10 +64,12 @@ echo "Done!"
 # NOTE: git requires curl, expat, and gettext to build. ~ahill
 # NOTE: Python requires bzip2, expat, LibreSSL, ncurses, xz, and zlib to build. ~ahill
 # NOTE: LLVM requires CMake and Python to build. ~ahill
+# NOTE: Ruby requires autoconf, libffi, and libyaml to build. ~ahill
+# NOTE: Liquid requires Ruby to build. ~ahill
 cd /maple
 LAYER0="bc byacc bzip2 coreutils diffutils expat findutils grep gzip initramfs-tools libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib zsh"
 LAYER1="autoconf automake curl flex gettext groff libarchive libcap2 libelf libtool nano openrc python"
-LAYER2="cmake dash fortune-mod git kmod llvm nasm"
+LAYER2="cmake dash fortune-mod git kmod nasm"
 LAYER3="limine linux"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2 $LAYER3"
 for pkg in $PACKAGES; do

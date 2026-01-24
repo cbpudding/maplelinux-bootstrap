@@ -47,7 +47,7 @@ Definitions:
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
 | `liquid`          | Yes        | Yes          |
-| `llvm`            | Yes        | No           |
+| `llvm`            | No         | No           |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
 | `mawk`            | Yes        | Yes          |
