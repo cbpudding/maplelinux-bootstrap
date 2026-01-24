@@ -1,12 +1,12 @@
 #!/bin/sh -e
-# Usage: ./licensebar.sh > licensebar.svg
+# Usage: ./licensebar.sh docs/SOFTWARE.md > licensebar.svg
 # Yes, this is cursed, but it was the simplest way I could think of automating this. ~ahill
-COPYLEFT_COUNT=$(grep "| Copyleft  " SOFTWARE.md | wc -l)
-SLIGHTLY_COPYLEFT_COUNT=$(grep "| Slightly Copyleft  " SOFTWARE.md | wc -l)
-FREE_COUNT=$(grep "| Free  " SOFTWARE.md | wc -l)
-MIXED_COUNT=$(grep "| Mixed  " SOFTWARE.md | wc -l)
-SLIGHTLY_COPYRIGHT_COUNT=$(grep "| Slightly Copyright |" SOFTWARE.md | wc -l)
-COPYRIGHT_COUNT=$(grep "| Copyright  " SOFTWARE.md | wc -l)
+COPYLEFT_COUNT=$(grep "| Copyleft  " $1 | wc -l)
+SLIGHTLY_COPYLEFT_COUNT=$(grep "| Slightly Copyleft  " $1 | wc -l)
+FREE_COUNT=$(grep "| Free  " $1 | wc -l)
+MIXED_COUNT=$(grep "| Mixed  " $1 | wc -l)
+SLIGHTLY_COPYRIGHT_COUNT=$(grep "| Slightly Copyright |" $1 | wc -l)
+COPYRIGHT_COUNT=$(grep "| Copyright  " $1 | wc -l)
 
 BAR_BORDER=3
 BAR_HEIGHT=16

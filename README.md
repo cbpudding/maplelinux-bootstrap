@@ -20,9 +20,9 @@ While it may sound too good to be true, that's because it is. Maple Linux does n
 
 Maple Linux is built upon software created by various developers, and is distributed under various licenses as a result. While it isn't one of the main goals of the system, especially since Linux itself is copyleft, I aim to create an operating system that's as free as I can reasonably make it.
 
-![Licensing Summary](licensebar.svg)
+![Licensing Summary](docs/licensebar.svg)
 
-For more information about the software included in this project and its licensing, see [SOFTWARE.md](./SOFTWARE.md).
+For more information about the software included in this project and its licensing, see [SOFTWARE.md](docs/SOFTWARE.md).
 
 ### Filesystem Hierarchy
 

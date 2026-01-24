@@ -23,7 +23,7 @@ export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
 export LD=ld.lld
 export LDFLAGS="--sysroot=$BOOTSTRAP/root"
-export TREETAP=$(pwd)/treetap
+export TREETAP=$(pwd)/scripts/treetap
 export TT_DIR=$(pwd)/.treetap
 export TT_MICROARCH=$MICROARCH
 export TT_SYSROOT=$BOOTSTRAP/root
@@ -35,8 +35,10 @@ $TREETAP fetch sources/llvm/llvm.spec
 $TREETAP fetch sources/musl/musl.spec
 
 # Make sure both clang-tblgen and llvm-tblgen are in the PATH. ~ahill
+echo -n "Verifying that clang-tblgen and llvm-tblgen are in the PATH... "
 ! which clang-tblgen && exit 1
 ! which llvm-tblgen && exit 1
+echo "Done!"
 
 # Simplified filesystem heirarchy with symlinks for compatibility
 mkdir -p $BOOTSTRAP/root/{bin,boot/EFI/BOOT,dev,etc,home,lib,proc,run,sys,tmp,usr/{include,share},var/{cache,lib,log,spool,tmp}}
@@ -235,7 +237,7 @@ cp $TREETAP $BOOTSTRAP/root/bin/
 
 # Prepare for chroot build
 mkdir -p $BOOTSTRAP/root/maple/
-cp $BOOTSTRAP/../rootbuild.sh $BOOTSTRAP/root/maple/
+cp $BOOTSTRAP/../scripts/rootbuild.sh $BOOTSTRAP/root/maple/
 export TT_DIR=$BOOTSTRAP/root/maple/.treetap
 SOURCES=(
     autoconf

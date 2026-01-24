@@ -5,7 +5,7 @@
 # rebuild after something like diffutils fails to build. ~ahill
 
 # The following script was created with:
-# sh -c "grep export bootstrap.sh | sed /CCACHE/d; echo zsh" >> rescue.sh
+# sh -c "grep export scripts/bootstrap.sh | sed /CCACHE/d; echo zsh" >> scripts/rescue.sh
 
 export MICROARCH=skylake
 export TARGET=x86_64-maple-linux-musl
@@ -23,7 +23,7 @@ export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
 export LD=ld.lld
 export LDFLAGS="--sysroot=$BOOTSTRAP/root"
-export TREETAP=$(pwd)/treetap
+export TREETAP=$(pwd)/scripts/treetap
 export TT_DIR=$(pwd)/.treetap
 export TT_MICROARCH=$MICROARCH
 export TT_SYSROOT=$BOOTSTRAP/root
