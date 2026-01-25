@@ -13,7 +13,7 @@ build() {
     # NOTE: This version of LLVM has an issue where compiler-rt attempts to use
     #       a header before it is has been built. This patch fixes it. ~ahill
     # See also: https://github.com/llvm/llvm-project/issues/127764
-    patch -p1 < ../rtsan-127764.patch 
+    patch -p1 < ../rtsan-127764.patch
     # NOTE: compiler-rt fails to build on musl because execinfo.h is missing.
     #       Disabling COMPILER_RT_BUILD_GWP_ASAN works. ~ahill
     # NOTE: LLVM_ENABLE_ZSTD is disabled because we don't have zstd in the
@@ -31,6 +31,10 @@ build() {
         -DCLANG_DEFAULT_UNWINDLIB=libunwind \
         -DCLANG_VENDOR=Maple \
         -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_DOCDIR=usr/share/doc \
+        -DCMAKE_INSTALL_INCLUDEDIR=$(echo $TT_INCLUDEDIR | cut -c 2-) \
+        -DCMAKE_INSTALL_LIBEXECDIR=$(echo $TT_LIBDIR | cut -c 2-) \
+        -DCMAKE_INSTALL_MANDIR=usr/share/man \
         -DCMAKE_INSTALL_PREFIX=$TT_INSTALLDIR \
         -DCOMPILER_RT_BUILD_GWP_ASAN=OFF \
         -DCOMPILER_RT_USE_BUILTINS_LIBRARY=ON \
@@ -41,6 +45,7 @@ build() {
         -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
         -DLIBUNWIND_USE_COMPILER_RT=ON \
         -DLLVM_ENABLE_PROJECTS="clang;lld;llvm" \
+        -DLLVM_ENABLE_RTTI=ON \
         -DLLVM_ENABLE_RUNTIMES="compiler-rt;libclc;libcxx;libcxxabi;libunwind" \
         -DLLVM_ENABLE_ZSTD=OFF \
         -DLLVM_HOST_TRIPLE=$TT_TARGET \
