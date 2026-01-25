@@ -1,0 +1,466 @@
+#!/bin/sh -e
+
+# Copyright (c) 2025-2026 Alexander Hill
+
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+
+#############
+# Changelog #
+#############
+
+# January 16, 2026 (1.5.0)
+# + Added TT_PACKAGE [ahill]
+# + Added variable subcommand [ahill]
+# * Converted the build log path to an absolute path [ahill]
+# * Merged the functionality of the package verb into the build command [ahill]
+# * Packages are no longer built if the package file exists already [ahill]
+# - Removed the purge subcommand in favor of clean [ahill]
+
+# January 4, 2026 (1.4.1)
+# * Set LD to ld.lld after mold was removed from Maple Linux. [ahill]
+# - Replaced clean with purge, since the current implementation of clean isn't
+#   effective. [ahill]
+
+# December 6, 2025 (1.4.0)
+# + Added sane defaults for the environment if they are not defined [ahill]
+# + Added SRC_REVISION and SRC_FULLVERSION to prevent issues related to
+#   SRC_VERSION [ahill]
+# * Fixed an issue where uninstalls fail due to spaces in the filename [ahill]
+
+# November 29, 2025 (1.3.1)
+# + Added GNUInstallDirs to TT_CMAKE_COMMON [ahill]
+# * Tweaked the messages to make it easier to see that treetap exited
+#   unexpectedly [ahill]
+
+# November 24, 2025 (1.3.0)
+# + Added TT_DATADIR [ahill]
+# + Added TT_MESON_COMMON for easy Meson integration [ahill]
+# + Added TT_RUNDIR [ahill]
+# + Added TT_STATEDIR [ahill]
+# * Fixed a bug where applying TT_AUTOCONF_COMMON with some versions of autoconf
+#   cause it to think we're cross-compiling when we're not. [ahill]
+# * Switched from GNU cpio to bsdcpio to function on Maple Linux [ahill]
+
+# November 22, 2025 (1.2.0)
+# + Added support for the CCACHE environment variable [ahill]
+# + Added TT_ARCH [ahill]
+# + Added TT_AUTOCONF_COMMON for easy autoconf integration [ahill]
+# + Added TT_CMAKE_COMMON for easy CMake integration [ahill]
+# + Added TT_MICROARCH for micro-optimization support [ahill]
+# * Changed the build path to use TT_MICROARCH instead of TT_TARGET [ahill]
+# * Fixed "missing package" error when passing absolute paths to the install
+#   subcommand [ahill]
+# * Prevented xz from deleting package files [ahill]
+# + Started printing the version number in the build logs [ahill]
+
+# November 15, 2025 (1.1.0)
+# + Added the ability to incorporate patches into the build [ahill]
+# + Added TT_CONFDIR [ahill]
+# * Replaced curl with wget to rely purely on Busybox [ahill]
+
+# November 13, 2025 (1.0.2)
+# + Added the target triple to the package path [ahill]
+# * Prevented fetch from re-downloading packages given a valid hash [ahill]
+# * Renamed all TREETAP_* variables to TT_* [ahill]
+
+# November 11, 2025 (1.0.1)
+# - Removed bashisms to become POSIX compliant [ahill]
+
+# November 9, 2025 (1.0.0)
+# * Initial release [ahill]
+
+########################
+# .spec File Reference #
+########################
+
+# For everyone trying to build .spec files (including myself), this is the list
+# of useful variables to take advantage of. ~ahill
+
+# Specification Functions:
+#   build   - Builds the package and installs it to $TT_INSTALLDIR
+
+# Specification Variables:
+#   SRC_FILENAME    - The name of the tarball to extract (optional)
+#   SRC_FULLVERSION - The full version of the package, which is automatically
+#                     set to SRC_VERSION, or "(SRC_VERSION)r(SRC_REVISION)" if
+#                     SRC_REVISION is set.
+#   SRC_HASH        - The hash of the tarball for verification purposes
+#                     (required)
+#   SRC_NAME        - The name of the package being built (required)
+#   SRC_PATCHES     - A list of SHA256 hashes followed by their filenames to be
+#                     copied to the build directory (optional)
+#   SRC_REVISION    - The package revision number to denote changes specifically
+#                     made for Maple Linux (optional)
+#   SRC_URL         - The URL of the tarball to be downloaded (required)
+#   SRC_VERSION     - The version of the package being built (required)
+
+# Treetap Variables:
+#   TT_ARCH            - The architecture portion of TT_TARGET
+#                        [scope: source]
+#   TT_AUTOCONF_COMMON - The default autoconf arguments based on the environment
+#                        [scope: source]
+#   TT_BINDIR          - The desired path for binaries
+#                        [scope: source] [default: /bin]
+#   TT_BUILD           - The target triple of the build system
+#                        [scope: source]
+#   TT_BUILDDIR        - The path to the build directory
+#                        [scope: source]
+#   TT_CMAKE_COMMON    - The default CMake arguments based on the environment
+#                        [scope: source]
+#   TT_CONFDIR         - The desired path for configuration files
+#                        [scope: source] [default: /etc]
+#   TT_DATADIR         - The desired path for data files
+#                        [scope: source] [default: /usr/share]
+#   TT_DIR             - The path to the treetap directory
+#                        [scope: global]
+#   TT_INCLUDEDIR      - The desired path for header files
+#                        [scope: source] [default: /usr/include]
+#   TT_INSTALLDIR      - The path to the install directory
+#                        [scope: source]
+#   TT_LIBDIR          - The desired path for libraries
+#                        [scope: source] [default: /lib]
+#   TT_MESON_COMMON    - The default meson arguments based on the environment
+#                        [scope: source]
+#   TT_MICROARCH       - The microarchitecture to optimize for
+#                        [scope: source]
+#   TT_PACKAGE         - The path to the package being built
+#                        [scope: source]
+#   TT_PKGDIR          - The path to the package directory
+#                        [scope: global]
+#   TT_PREFIX          - The desired prefix for the package
+#                        [scope: source] [default: /]
+#   TT_PROCS           - The number of processors on the build system
+#                        [scope: source]
+#   TT_RUNDIR          - The desired path for temporary runtime information
+#                        [scope: source] [default: /run]
+#   TT_STATEDIR        - The desired path for persistent runtime information
+#                        [scope: source] [default: /var]
+#   TT_SYSROOT         - The sysroot of the target system
+#                        [scope: global]
+#   TT_TARGET          - The target triple of the target system
+#                        [scope: source]
+#   TT_VERSION         - The version of treetap being used
+#                        [scope: global]
+
+####################
+# Global Variables #
+####################
+
+[ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
+[ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
+[ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
+TT_VERSION="1.5.0"
+
+#########################
+# Environment Variables #
+#########################
+
+[ -z "$AR" ] && export AR=ar
+[ -z "$AS" ] && export AS=nasm
+[ -z "$CC" ] && export CC=clang
+[ -z "$CXX" ] && export CXX=clang++
+[ -z "$LD" ] && export LD=ld.lld
+[ -z "$NM" ] && export NM=nm
+[ -z "$OBJCOPY" ] && export OBJCOPY=objcopy
+[ -z "$OBJDUMP" ] && export OBJDUMP=objdump
+[ -z "$PKG_CONFIG" ] && export PKG_CONFIG=pkgconf
+[ -z "$STRIP" ] && export STRIP=strip
+
+#####################
+# Utility Functions #
+#####################
+
+# Displays the usage information for treetap
+help_message() {
+    echo "treetap $TT_VERSION"
+    echo
+    echo "Package Commands:"
+    echo "    $0 install <package> [sysroot]"
+    echo "    $0 uninstall <package> [sysroot]"
+    echo
+    echo "Source Commands:"
+    echo "    $0 build <spec>"
+    echo "    $0 clean <spec>"
+    echo "    $0 fetch <spec>"
+    echo "    $0 variable <spec> <name>"
+    exit 1
+}
+
+# Confirms that the given strings are valid package and sysroot paths
+package_check() {
+    [ -z "$1" ] && (echo "package_check: Missing package file"; exit 1)
+    [ -z "$2" ] && (echo "package_check: Missing sysroot"; exit 1)
+    [ ! -f "$1" ] && (echo "package_check: Package file \"$1\" not found"; exit 1)
+    [ ! -d "$2" ] && (echo "package_check: Sysroot \"$2\" not found"; exit 1)
+    case "$1" in
+    "/"*) PKG_FULLPATH=$1 ;;
+    *) PKG_FULLPATH=$(pwd)/$1 ;;
+    esac
+    true
+}
+
+# Reads the source specification and ensures it includes the required data
+source_spec() {
+    # Sanity Check
+    [ -z "$1" ] && (echo "source_spec: Missing specification file"; exit 1)
+    [ ! -f "$1" ] && (echo "source_spec: Specification file \"$1\" not found"; exit 1)
+
+    # Zhu Li, do the thing!
+    . $1
+
+    # Required Fields
+    [ -z "$SRC_HASH" ] && (echo "source_spec: SRC_HASH is required but not defined"; exit 1)
+    [ -z "$SRC_NAME" ] && (echo "source_spec: SRC_NAME is required but not defined"; exit 1)
+    [ -z "$SRC_URL" ] && (echo "source_spec: SRC_URL is required but not defined"; exit 1)
+    [ -z "$SRC_VERSION" ] && (echo "source_spec: SRC_VERSION is required but not defined"; exit 1)
+    if [ -z "$SRC_REVISION" ]; then
+        SRC_FULLVERSION=$SRC_VERSION
+    else
+        SRC_FULLVERSION="${SRC_VERSION}r${SRC_REVISION}"
+    fi
+
+    # Optional Fields
+    [ -z "$SRC_FILENAME" ] && SRC_FILENAME=$(basename $SRC_URL)
+
+    # Environmental Variables
+    [ -z "$TT_BINDIR" ] && TT_BINDIR=/bin
+    TT_BUILD=$(clang -dumpmachine)
+    [ -z "$TT_TARGET" ] && TT_TARGET=$TT_BUILD
+    [ -z "$TT_CONFDIR" ] && TT_CONFDIR=/etc
+    [ -z "$TT_DATADIR" ] && TT_DATADIR=/usr/share
+    [ -z "$TT_INCLUDEDIR" ] && TT_INCLUDEDIR=/usr/include
+    [ -z "$TT_LIBDIR" ] && TT_LIBDIR=/lib
+    [ -z "$TT_PREFIX" ] && TT_PREFIX=/
+    [ -z "$TT_PROCS" ] && TT_PROCS=$(nproc)
+    [ -z "$TT_RUNDIR" ] && TT_RUNDIR=/run
+    [ -z "$TT_STATEDIR" ] && TT_STATEDIR=/var
+
+    # Attempt to guess TT_MICROARCH if it isn't defined
+    TT_ARCH=$(echo $TT_TARGET | cut -d"-" -f1)
+    if [ -z "$TT_MICROARCH" ]; then
+        case "$TT_ARCH" in
+        "x86_64") TT_MICROARCH="skylake";;
+        *)
+            echo "TT_MICROARCH not defined for $TT_ARCH"
+            exit 1
+            ;;
+        esac
+    fi
+
+    # Apply TT_MICROARCH to CFLAGS/CXXFLAGS
+    CFLAGS="-march=$TT_MICROARCH $CFLAGS"
+    CXXFLAGS="-march=$TT_MICROARCH $CXXFLAGS"
+
+    # Last, but certainly not least, let's define where we want the build to
+    # occur and where to put the artifacts. ~ahill
+    TT_BUILDDIR="$TT_DIR/sources/$SRC_NAME/$SRC_VERSION/$TT_MICROARCH"
+    TT_INSTALLDIR="$TT_BUILDDIR/install"
+    TT_PACKAGE="$TT_PKGDIR/$TT_MICROARCH/$SRC_NAME-$SRC_FULLVERSION-$TT_MICROARCH.cpio.xz"
+
+    # Create convenience variables
+    TT_AUTOCONF_COMMON=$(echo "--bindir=$TT_BINDIR \
+        --build=$TT_BUILD \
+        --datarootdir=$TT_DATADIR \
+        --includedir=$TT_INCLUDEDIR \
+        --libdir=$TT_LIBDIR \
+        --libexecdir=$TT_LIBDIR \
+        --localstatedir=$TT_STATEDIR \
+        --prefix=$TT_PREFIX \
+        --runstatedir=$TT_RUNDIR \
+        --sbindir=$TT_BINDIR \
+        --sysconfdir=$TT_CONFDIR \
+        --with-sysroot=$TT_SYSROOT" | xargs)
+
+    # NOTE: Some versions of autoconf does not like having host/target set
+    #       unless we're actually cross-compiling.
+    if [ ! "$TT_BUILD" = "$TT_TARGET" ]; then
+        TT_AUTOCONF_COMMON=$(echo "$TT_AUTOCONF_COMMON \
+            --host=$TT_TARGET \
+            --target=$TT_TARGET" | xargs)
+    fi
+
+    # TODO: What should CMAKE_INSTALL_SHAREDSTATEDIR be? ~ahill
+    # NOTE: TT_INSTALLDIR is used here because CMake treats / as a special case
+    #       and sets the prefix to /usr anyways, completely defeating the point
+    #       of setting it to / to begin with. ~ahill
+    # See also: https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html#special-cases
+    TT_CMAKE_COMMON=$(echo "-DCMAKE_ASM_COMPILER_TARGET=$TT_TARGET \
+        -DCMAKE_C_COMPILER_TARGET=$TT_TARGET \
+        -DCMAKE_CXX_COMPILER_TARGET=$TT_TARGET \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_BINDIR=$TT_INSTALLDIR$TT_BINDIR \
+        -DCMAKE_INSTALL_DATAROOTDIR=$TT_INSTALLDIR$TT_DATADIR \
+        -DCMAKE_INSTALL_INCLUDEDIR=$TT_INSTALLDIR$TT_INCLUDEDIR \
+        -DCMAKE_INSTALL_LIBDIR=$TT_INSTALLDIR$TT_LIBDIR \
+        -DCMAKE_INSTALL_LIBEXECDIR=$TT_INSTALLDIR$TT_LIBDIR \
+        -DCMAKE_INSTALL_LOCALSTATEDIR=$TT_INSTALLDIR$TT_STATEDIR \
+        -DCMAKE_INSTALL_PREFIX=$TT_INSTALLDIR$TT_PREFIX \
+        -DCMAKE_INSTALL_RUNSTATEDIR=$TT_INSTALLDIR$TT_RUNDIR \
+        -DCMAKE_INSTALL_SBINDIR=$TT_INSTALLDIR$TT_BINDIR \
+        -DCMAKE_INSTALL_SYSCONFDIR=$TT_INSTALLDIR$TT_CONFDIR" | xargs)
+
+    # NOTE: CMake doesn't like having a space in CC and CXX, so we manually
+    #       define a few things if CCACHE is set. ~ahill
+    if [ ! -z "$CCACHE" ]; then
+        TT_CMAKE_COMMON=$(echo "$TT_CMAKE_COMMON \
+            -DCMAKE_C_COMPILER=$(echo $CC | cut -d" " -f2) \
+            -DCMAKE_C_COMPILER_LAUNCHER=$CCACHE \
+            -DCMAKE_CXX_COMPILER=$(echo $CXX | cut -d" " -f2)
+            -DCMAKE_CXX_COMPILER_LAUNCHER=$CCACHE" | xargs)
+    fi
+
+    TT_MESON_COMMON=$(echo "-Dbindir=$TT_BINDIR \
+        -Ddatadir=$TT_DATADIR \
+        -Dincludedir=$TT_INCLUDEDIR \
+        -Dinfodir=$TT_DATADIR/info \
+        -Dlibdir=$TT_LIBDIR \
+        -Dlibexecdir=$TT_LIBDIR \
+        -Dlocaledir=$TT_DATADIR/locale \
+        -Dlocalstatedir=$TT_STATEDIR \
+        -Dmandir=$TT_DATADIR/man \
+        -Dprefix=$TT_PREFIX \
+        -Dsbindir=$TT_BINDIR \
+        -Dsysconfdir=$TT_CONFDIR" | xargs)
+
+    true
+}
+
+###############
+# Subcommands #
+###############
+
+# Installs a package to the sysroot
+package_install() {
+    [ ! -z "$2" ] && TT_SYSROOT=$2
+    package_check $1 $TT_SYSROOT
+    echo -n "Installing $(basename $1)... "
+    PUSHD=$(pwd)
+    cd $TT_SYSROOT
+    bsdcpio -iJ < $PKG_FULLPATH
+    cd $PUSHD
+    exit 0
+}
+
+# Uninstalls a package from the sysroot
+package_uninstall() {
+    [ ! -z "$2" ] && TT_SYSROOT=$2
+    package_check $1 $TT_SYSROOT
+    echo -n "Uninstalling $(basename $1)... "
+    PUSHD=$(pwd)
+    cd $TT_SYSROOT
+    bsdcpio -iJt < $PKG_FULLPATH | tail -n +2 | sort -r | while read path; do
+        if [ -d "$path" ]; then
+            rmdir --ignore-fail-on-non-empty "$path"
+        else
+            rm -f "$path"
+        fi
+    done
+    cd $PUSHD
+    exit 0
+}
+
+# Builds the source from the previously fetched tarball
+source_build() {
+    source_spec $1
+    if [ -f "$TT_PACKAGE" ]; then
+        echo "Skipping build for $SRC_NAME $SRC_FULLVERSION"
+        exit 0
+    fi
+    mkdir -p $TT_BUILDDIR
+    mkdir -p $TT_INSTALLDIR
+    if [ ! -z "$SRC_PATCHES" ]; then
+        echo -n "Validating patches for $SRC_NAME $SRC_FULLVERSION... "
+        cd $(dirname $1)
+        echo $SRC_PATCHES | sha256sum -c - > /dev/null
+        # Is this even the right way to check a return value? ~ahill
+        if [ ! "$?" = "0" ]; then
+            echo "Failed to validate patches for $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH ($TT_TARGET)"
+            exit 1
+        fi
+        echo $SRC_PATCHES | while read line; do
+            cp $(echo $line | cut -d" " -f2) $TT_BUILDDIR/
+        done
+        echo "Done!"
+    fi
+    echo -n "Building $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
+    PUSHD=$(pwd)
+    cd $TT_BUILDDIR
+    # Please don't use this in your build script. This is meant for
+    # troubleshooting purposes. ~ahill
+    TT_BUILD_LOG=$TT_BUILDDIR/build-$(date +%Y%m%d%H%M%S).log
+    echo "Build started with treetap $TT_VERSION at $(date)" > $TT_BUILD_LOG
+    build >> $TT_BUILD_LOG 2>&1
+    echo "Build finished at $(date)" >> $TT_BUILD_LOG
+    echo "Done!"
+    cd $TT_INSTALLDIR
+    echo -n "Archiving $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH... "
+    mkdir -p $TT_PKGDIR/$TT_MICROARCH
+    find | bsdcpio -Jo > $TT_PACKAGE
+    rm -rf $TT_INSTALLDIR
+    echo "Done!"
+    cd $PUSHD
+    exit 0
+}
+
+# Fetches and verifies the integrity of the source tarball
+source_fetch() {
+    source_spec $1
+    mkdir -p $TT_BUILDDIR
+    PUSHD=$(pwd)
+    cd $TT_BUILDDIR/..
+    if [ -f $SRC_FILENAME ]; then
+        if (echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null); then
+            echo "Skipping $SRC_FILENAME"
+            exit 0
+        else
+            rm -f $SRC_FILENAME
+        fi
+    fi
+    echo -n "Fetching $SRC_FILENAME... "
+    wget -O $SRC_FILENAME $SRC_URL
+    echo "Done!"
+    echo -n "Verifying $SRC_FILENAME... "
+    echo "$SRC_HASH  $SRC_FILENAME" | sha256sum -c - > /dev/null
+    cd $PUSHD
+    echo "Done!"
+    exit 0
+}
+
+# Purges the entire build directory for a source
+source_clean() {
+    source_spec $1
+    rm -rf $TT_BUILDDIR
+    exit 0
+}
+
+# Prints a variable defined by treetap
+source_variable() {
+    source_spec $1
+    [ -z "$2" ] && (echo "source_variable: Variable name not given"; exit 1)
+    eval "echo \${$2}"
+    exit 0
+}
+
+###############
+# Entry Point #
+###############
+
+case "$1" in
+"build") source_build $2 ;;
+"clean") source_clean $2 ;;
+"fetch") source_fetch $2 ;;
+"install") package_install $2 $3 ;;
+"uninstall") package_uninstall $2 $3 ;;
+"variable") source_variable $2 $3 ;;
+*) help_message ;;
+esac
