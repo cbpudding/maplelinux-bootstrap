@@ -5,6 +5,8 @@ SRC_NAME="kmod"
 SRC_URL="https://github.com/kmod-project/kmod/archive/refs/tags/v34.tar.gz"
 SRC_VERSION="34"
 
+# TODO: Fix pkgconfig directory (/usr/share/pkgconfig -> /lib/pkgconfig)
+
 build() {
     tar xf ../$SRC_FILENAME
     cd kmod-$SRC_VERSION/

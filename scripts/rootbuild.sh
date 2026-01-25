@@ -69,7 +69,7 @@ echo "Done!"
 cd /maple
 LAYER0="bc byacc bzip2 coreutils diffutils expat findutils grep gzip initramfs-tools libressl m4 make mawk muon musl ncurses patch perl pkgconf sed tar xz zlib zsh"
 LAYER1="autoconf automake curl flex gettext groff libarchive libcap2 libelf libtool nano openrc python"
-LAYER2="cmake dash fortune-mod git kmod nasm"
+LAYER2="cmake dash fortune-mod git kmod llvm nasm"
 LAYER3="limine linux"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2 $LAYER3"
 for pkg in $PACKAGES; do
