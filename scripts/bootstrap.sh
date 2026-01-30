@@ -232,7 +232,8 @@ for name in $SOURCES; do
     $TREETAP install $($TREETAP variable $SPEC/$name/$name.spec TT_PACKAGE) $BOOTSTRAP/root
 done
 
-# Install Treetap
+# Install Maple Linux Tools
+cp $BOOTSTRAP/../scripts/mapleconf $BOOTSTRAP/root/bin/
 cp $TREETAP $BOOTSTRAP/root/bin/
 
 # Prepare for chroot build
@@ -269,6 +270,8 @@ SOURCES=(
     limine
     linux
     llvm
+    lua
+    luaposix
     m4
     make
     mawk
@@ -284,6 +287,7 @@ SOURCES=(
     python
     sed
     tar
+    tinytoml
     xz
     zlib
     zsh

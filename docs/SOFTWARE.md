@@ -24,14 +24,13 @@
 | libarchive                    | Tim Kientzle                                        | Mostly BSD 2-Clause license                                                            | Free               |
 | libcap                        | Andrew G. Morgan                                    | BSD 3-Clause license *or* GNU General Public License version 2                         | Slightly Copyleft  |
 | libelf                        | Various                                             | GNU General Public License version 2 *and* GNU Lesser General Public License version 3 | Copyleft           |
-| libffi                        | Anthony Green, Red Hat, Inc and others              | MIT License                                                                            | Free               |
 | LibreSSL                      | Various                                             | Various                                                                                | Free               |
-| libyaml                       | Ingy döt Net and Kirill Simonov                     | MIT License                                                                            | Free               |
 | The GNU Portable Library Tool | Free Software Foundation, Inc.                      | GNU General Public License version 2                                                   | Copyleft           |
 | Limine                        | Mintsuki and Contributors                           | BSD 2-Clause license                                                                   | Free               |
 | Linux                         | Linus Torvalds and Contributors                     | Mostly GNU General Public License version 2 with Linux Syscall Note                    | Copyleft           |
-| Liquid template engine        | Tobias Luetke                                       | MIT License                                                                            | Free               |
 | LLVM                          | Various                                             | Mostly Apache License version 2.0 with LLVM exceptions                                 | Free               |
+| Lua                           | Lua.org, PUC-Rio                                    | MIT License                                                                            | Free               |
+| LuaPosix                      | luaposix authors                                    | MIT License                                                                            | Free               |
 | GNU m4                        | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU Make                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Maple Linux Bootstrap Scripts | Alexander Hill, Nicholas McDaniel, and Contributors | ISC License                                                                            | Free               |
@@ -46,9 +45,9 @@
 | Perl                          | Larry Wall and others                               | GNU General Public License version 1                                                   | Copyleft           |
 | pkgconf                       | Various                                             | ISC License                                                                            | Free               |
 | Python                        | Python Software Foundation, BeOpen, and CWI         | Python Software Foundation License Version 2                                           | Copyleft           |
-| Ruby                          | Various                                             | Various                                                                                | Mixed              |
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
 | xz                            | Various                                             | Mostly BSD 0-Clause license                                                            | Slightly Copyleft  |
 | Zlib                          | Jean-loup Gailly and Mark Adler                     | Zlib License                                                                           | Free               |
 | Zsh                           | The Zsh development group                           | Mostly MIT License (Modern Variant)                                                    | Slightly Copyleft  |

@@ -38,16 +38,15 @@ Definitions:
 | `libarchive`      | Yes        | Yes          |
 | `libcap2`         | Yes        | Yes          |
 | `libelf`          | Yes        | Yes          |
-| `libffi`          | Yes        | Yes          |
 | `libmnl`          |
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
 | `libtool`         | Yes        | Yes          |
-| `libyaml`         | Yes        | Yes          |
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
-| `liquid`          | Yes        | Yes          |
 | `llvm`            | Yes        | Yes          |
+| `lua`             | Yes        | Yes          |
+| `luaposix`        | Yes        | Yes          |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
 | `mawk`            | Yes        | Yes          |
@@ -64,10 +63,10 @@ Definitions:
 | `pkgconf`         | Yes        | Yes          |
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
-| `ruby`            | Yes        | Yes          |
 | `sed`             | Yes        | Yes          |
 | `shadow`          |
 | `tar`             | Yes        | Yes          |
+| `tinytoml`        |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |
