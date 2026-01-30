@@ -1,48 +1,129 @@
-#!/bin/ruby
+#!/bin/lua
 
-# Copyright (c) 2026 Alexander Hill
+--[[ Copyright (c) 2026 Alexander Hill
 
-# Permission to use, copy, modify, and/or distribute this software for any
-# purpose with or without fee is hereby granted, provided that the above
-# copyright notice and this permission notice appear in all copies.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
 
-# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-# OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-# PERFORMANCE OF THIS SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE. ]]
 
-require "liquid"
-require "psych"
+local posix = require("posix")
+local tinytoml = require("tinytoml")
 
-# TODO: Tie these variables to command line arguments. ~ahill
-$config = Psych.safe_load_file "/etc/maple.yml"
-$sysroot = "/"
-$templates = "/usr/share/mapleconf"
+-- TODO: Tie these variables to command line arguments. ~ahill
+local config = tinytoml.parse("/etc/maple.toml")
+local sysroot = "/"
+local templates = "/usr/share/mapleconf"
 
-def render_directory(stack)
-  path = stack.empty? ? "/" : "/#{stack.join "/"}/"
+local function render_template(source, target)
+    -- Symbol Reference:
+    -- {"literal", string} - Writes `string` to the target
+    -- {"value", name} - Writes `config[name]` to the target
+    local raw = source:read("*all")
+    local result = ""
+    local template = {}
 
-  Dir.foreach $templates + path do |entry|
-    next if entry =~ /^\.+$/
-    fullpath = path + entry
+    -- Tokenize the given template for easy processing later on ~ahill
+    local current = 0
+    local last = 0
+    local literal = true
 
-    if File.directory? $templates + fullpath
-      Dir.mkdir $sysroot + fullpath unless File.exist? $sysroot + fullpath
-      render_directory stack + [entry]
+    while current do
+        current = string.find(raw, "@", current + 1)
 
-    elsif File.file? $templates + fullpath
-      puts fullpath
-      template = Liquid::Template.parse(File.read $templates + fullpath)
-      File.write $sysroot + fullpath, template.render($config)
+        if current then
+            if literal then
+                table.insert(template, { "literal", string.sub(raw, last + 1, current - 1) })
+                literal = false
 
-    else
-      puts "What even is #{fullpath}? If you know, yell at Alex."
+            else
+                if current - last == 1 then
+                    table.insert(template, { "literal", "@" })
 
+                else
+                    table.insert(template, { "value", string.sub(raw, last + 1, current - 1) })
+                end
+                literal = true
+            end
+
+        else
+            table.insert(template, { "literal", string.sub(raw, last + 1) })
+        end
+
+        last = current
     end
-  end
+
+    for _, v in ipairs(template) do
+        if v[1] == "literal" then
+            result = result .. v[2]
+        elseif v[1] == "value" then
+            if config[v[2]] then
+                result = result .. config[v[2]]
+            else
+                print("Unable to locate value \"" .. v[2] .. "\"")
+                return
+            end
+        else
+            print("BUG: Symbol type " .. v[1] .. " was not recognized!")
+            return
+        end
+    end
+
+    target:write(result)
 end
 
-render_directory []
+local function render_directory(stack)
+    local path
+    if #stack == 0 then
+        path = "/"
+    else
+        path = "/" .. table.concat(stack, "/") .. "/"
+    end
+
+    local files = posix.dir(templates .. path)
+    for _, entry in ipairs(files) do
+        if not string.match(entry, "^%.+$") then
+            local fullpath = path .. entry
+
+            local stat = posix.stat(templates .. fullpath)
+            if stat.type == "directory" then
+                if not posix.access(sysroot .. fullpath) then
+                    posix.mkdir(sysroot .. fullpath)
+                end
+
+                local newstack = {}
+                -- Why does Lua lack the ability to copy tables? ~ahill
+                for _, v in ipairs(stack) do
+                    table.insert(newstack, v)
+                end
+                table.insert(newstack, entry)
+                render_directory(newstack)
+
+            elseif stat.type == "regular" then
+                print("Updating " .. fullpath)
+
+                local template = io.open(templates .. fullpath, "r")
+                if template then
+                    local target = io.open(sysroot .. fullpath, "w")
+                    if target then
+                        render_template(template, target)
+                        target:close()
+                    end
+                    template:close()
+                end
+
+            else
+                print("BUG: Directory entry type " .. stat.type .. " not recognized.")
+            end
+        end
+    end
+end
+
+render_directory{}
