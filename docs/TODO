@@ -1,0 +1,21 @@
+- Package LLVM runtimes (libc++, libunwind, etc.)
+- Finish writing the template engine for configuration files (scripts/mapleconf)
+- Build shadow for password hashing
+- Milestone: Successfully boot into Maple Linux
+- Write an install script to install Maple Linux from a live environment
+    - Build a partitioning tool (fdisk, parted, etc.)
+    - Build FAT utilities (dosfstools, etc.)
+    - Build nilfs2 utilities (nilfs-utils)
+    - Build a UEFI configuration tool (efibootmgr, etc.)
+- Complete a network stack
+    - Network configuration tool (iproute2, net-tools, etc.)
+    - Firewall (nftables, etc.)
+    - DHCP client (dhcpcd, sdhcp, etc.)
+    - NTP client (chrony, ntpd, etc.)
+    - Wi-Fi client (wpa_supplicant, etc.)
+- Get XLibre running
+- Get Pipewire running
+- Milestone: Boot into a graphical desktop environment
+- Build Flatpak
+- Milestone: Browse the web on Maple Linux
+- Milestone: Play some Steam games

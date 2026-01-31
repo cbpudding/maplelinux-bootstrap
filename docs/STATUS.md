@@ -58,6 +58,7 @@ Definitions:
 | `nftables`        |
 | `nilfs-utils`     |
 | `openrc`          | Yes        | Yes          |
+| `parted`          |
 | `patch`           | Yes        | Yes          |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
@@ -66,7 +67,7 @@ Definitions:
 | `sed`             | Yes        | Yes          |
 | `shadow`          |
 | `tar`             | Yes        | Yes          |
-| `tinytoml`        |
+| `tinytoml`        | Yes        | Yes          |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |
