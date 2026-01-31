@@ -1,7 +1,7 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3"
 SRC_NAME="make"
-SRC_URL="https://ftp.gnu.org/gnu/make/make-4.4.1.tar.gz"
+SRC_URL="https://linux.maple.camp/mirror/make-4.4.1.tar.gz"
 SRC_VERSION="4.4.1"
 
 build() {

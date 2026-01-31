@@ -1,7 +1,7 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="f81f5860666b0bc7d84baddefa60d1cb9fa6fceb2398cc3baca6afaa60266675"
 SRC_NAME="libtool"
-SRC_URL="https://ftp.gnu.org/gnu/libtool/libtool-2.5.4.tar.xz"
+SRC_URL="https://linux.maple.camp/mirror/libtool-2.5.4.tar.xz"
 SRC_VERSION="2.5.4"
 
 build() {

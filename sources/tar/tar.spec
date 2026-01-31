@@ -1,7 +1,7 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="4d62ff37342ec7aed748535323930c7cf94acf71c3591882b26a7ea50f3edc16"
 SRC_NAME="tar"
-SRC_URL="https://ftp.gnu.org/gnu/tar/tar-1.35.tar.xz"
+SRC_URL="https://linux.maple.camp/mirror/tar-1.35.tar.xz"
 SRC_VERSION="1.35"
 
 build() {

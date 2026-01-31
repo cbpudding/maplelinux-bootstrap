@@ -1,7 +1,7 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="19bcb6ca867183c57d77155eae946c5eced88183143b45ca51ad7d26c628ca75"
 SRC_NAME="coreutils"
-SRC_URL="https://ftp.gnu.org/gnu/coreutils/coreutils-9.9.tar.xz"
+SRC_URL="https://linux.maple.camp/mirror/coreutils-9.9.tar.xz"
 SRC_VERSION="9.9"
 
 build() {
