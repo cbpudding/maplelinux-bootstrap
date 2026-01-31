@@ -4,6 +4,7 @@ SRC_NAME="llvm"
 SRC_PATCHES="
 1e52d86c422498ed5d926ad90e0787e79b8a02cb33cc916b1897c2a6ebfef9fc  rtsan-127764.patch
 "
+SRC_REVISION=1
 SRC_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/llvm-project-21.1.8.src.tar.xz"
 SRC_VERSION="21.1.8"
 
@@ -65,6 +66,13 @@ build() {
         -DLLVM_INSTALL_BINUTILS_SYMLINKS=ON \
         -DLLVM_INSTALL_CCTOOLS_SYMLINKS=ON
     cmake --build build --parallel $TT_PROCS
+    # NOTE: From what I can tell, LLVM believes that it is cross-compiling, so
+    #       it creates a /lib/$TT_TARGET directory, which prevents libc++ and
+    #       libunwind from being found. The workaround is to symlink that
+    #       directory to /lib, but there should be a better way to do this.
+    #       ~ahill
+    mkdir -p $TT_INSTALLDIR/lib
+    ln -sf . $TT_INSTALLDIR/lib/$TT_TARGET
     cmake --install build --parallel $TT_PROCS
     # NOTE: LLVM doesn't add symlinks for clang or ld.lld, so I'll make them
     #       myself. ~ahill

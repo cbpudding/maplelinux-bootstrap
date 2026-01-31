@@ -1,4 +1,3 @@
-- Package LLVM runtimes (libc++, libunwind, etc.)
 - Finish writing the template engine for configuration files (scripts/mapleconf)
 - Build shadow for password hashing
 - Milestone: Successfully boot into Maple Linux
