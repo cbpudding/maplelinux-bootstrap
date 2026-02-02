@@ -17,59 +17,146 @@ PERFORMANCE OF THIS SOFTWARE. ]]
 local posix = require("posix")
 local tinytoml = require("tinytoml")
 
--- TODO: Tie these variables to command line arguments. ~ahill
-local config = tinytoml.parse("/etc/maple.toml")
+local config
+local config_path = "/etc/maple.toml"
 local sysroot = "/"
 local templates = "/usr/share/mapleconf"
 
-local function render_template(source, target)
-    -- Symbol Reference:
-    -- {"literal", string} - Writes `string` to the target
-    -- {"value", name} - Writes `config[name]` to the target
-    local raw = source:read("*all")
-    local result = ""
-    local template = {}
+local function tokenize_block(inner)
+    local buffer = ""
+    local escaped = false
+    local quoted = false
+    local tokens = {}
 
-    -- Tokenize the given template for easy processing later on ~ahill
+    for char in inner:gmatch(".") do
+        if escaped then
+            buffer = buffer .. char
+            escaped = false
+
+        elseif char == "\\" then
+            if quoted then
+                buffer = buffer .. char
+            end
+
+            escaped = true
+
+        elseif quoted then
+            buffer = buffer .. char
+
+            if char == "\"" then
+                quoted = false
+                table.insert(tokens, buffer)
+                buffer = ""
+            end
+
+        else
+            if char:match("%s") then
+                if #buffer > 0 then
+                    table.insert(tokens, buffer)
+                    buffer = ""
+                end
+
+            elseif char == "\"" then
+                buffer = buffer .. char
+                quoted = true
+
+            else
+                buffer = buffer .. char
+            end
+        end
+    end
+
+    if #buffer > 0 then
+        table.insert(tokens, buffer)
+    end
+
+    return tokens
+end
+
+-- Symbol Reference:
+-- {"if", condition, true, false} - Executes true if condition is "truthy" and false otherwise
+-- {"literal", string} - Writes `string` to the target
+-- {"string", string} - Format and write string to the target
+-- {"value", identifier} - Returns the value of the identifier
+
+local function tokenize_template(raw)
     local current = 0
     local last = 0
     local literal = true
+    local template = {}
 
     while current do
         current = string.find(raw, "@", current + 1)
 
         if current then
-            if literal then
-                table.insert(template, { "literal", string.sub(raw, last + 1, current - 1) })
-                literal = false
-
-            else
-                if current - last == 1 then
-                    table.insert(template, { "literal", "@" })
+            -- TODO: What happens when a line ends with a backslash? ~ahill
+            if raw:sub(current - 1, current - 1) ~= "\\" then
+                if literal then
+                    table.insert(template, { "literal", string.sub(raw, last + 1, current - 1) })
+                    literal = false
 
                 else
-                    table.insert(template, { "value", string.sub(raw, last + 1, current - 1) })
+                    if current - last == 1 then
+                        table.insert(template, { "literal", "@" })
+
+                    else
+                        local inner = raw:sub(last + 1, current - 1)
+
+                        if inner:sub(1, 1) ~= "-" then
+                            local tokens = tokenize_block(inner)
+
+                            print(#tokens)
+                            for _, v in ipairs(tokens) do
+                                print(v)
+                                if v == "nil" then
+                                    table.insert(template, { "literal", "" })
+
+                                elseif v:sub(1, 1) == "\"" and v:sub(-1, -1) == "\"" then
+                                    table.insert(template, { "string", v:sub(2, -2) })
+
+                                else
+                                    table.insert(template, {"value", v})
+                                end
+                            end
+
+                            -- ...
+                        end
+                    end
+                    literal = true
                 end
-                literal = true
+
+                last = current
             end
 
         else
             table.insert(template, { "literal", string.sub(raw, last + 1) })
+            last = current
         end
-
-        last = current
     end
+
+    return template
+end
+
+local function render_template(source, target)
+    local raw = source:read("*all")
+    local result = ""
+    local template = tokenize_template(raw)
 
     for _, v in ipairs(template) do
         if v[1] == "literal" then
             result = result .. v[2]
+
+        elseif v[1] == "string" then
+            result = result .. v[2]
+
         elseif v[1] == "value" then
             if config[v[2]] then
                 result = result .. config[v[2]]
             else
-                print("Unable to locate value \"" .. v[2] .. "\"")
+                print("Unable to locate " .. v[2])
                 return
             end
+
         else
             print("BUG: Symbol type " .. v[1] .. " was not recognized!")
             return
@@ -125,5 +212,30 @@ local function render_directory(stack)
         end
     end
 end
+
+-- ENTRY POINT
+
+for opt, optarg, optind in posix.unistd.getopt(arg, "c:hr:t:") do
+    if opt == "c" then
+        config_path = optarg
+    elseif opt == "h" then
+        -- Pardon the formatting. This should be cleaned up later. ~ahill
+        print[[Usage: mapleconf [option [option ...] ]
+    -c <file> - Sets the file to source configuration data from
+    -h        - Displays this help message
+    -r <path> - Sets the sysroot to configure
+    -t <path> - Sets the path of the template directory]]
+        os.exit(1)
+    elseif opt == "r" then
+        sysroot = optarg
+    elseif opt == "t" then
+        templates = optarg
+    else
+        print("Unknown option: " .. arg[optind - 1])
+        os.exit(1)
+    end
+end
+
+config = tinytoml.parse(config_path)
 
 render_directory{}
