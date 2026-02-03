@@ -22,8 +22,10 @@
 | initramfs-tools               | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
 | kmod                          | Various                                             | GNU Lesser General Public License version 2.1                                          | Copyleft           |
 | libarchive                    | Tim Kientzle                                        | Mostly BSD 2-Clause License                                                            | Free               |
+| libbsd                        | Various                                             | Various                                                                                | Free               |
 | libcap                        | Andrew G. Morgan                                    | BSD 3-Clause License *or* GNU General Public License version 2                         | Slightly Copyleft  |
 | libelf                        | Various                                             | GNU General Public License version 2 *and* GNU Lesser General Public License version 3 | Copyleft           |
+| libmd                         | Various                                             | BSD 3-Clause License, BSD 2-Clause License, ISC License, and the Beer-Ware License     | Free               |
 | LibreSSL                      | Various                                             | Various                                                                                | Free               |
 | The GNU Portable Library Tool | Free Software Foundation, Inc.                      | GNU General Public License version 2                                                   | Copyleft           |
 | Limine                        | Mintsuki and Contributors                           | BSD 2-Clause License                                                                   | Free               |
@@ -49,6 +51,7 @@
 | pkgconf                       | Various                                             | ISC License                                                                            | Free               |
 | Python                        | Python Software Foundation, BeOpen, and CWI         | Python Software Foundation License Version 2                                           | Copyleft           |
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| shadow-utils                  | Various                                             | BSD 3-Clause License                                                                   | Free               |
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
 | xz                            | Various                                             | Mostly BSD 0-Clause License                                                            | Slightly Copyleft  |

@@ -1,5 +1,3 @@
-- Finish writing the template engine for configuration files (scripts/mapleconf)
-- Build shadow for password hashing
 - Milestone: Successfully boot into Maple Linux
 - Write an install script to install Maple Linux from a live environment
     - Build a partitioning tool (fdisk, parted, etc.)

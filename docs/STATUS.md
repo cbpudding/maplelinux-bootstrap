@@ -36,8 +36,10 @@ Definitions:
 | `kmod`            | Yes        | Yes          |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
+| `libbsd`          | Yes        | Yes          |
 | `libcap2`         | Yes        | Yes          |
 | `libelf`          | Yes        | Yes          |
+| `libmd`           | Yes        | Yes          |
 | `libmnl`          |
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
@@ -68,7 +70,7 @@ Definitions:
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
 | `sed`             | Yes        | Yes          |
-| `shadow`          |
+| `shadow`          | Yes        | Yes          |
 | `tar`             | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
 | `xlibre-xserver`  |
