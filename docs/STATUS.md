@@ -44,8 +44,11 @@ Definitions:
 | `libtool`         | Yes        | Yes          |
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
+| `liquid-lua`      | Yes        | Yes          |
 | `llvm`            | Yes        | Yes          |
 | `lua`             | Yes        | Yes          |
+| `lua-cjson`       | Yes        | Yes          |
+| `lua-date`        | Yes        | Yes          |
 | `luaposix`        | Yes        | Yes          |
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
