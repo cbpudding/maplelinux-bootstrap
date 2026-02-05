@@ -30,7 +30,6 @@ Definitions:
 | `grep`            | Yes        | Yes          |
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
-| `initramfs-tools` | Yes        | Yes          |
 | `iproute2`        |
 | `kbd`             |
 | `kmod`            | Yes        | Yes          |
@@ -72,6 +71,7 @@ Definitions:
 | `sed`             | Yes        | Yes          |
 | `shadow`          | Yes        | Yes          |
 | `tar`             | Yes        | Yes          |
+| `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |

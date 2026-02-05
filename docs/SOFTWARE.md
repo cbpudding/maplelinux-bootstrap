@@ -19,7 +19,6 @@
 | GNU Grep                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU roff                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU Gzip                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
-| initramfs-tools               | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
 | kmod                          | Various                                             | GNU Lesser General Public License version 2.1                                          | Copyleft           |
 | libarchive                    | Tim Kientzle                                        | Mostly BSD 2-Clause License                                                            | Free               |
 | libbsd                        | Various                                             | Various                                                                                | Free               |
@@ -53,6 +52,7 @@
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | shadow-utils                  | Various                                             | BSD 3-Clause License                                                                   | Free               |
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| tinyramfs                     | illiliti                                            | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
 | xz                            | Various                                             | Mostly BSD 0-Clause License                                                            | Slightly Copyleft  |
 | Zlib                          | Jean-loup Gailly and Mark Adler                     | Zlib License                                                                           | Free               |

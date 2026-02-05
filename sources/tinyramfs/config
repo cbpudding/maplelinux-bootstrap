@@ -1,0 +1,1 @@
+root="UUID={%for p in partition%}{%if p.location == "/"%}{{p.uuid}}{%endif%}{%endfor%}"
