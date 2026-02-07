@@ -32,4 +32,4 @@ Maple Linux uses a slightly different filesystem hierarchy compared to most Linu
 - `/boot` - This is the mount point for the EFI System Partition
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` and `/usr/libexec` should be considered legacy.
 
-Many of alternative paths are symlinked for compatibility's sake.
+Many alternate/deprecated paths are symlinked for compatibility's sake.

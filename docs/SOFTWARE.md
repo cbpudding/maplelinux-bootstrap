@@ -54,6 +54,7 @@
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | tinyramfs                     | illiliti                                            | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
+| util-linux                    | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
 | xz                            | Various                                             | Mostly BSD 0-Clause License                                                            | Slightly Copyleft  |
 | Zlib                          | Jean-loup Gailly and Mark Adler                     | Zlib License                                                                           | Free               |
 | Zsh                           | The Zsh development group                           | Mostly MIT License (Modern Variant)                                                    | Slightly Copyleft  |
