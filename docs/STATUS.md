@@ -54,6 +54,7 @@ Definitions:
 | `m4`              | Yes        | Yes          |
 | `make`            | Yes        | Yes          |
 | `mawk`            | Yes        | Yes          |
+| `mdevd`           | Yes        | Yes          |
 | `muon`            | Yes        | Yes          |
 | `musl`            | Yes        | Yes          |
 | `nano`            | Yes        | Yes          |
@@ -70,6 +71,7 @@ Definitions:
 | `python`          | Yes        | Yes          |
 | `sed`             | Yes        | Yes          |
 | `shadow`          | Yes        | Yes          |
+| `skalibs`         | Yes        | Yes          |
 | `tar`             | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |

@@ -33,3 +33,14 @@ Maple Linux uses a slightly different filesystem hierarchy compared to most Linu
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` and `/usr/libexec` should be considered legacy.
 
 Many alternate/deprecated paths are symlinked for compatibility's sake.
+
+### Inspirations
+
+The following is a list of sites and projects that influenced the direction Maple Linux has taken. This is not a comprehensive list, and I didn't discover many of these places until after I began work on Maple Linux. As I continue my research and learn more, this list of influences will grow.
+
+- [https://alpinelinux.org/](https://alpinelinux.org/)
+- [https://sta.li/filesystem/](https://sta.li/filesystem/)
+- [https://kisslinux.github.io/](https://kisslinux.github.io/)
+- [https://suckless.org/philosophy/](https://suckless.org/philosophy/)
+- [https://puppylinux-woof-ce.github.io/](https://puppylinux-woof-ce.github.io/)
+- [https://github.com/comfies/tldrlfs](https://github.com/comfies/tldrlfs)

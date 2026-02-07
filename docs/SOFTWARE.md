@@ -39,6 +39,7 @@
 | GNU Make                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Maple Linux Bootstrap Scripts | Alexander Hill, Nicholas McDaniel, and Contributors | ISC License                                                                            | Free               |
 | Mawk                          | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
+| mdevd                         | Laurent Bercot                                      | ISC License                                                                            | Free               |
 | muon                          | Stone Tickle and Contributors                       | GNU General Public License version 3                                                   | Copyleft           |
 | musl                          | Rich Felker and Contributors                        | Mostly MIT License                                                                     | Slightly Copyright |
 | GNU nano                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
@@ -51,6 +52,7 @@
 | Python                        | Python Software Foundation, BeOpen, and CWI         | Python Software Foundation License Version 2                                           | Copyleft           |
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | shadow-utils                  | Various                                             | BSD 3-Clause License                                                                   | Free               |
+| skalibs                       | Laurent Bercot                                      | ISC License                                                                            | Free               |
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | tinyramfs                     | illiliti                                            | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
