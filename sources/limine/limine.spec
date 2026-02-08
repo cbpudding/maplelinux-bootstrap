@@ -4,6 +4,10 @@ SRC_NAME="limine"
 SRC_URL="https://github.com/limine-bootloader/limine/releases/download/v10.6.4/limine-10.6.4.tar.xz"
 SRC_VERSION="10.6.4"
 
+SRC_PATCHES="
+8ab49ead489fc493ecda52a492ba0fd9aff15889977ae997346268fc90c4f621  limine.conf
+"
+
 build() {
     mkdir -p $TT_INSTALLDIR$TT_DATADIR/mapleconf/boot
     cp limine.conf $TT_INSTALLDIR$TT_DATADIR/mapleconf/boot/
