@@ -75,7 +75,7 @@ Definitions:
 | `tar`             | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
-| `util-linux`      | Yes        | Yes          |
+| `ubase`           | Yes        | No           |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |
