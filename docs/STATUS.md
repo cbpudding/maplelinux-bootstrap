@@ -13,7 +13,7 @@ Definitions:
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
 | `cmake`           | Yes        | Yes          |
-| `coreutils`       | Yes        | Yes          |
+| `coreutils`       | Yes        | No           |
 | `curl`            | Yes        | Yes          |
 | `dash`            | Yes        | Yes          |
 | `dhcpcd`          |
@@ -32,7 +32,7 @@ Definitions:
 | `gzip`            | Yes        | Yes          |
 | `iproute2`        |
 | `kbd`             |
-| `kmod`            | Yes        | Yes          |
+| `kmod`            | Yes        | No           |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
 | `libbsd`          | Yes        | Yes          |
@@ -42,11 +42,11 @@ Definitions:
 | `libmnl`          |
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
-| `libtool`         | Yes        | Yes          |
+| `libtool`         | Yes        | No           |
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
 | `liquid-lua`      | Yes        | Yes          |
-| `llvm`            | Yes        | Yes          |
+| `llvm`            | Yes        | No           |
 | `lua`             | Yes        | Yes          |
 | `lua-cjson`       | Yes        | Yes          |
 | `lua-date`        | Yes        | Yes          |
@@ -59,7 +59,7 @@ Definitions:
 | `musl`            | Yes        | Yes          |
 | `nano`            | Yes        | Yes          |
 | `nasm`            | Yes        | Yes          |
-| `ncurses`         | Yes        | Yes          |
+| `ncurses`         | Yes        | No           |
 | `nftables`        |
 | `nilfs-utils`     |
 | `openrc`          | Yes        | Yes          |
@@ -70,7 +70,7 @@ Definitions:
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
 | `sed`             | Yes        | Yes          |
-| `shadow`          | Yes        | Yes          |
+| `shadow`          | Yes        | No           |
 | `skalibs`         | Yes        | Yes          |
 | `tar`             | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
