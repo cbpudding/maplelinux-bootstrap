@@ -35,10 +35,8 @@ Definitions:
 | `kmod`            | Yes        | No           |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
-| `libbsd`          | Yes        | Yes          |
 | `libcap2`         | Yes        | Yes          |
 | `libelf`          | Yes        | Yes          |
-| `libmd`           | Yes        | Yes          |
 | `libmnl`          |
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
@@ -70,7 +68,6 @@ Definitions:
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
 | `sed`             | Yes        | Yes          |
-| `shadow`          | Yes        | No           |
 | `skalibs`         | Yes        | Yes          |
 | `tar`             | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
