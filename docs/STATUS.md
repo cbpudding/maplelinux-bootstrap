@@ -67,6 +67,7 @@ Definitions:
 | `pkgconf`         | Yes        | Yes          |
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
+| `sbase`           | Yes        | No           |
 | `sed`             | Yes        | Yes          |
 | `skalibs`         | Yes        | Yes          |
 | `tar`             | Yes        | Yes          |

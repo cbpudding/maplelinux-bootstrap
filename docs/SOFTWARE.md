@@ -48,6 +48,7 @@
 | Perl                          | Larry Wall and others                               | GNU General Public License version 1                                                   | Copyleft           |
 | pkgconf                       | Various                                             | ISC License                                                                            | Free               |
 | Python                        | Python Software Foundation, BeOpen, and CWI         | Python Software Foundation License Version 2                                           | Copyleft           |
+| Suckless Base                 | Various                                             | MIT License                                                                            | Free               |
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | skalibs                       | Laurent Bercot                                      | ISC License                                                                            | Free               |
 | GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
