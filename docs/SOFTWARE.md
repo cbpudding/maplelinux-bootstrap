@@ -2,7 +2,7 @@
 | ----------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------ |
 | Autoconf                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Automake                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
-| GNU bc                        | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| bc                            | Gavin D. Howard and contributors                    | BSD 2-Clause License                                                                   | Free               |
 | Berkeley Yacc                 | Public Domain                                       | Public Domain                                                                          | Free               |
 | bzip2                         | Julian R. Seward                                    | Modified Zlib License                                                                  | Free               |
 | CMake                         | Kitware, Inc. and Contributors                      | BSD 3-Clause License                                                                   | Free               |

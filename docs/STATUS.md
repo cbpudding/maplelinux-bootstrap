@@ -8,7 +8,7 @@ Definitions:
 | ----------------- | ---------- | ------------ |
 | `autoconf`        | Yes        | Yes          |
 | `automake`        | Yes        | Yes          |
-| `bc`              | Yes        | Yes          |
+| `bc`              | Yes        | No           |
 | `byacc`           | Yes        | Yes          |
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
@@ -27,7 +27,7 @@ Definitions:
 | `fortune-mod`     | Yes        | Yes          |
 | `gettext`         | Yes        | Yes          |
 | `git`             | Yes        | Yes          |
-| `grep`            | Yes        | Yes          |
+| `grep`            | Yes        | No           |
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
 | `iproute2`        |
@@ -68,9 +68,9 @@ Definitions:
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
 | `sbase`           | Yes        | No           |
-| `sed`             | Yes        | Yes          |
+| `sed`             | Yes        | No           |
 | `skalibs`         | Yes        | Yes          |
-| `tar`             | Yes        | Yes          |
+| `tar`             | Yes        | No           |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
 | `ubase`           | Yes        | No           |
