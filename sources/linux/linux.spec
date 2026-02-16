@@ -1,14 +1,12 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="303079a8250b8f381f82b03f90463d12ac98d4f6b149b761ea75af1323521357"
 SRC_NAME="linux"
-SRC_PATCHES="
-ee0f46a264b35dda4838af1794e8b0cc4bc9d6110d9d79319db47ce1a680f52f  linux.skylake.config
-"
+SRC_PATCHES="ee0f46a264b35dda4838af1794e8b0cc4bc9d6110d9d79319db47ce1a680f52f  linux.skylake.config"
 SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.tar.xz"
 SRC_VERSION="6.19"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd linux-$SRC_VERSION/
     # NOTE: LLVM=1 is required for ALL invocations of the kernel's Makefile. GNU
     #       tools are still used by default in a lot of places and this will
@@ -24,10 +22,15 @@ build() {
     #       specifically, but I found another project with a similar issue. By
     #       simply promising clang that the symbol *will* exist, it was able to
     #       link genksyms without another problem. ~ahill
-    sed -i '/#include "parse.tab.h"/a extern YYSTYPE yylval;' scripts/genksyms/lex.l
-    # NOTE: ubase's dd is more primitive than I had initially realized, so we
-    #       need to dumb the build instructions down a bit to make it happy. ~ahill
-    sed -i "/cmd_image = (dd/s|dd.*;|dd if=$< of=/dev/stdout bs=4096;|" arch/x86/boot/Makefile
+    sed -i '/#include "parse.tab.h"/aextern YYSTYPE yylval;' scripts/genksyms/lex.l
+    # NOTE: sbase's version of dd doesn't understand status=* so we simply
+    #       remove it when building the kernel. The only noticable difference is
+    #       that the output of dd is visible, even when the Makefile is set to
+    #       quiet, which is the default. I think I'll live. ~ahill
+    sed -i "s/ status=.*;/;/" arch/x86/boot/Makefile
+    # NOTE: Why is -n even being passed here? bzImage is a file, plus sbase's ln
+    #       doesn't support the switch. Patching that out as well. ~ahill
+    sed -i "s/ln -fsn/ln -fs/" arch/x86/Makefile
     LLVM=1 make -j $TT_PROCS YACC=byacc
     make -j $TT_PROCS install INSTALL_PATH=$TT_INSTALLDIR/boot
     make -j $TT_PROCS modules_install INSTALL_MOD_PATH=$TT_INSTALLDIR

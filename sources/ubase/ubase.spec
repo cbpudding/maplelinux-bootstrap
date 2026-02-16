@@ -1,6 +1,7 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="962ea0f6e91f9557121bc1c9e44fb9b303dd33a4ba39c3ac0d18c5eb0db3d1c6"
 SRC_NAME="ubase"
+SRC_REVISION=1
 SRC_URL="https://linux.maple.camp/git/mirror/ubase/archive/e8249b49ca3e02032dece5e0cdac3d236667a6d9.tar.gz"
 SRC_VERSION="e8249b4"
 
@@ -17,10 +18,17 @@ SRC_VERSION="e8249b4"
 SRC_FILENAME="ubase-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd ubase/
     sed -E -i "s|^PREFIX.+|PREFIX = $TT_PREFIX|" config.mk
     sed -E -i "s|^MANPREFIX.+|MANPREFIX = $TT_DATADIR/man|" config.mk
+    # NOTE: Some commands conflict with other packages (even sbase!), so we tell
+    #       ubase not to build some commands. ~ahill
+    sed -E '/clear(\.1)? *\\/d' Makefile
+    sed -E '/dd(\.1)? *\\/d' Makefile
+    sed -E '/insmod(\.8)? *\\/d' Makefile
+    sed -E '/lsmod(\.8)? *\\/d' Makefile
+    sed -E '/rmmod(\.8)? *\\/d' Makefile
     # NOTE: Basic system utilities should be statically linked anyways. ~ahill
     sed -E -i "/^(C|LD)FLAGS/s/$/ -static/" config.mk
     make -j $TT_PROCS

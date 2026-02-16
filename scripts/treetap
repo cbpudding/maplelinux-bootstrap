@@ -18,6 +18,11 @@
 # Changelog #
 #############
 
+# February 16, 2026 (1.5.1)
+# * Fixed a bug where SRC_PATCHES was being formatted incorrectly due to a buggy
+#   echo command. [ahill]
+# - Removed the "Done!" message after a package has been archived. [ahill]
+
 # January 16, 2026 (1.5.0)
 # + Added TT_PACKAGE [ahill]
 # + Added variable subcommand [ahill]
@@ -159,7 +164,7 @@
 [ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
 [ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
 [ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.5.0"
+TT_VERSION="1.5.1"
 
 #########################
 # Environment Variables #
@@ -381,7 +386,7 @@ source_build() {
     if [ ! -z "$SRC_PATCHES" ]; then
         echo -n "Validating patches for $SRC_NAME $SRC_FULLVERSION... "
         cd $(dirname $1)
-        echo $SRC_PATCHES | sha256sum -c - > /dev/null
+        echo "$SRC_PATCHES" | sha256sum -c - > /dev/null
         # Is this even the right way to check a return value? ~ahill
         if [ ! "$?" = "0" ]; then
             echo "Failed to validate patches for $SRC_NAME $SRC_FULLVERSION for $TT_MICROARCH ($TT_TARGET)"
@@ -407,7 +412,6 @@ source_build() {
     mkdir -p $TT_PKGDIR/$TT_MICROARCH
     find | bsdcpio -Jo > $TT_PACKAGE
     rm -rf $TT_INSTALLDIR
-    echo "Done!"
     cd $PUSHD
     exit 0
 }
