@@ -16,7 +16,6 @@
 | fortune-mod                   | Various                                             | BSD 4-Clause License                                                                   | Free               |
 | gettext                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | git                           | Linus Torvalds and Contributors                     | GNU General Public License version 2                                                   | Copyleft           |
-| GNU Grep                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU roff                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU Gzip                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | kmod                          | Various                                             | GNU Lesser General Public License version 2.1                                          | Copyleft           |
@@ -51,7 +50,6 @@
 | Suckless Base                 | Various                                             | MIT License                                                                            | Free               |
 | GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | skalibs                       | Laurent Bercot                                      | ISC License                                                                            | Free               |
-| GNU tar                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | tinyramfs                     | illiliti                                            | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
 | Unportable Base               | Various                                             | MIT/X Consortium License                                                               | Free               |

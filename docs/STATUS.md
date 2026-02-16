@@ -27,7 +27,6 @@ Definitions:
 | `fortune-mod`     | Yes        | Yes          |
 | `gettext`         | Yes        | Yes          |
 | `git`             | Yes        | Yes          |
-| `grep`            | Yes        | No           |
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
 | `iproute2`        |
@@ -70,7 +69,6 @@ Definitions:
 | `sbase`           | Yes        | No           |
 | `sed`             | Yes        | No           |
 | `skalibs`         | Yes        | Yes          |
-| `tar`             | Yes        | No           |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
 | `ubase`           | Yes        | No           |
