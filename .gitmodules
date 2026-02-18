@@ -1,0 +1,3 @@
+[submodule "tools"]
+	path = tools
+	url = https://linux.maple.camp/git/ahill/maplelinux-tools

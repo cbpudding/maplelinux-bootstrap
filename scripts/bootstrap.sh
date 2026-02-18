@@ -23,7 +23,7 @@ export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
 export LD=ld.lld
 export LDFLAGS="--sysroot=$BOOTSTRAP/root"
-export TREETAP=$(pwd)/scripts/treetap
+export TREETAP=$(pwd)/tools/treetap
 export TT_DIR=$(pwd)/.treetap
 export TT_MICROARCH=$MICROARCH
 export TT_SYSROOT=$BOOTSTRAP/root
@@ -233,12 +233,12 @@ for name in $SOURCES; do
 done
 
 # Install Maple Linux Tools
-cp $BOOTSTRAP/../scripts/mapleconf $BOOTSTRAP/root/bin/
+cp $BOOTSTRAP/../tools/mapleconf $BOOTSTRAP/root/bin/
 cp $TREETAP $BOOTSTRAP/root/bin/
 
 # Prepare for chroot build
 mkdir -p $BOOTSTRAP/root/maple/
-cp $BOOTSTRAP/../scripts/rootbuild.sh $BOOTSTRAP/root/maple/
+cp $BOOTSTRAP/../tools/rootbuild.sh $BOOTSTRAP/root/maple/
 export TT_DIR=$BOOTSTRAP/root/maple/.treetap
 SOURCES=(
     autoconf

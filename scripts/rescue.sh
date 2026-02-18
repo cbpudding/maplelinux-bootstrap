@@ -23,7 +23,7 @@ export CXXFLAGS=$CFLAGS
 export RANLIB=llvm-ranlib
 export LD=ld.lld
 export LDFLAGS="--sysroot=$BOOTSTRAP/root"
-export TREETAP=$(pwd)/scripts/treetap
+export TREETAP=$(pwd)/tools/treetap
 export TT_DIR=$(pwd)/.treetap
 export TT_MICROARCH=$MICROARCH
 export TT_SYSROOT=$BOOTSTRAP/root
