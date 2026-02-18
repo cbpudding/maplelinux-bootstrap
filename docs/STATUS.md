@@ -71,6 +71,7 @@ Definitions:
 | `skalibs`         | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
+| `toybox`          | Yes        | No           |
 | `ubase`           | Yes        | No           |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |

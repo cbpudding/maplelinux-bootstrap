@@ -52,6 +52,7 @@
 | skalibs                       | Laurent Bercot                                      | ISC License                                                                            | Free               |
 | tinyramfs                     | illiliti                                            | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
+| Toybox                        | Rob Landley                                         | Zero Clause BSD License                                                                | Free               |
 | Unportable Base               | Various                                             | MIT/X Consortium License                                                               | Free               |
 | xz                            | Various                                             | Mostly BSD 0-Clause License                                                            | Slightly Copyleft  |
 | Zlib                          | Jean-loup Gailly and Mark Adler                     | Zlib License                                                                           | Free               |
