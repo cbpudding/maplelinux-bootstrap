@@ -13,7 +13,6 @@ Definitions:
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
 | `cmake`           | Yes        | Yes          |
-| `coreutils`       | Yes        | No           |
 | `curl`            | Yes        | Yes          |
 | `dash`            | Yes        | Yes          |
 | `dhcpcd`          |
@@ -21,7 +20,6 @@ Definitions:
 | `dosfstools`      |
 | `efibootmgr`      |
 | `expat`           | Yes        | Yes          |
-| `findutils`       | Yes        | Yes          |
 | `flatpak`         |
 | `flex`            | Yes        | Yes          |
 | `fortune-mod`     | Yes        | Yes          |
@@ -61,13 +59,11 @@ Definitions:
 | `nilfs-utils`     |
 | `openrc`          | Yes        | Yes          |
 | `parted`          |
-| `patch`           | Yes        | Yes          |
 | `perl`            | Yes        | Yes          |
 | `pkgconf`         | Yes        | Yes          |
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
 | `sbase`           | Yes        | No           |
-| `sed`             | Yes        | No           |
 | `skalibs`         | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |

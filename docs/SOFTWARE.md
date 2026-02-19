@@ -6,12 +6,10 @@
 | Berkeley Yacc                 | Public Domain                                       | Public Domain                                                                          | Free               |
 | bzip2                         | Julian R. Seward                                    | Modified Zlib License                                                                  | Free               |
 | CMake                         | Kitware, Inc. and Contributors                      | BSD 3-Clause License                                                                   | Free               |
-| Coreutils                     | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | curl                          | Daniel Stenberg and many contributors               | The curl License                                                                       | Free               |
 | Debian Almquist Shell         | Various                                             | Modified BSD 3-Clause License(?) *and* GNU General Public License version 3            | Slightly Copyleft  |
 | GNU Diffutils                 | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Expat                         | Various                                             | MIT License                                                                            | Free               |
-| GNU Find Utilities            | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Flex                          | Various                                             | BSD 2-Clause License                                                                   | Free               |
 | fortune-mod                   | Various                                             | BSD 4-Clause License                                                                   | Free               |
 | gettext                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
@@ -43,12 +41,10 @@
 | The Netwide Assembler         | "The NASM Authors"                                  | BSD 2-Clause License                                                                   | Free               |
 | New Curses                    | Thomas E. Dickey and Free Software Foundation, Inc. | Modified MIT License                                                                   | Free               |
 | OpenRC                        | Roy Marples and the OpenRC authors                  | BSD 2-Clause License                                                                   | Free               |
-| GNU patch                     | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | Perl                          | Larry Wall and others                               | GNU General Public License version 1                                                   | Copyleft           |
 | pkgconf                       | Various                                             | ISC License                                                                            | Free               |
 | Python                        | Python Software Foundation, BeOpen, and CWI         | Python Software Foundation License Version 2                                           | Copyleft           |
 | Suckless Base                 | Various                                             | MIT License                                                                            | Free               |
-| GNU sed                       | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | skalibs                       | Laurent Bercot                                      | ISC License                                                                            | Free               |
 | tinyramfs                     | illiliti                                            | GNU General Public License version 3                                                   | Copyleft           |
 | tinytoml                      | Fourier Transformer                                 | MIT License                                                                            | Free               |
