@@ -24,13 +24,21 @@ build() {
     sed -E -i "s|^MANPREFIX.+|MANPREFIX = $TT_DATADIR/man|" config.mk
     # NOTE: Some commands conflict with other packages (even sbase!), so we tell
     #       ubase not to build some commands. ~ahill
-    sed -E '/clear(\.1)? *\\/d' Makefile
-    sed -E '/dd(\.1)? *\\/d' Makefile
-    sed -E '/insmod(\.8)? *\\/d' Makefile
-    sed -E '/lsmod(\.8)? *\\/d' Makefile
-    sed -E '/rmmod(\.8)? *\\/d' Makefile
+    export BIN="\
+    chvt ctrlaltdel fallocate freeramdisk fsfreeze getty halt last lastlog \
+    mesg mountpoint nologin pagesize passwd pivot_root pwdx readahead respawn \
+    swaplabel swapoff swapon truncate vtallow who"
+
+    export MAN8="\
+    ctrlaltdel.8 freeramdisk.8 fsfreeze.8 getty.8 halt.8 lastlog.8 nologin.8 \
+    pivot_root.8 readahead.8 swaplabel.8 swapoff.8 swapon.8 sysctl.8"
+
+    export MAN1="\
+    chvt.1 fallocate.1 mesg.1 mountpoint.1 pagesize.1 passwd.1 pwdx.1 respawn.1 \
+    truncate.1 vtallow.1 who.1"
+
     # NOTE: Basic system utilities should be statically linked anyways. ~ahill
     sed -E -i "/^(C|LD)FLAGS/s/$/ -static/" config.mk
-    make -j $TT_PROCS
-    make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
+    make -e -j $TT_PROCS
+    make -e -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }
