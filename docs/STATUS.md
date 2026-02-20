@@ -8,7 +8,7 @@ Definitions:
 | ----------------- | ---------- | ------------ |
 | `autoconf`        | Yes        | Yes          |
 | `automake`        | Yes        | Yes          |
-| `bc`              | Yes        | No           |
+| `bc`              | Yes        | Yes          |
 | `byacc`           | Yes        | Yes          |
 | `bzip2`           | Yes        | Yes          |
 | `chrony`          |
@@ -29,7 +29,7 @@ Definitions:
 | `gzip`            | Yes        | Yes          |
 | `iproute2`        |
 | `kbd`             |
-| `kmod`            | Yes        | No           |
+| `kmod`            | Yes        | Yes          |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
 | `libcap2`         | Yes        | Yes          |
@@ -37,11 +37,11 @@ Definitions:
 | `libmnl`          |
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
-| `libtool`         | Yes        | No           |
+| `libtool`         | Yes        | Yes          |
 | `limine`          | Yes        | Yes          |
 | `linux`           | Yes        | Yes          |
 | `liquid-lua`      | Yes        | Yes          |
-| `llvm`            | Yes        | No           |
+| `llvm`            | Yes        | Yes          |
 | `lua`             | Yes        | Yes          |
 | `lua-cjson`       | Yes        | Yes          |
 | `lua-date`        | Yes        | Yes          |
@@ -54,7 +54,7 @@ Definitions:
 | `musl`            | Yes        | Yes          |
 | `nano`            | Yes        | Yes          |
 | `nasm`            | Yes        | Yes          |
-| `ncurses`         | Yes        | No           |
+| `ncurses`         | Yes        | Yes          |
 | `nftables`        |
 | `nilfs-utils`     |
 | `openrc`          | Yes        | Yes          |
@@ -63,12 +63,12 @@ Definitions:
 | `pkgconf`         | Yes        | Yes          |
 | `pipewire`        |
 | `python`          | Yes        | Yes          |
-| `sbase`           | Yes        | No           |
+| `sbase`           | Yes        | Yes          |
 | `skalibs`         | Yes        | Yes          |
 | `tinyramfs`       | Yes        | Yes          |
 | `tinytoml`        | Yes        | Yes          |
-| `toybox`          | Yes        | No           |
-| `ubase`           | Yes        | No           |
+| `toybox`          | Yes        | Yes          |
+| `ubase`           | Yes        | Yes          |
 | `xlibre-xserver`  |
 | `xz`              | Yes        | Yes          |
 | `zlib`            | Yes        | Yes          |

@@ -14,9 +14,9 @@ build() {
     cd sbase/
     sed -E -i "s|^PREFIX.+|PREFIX = $TT_PREFIX|" config.mk
     sed -E -i "s|^MANPREFIX.+|MANPREFIX = $TT_DATADIR/man|" config.mk
+
     # NOTE: Some commands conflict with other packages (even ubase!), so we tell
     #       sbase not to build some commands. ~ahill
-
     export BIN="\
     cal chroot comm cron dirname ed expand expr false flock fold join \
     link logger logname mkfifo mktemp nice nohup paste patchchk printf pwd \
@@ -27,4 +27,12 @@ build() {
     make -e -j $TT_PROCS CFLAGS="$CFLAGS -static" LDFLAGS="$LDFLAGS -static"
     make -e -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     ln -sf test "$TT_INSTALLDIR/bin/["
+
+    # NOTE: Despite us telling sbase not to install bc, cmp, or dc, it installs
+    #       the man pages anyways. Since I don't have the brain power to
+    #       troubleshoot scripts/mkproto, I'm going to simply delete the three
+    #       files we don't care about. ~ahill
+    rm -f $TT_INSTALLDIR$TT_DATADIR/man/man1/bc.1
+    rm -f $TT_INSTALLDIR$TT_DATADIR/man/man1/cmp.1
+    rm -f $TT_INSTALLDIR$TT_DATADIR/man/man1/dc.1
 }
