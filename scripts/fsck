@@ -55,10 +55,10 @@ local allowed = nil
 local blockdev = {}
 local fstab = false
 local fstab_root = true
+local preen = false
 local status = 0
 
 local force = false
-local preen = false
 local progressfd = 1
 local title = true
 
@@ -160,21 +160,30 @@ if fstab then
 end
 
 for dev, type in pairs(blockdev) do
-    local pid, error = posix.unistd.fork()
-    if pid == 0 then
-        local _, error = posix.unistd.execp("fsck." .. type, {dev})
-        print("Failed to run fsck." .. type .. ": " .. error)
-        os.exit(8)
-    elseif pid == nil then
-        print("Failed to run fsck." .. type .. ": " .. error)
-        status = status | 8
+    if type == "nilfs2" then
+        print("NILFS2 does not have an fsck program. Ignoring.")
     else
-        local id, error, code = posix.sys.wait.wait(pid)
-        if id then
-            status = status | code
-        else
+        local pid, error = posix.unistd.fork()
+        if pid == 0 then
+            local args = {}
+            if preen then
+                table.insert(args, "-p")
+            end
+            table.insert(args, dev)
+            local _, error = posix.unistd.execp("fsck." .. type, args)
+            print("Failed to run fsck." .. type .. ": " .. error)
+            os.exit(8)
+        elseif pid == nil then
             print("Failed to run fsck." .. type .. ": " .. error)
             status = status | 8
+        else
+            local id, error, code = posix.sys.wait.wait(pid)
+            if id then
+                status = status | code
+            else
+                print("Failed to run fsck." .. type .. ": " .. error)
+                status = status | 8
+            end
         end
     end
 end
