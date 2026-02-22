@@ -17,7 +17,7 @@ Definitions:
 | `dash`            | Yes        | Yes          |
 | `dhcpcd`          |
 | `diffutils`       | Yes        | Yes          |
-| `dosfstools`      |
+| `dosfstools`      | Yes        | Yes          |
 | `efibootmgr`      |
 | `expat`           | Yes        | Yes          |
 | `flatpak`         |
