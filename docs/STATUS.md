@@ -29,7 +29,7 @@ Definitions:
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
 | `iproute2`        |
-| `kbd`             |
+| `kbd`             | Yes        | Yes          |
 | `kmod`            | Yes        | Yes          |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |

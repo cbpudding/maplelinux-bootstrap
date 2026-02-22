@@ -18,6 +18,7 @@
 | git                           | Linus Torvalds and Contributors                     | GNU General Public License version 2                                                   | Copyleft           |
 | GNU roff                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | GNU Gzip                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
+| KBD                           | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
 | kmod                          | Various                                             | GNU Lesser General Public License version 2.1                                          | Copyleft           |
 | libarchive                    | Tim Kientzle                                        | Mostly BSD 2-Clause License                                                            | Free               |
 | libcap                        | Andrew G. Morgan                                    | BSD 3-Clause License *or* GNU General Public License version 2                         | Slightly Copyleft  |
