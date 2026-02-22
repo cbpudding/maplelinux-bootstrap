@@ -42,6 +42,7 @@
 | GNU nano                      | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | The Netwide Assembler         | "The NASM Authors"                                  | BSD 2-Clause License                                                                   | Free               |
 | New Curses                    | Thomas E. Dickey and Free Software Foundation, Inc. | Modified MIT License                                                                   | Free               |
+| NILFS Utilities               | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
 | OpenRC                        | Roy Marples and the OpenRC authors                  | BSD 2-Clause License                                                                   | Free               |
 | Perl                          | Larry Wall and others                               | GNU General Public License version 1                                                   | Copyleft           |
 | pkgconf                       | Various                                             | ISC License                                                                            | Free               |

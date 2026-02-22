@@ -57,7 +57,7 @@ Definitions:
 | `nasm`            | Yes        | Yes          |
 | `ncurses`         | Yes        | Yes          |
 | `nftables`        |
-| `nilfs-utils`     |
+| `nilfs-utils`     | Yes        | Yes          |
 | `openrc`          | Yes        | Yes          |
 | `parted`          |
 | `perl`            | Yes        | Yes          |
