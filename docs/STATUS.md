@@ -18,6 +18,7 @@ Definitions:
 | `dhcpcd`          |
 | `diffutils`       | Yes        | Yes          |
 | `dosfstools`      | Yes        | Yes          |
+| `e2fsprogs`       | Yes        | Yes          |
 | `efibootmgr`      |
 | `expat`           | Yes        | Yes          |
 | `flatpak`         |

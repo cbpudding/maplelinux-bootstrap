@@ -10,6 +10,7 @@
 | Debian Almquist Shell         | Various                                             | Modified BSD 3-Clause License(?) *and* GNU General Public License version 3            | Slightly Copyleft  |
 | GNU Diffutils                 | Free Software Foundation, Inc.                      | GNU General Public License version 3                                                   | Copyleft           |
 | dosfstools                    | Various                                             | GNU General Public License version 3                                                   | Copyleft           |
+| e2fsprogs                     | Various                                             | Mostly GNU General Public License version 2                                            | Copyleft           |
 | Expat                         | Various                                             | MIT License                                                                            | Free               |
 | Flex                          | Various                                             | BSD 2-Clause License                                                                   | Free               |
 | fortune-mod                   | Various                                             | BSD 4-Clause License                                                                   | Free               |
