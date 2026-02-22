@@ -110,14 +110,14 @@ for n = cursor, #arg do
     if not type then
         print("Unable to determine filesystem type of " .. arg[n])
         status = status | 8
-    end
-
-    if allowed then
-        if contains(allowed, type) then
+    else
+        if allowed then
+            if contains(allowed, type) then
+                blockdev[arg[n]] = type
+            end
+        else
             blockdev[arg[n]] = type
         end
-    else
-        blockdev[arg[n]] = type
     end
 end
 
@@ -162,14 +162,14 @@ end
 for dev, type in pairs(blockdev) do
     local pid, error = posix.unistd.fork()
     if pid == 0 then
-        print("DEBUG", "fsck." .. type, dev)
-        posix.unistd.execp("fsck." .. type, {dev})
+        local _, error = posix.unistd.execp("fsck." .. type, {dev})
+        print("Failed to run fsck." .. type .. ": " .. error)
+        os.exit(8)
     elseif pid == nil then
         print("Failed to run fsck." .. type .. ": " .. error)
         status = status | 8
     else
         local id, error, code = posix.sys.wait.wait(pid)
-        print("DEBUG", id, error, code)
         if id then
             status = status | code
         else
