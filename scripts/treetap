@@ -18,8 +18,12 @@
 # Changelog #
 #############
 
+# February 25, 2026 (1.5.2)
+# + Added support for the YACC environment variable [ahill]
+# * Cleaned the script up to improve legibility [ahill]
+
 # February 16, 2026 (1.5.1)
-# * Fixed a bug where SRC_PATCHES was being formatted incorrectly due to a buggy
+# * Fixed a bug where SRC_PATCHES were being formatted incorrectly due to a buggy
 #   echo command. [ahill]
 # - Removed the "Done!" message after a package has been archived. [ahill]
 
@@ -161,25 +165,26 @@
 # Global Variables #
 ####################
 
-[ -z "$TT_DIR" ] && TT_DIR="$(pwd)/.treetap"
-[ -z "$TT_PKGDIR" ] && TT_PKGDIR="$TT_DIR/packages"
-[ -z "$TT_SYSROOT" ] && TT_SYSROOT=/
-TT_VERSION="1.5.1"
+TT_DIR=${TT_DIR:-"$(pwd)/.treetap"}
+TT_PKGDIR=${TT_PKGDIR:-"$TT_DIR/packages"}
+TT_SYSROOT=${TT_SYSROOT:-/}
+TT_VERSION="1.5.2"
 
 #########################
 # Environment Variables #
 #########################
 
-[ -z "$AR" ] && export AR=ar
-[ -z "$AS" ] && export AS=nasm
-[ -z "$CC" ] && export CC=clang
-[ -z "$CXX" ] && export CXX=clang++
-[ -z "$LD" ] && export LD=ld.lld
-[ -z "$NM" ] && export NM=nm
-[ -z "$OBJCOPY" ] && export OBJCOPY=objcopy
-[ -z "$OBJDUMP" ] && export OBJDUMP=objdump
-[ -z "$PKG_CONFIG" ] && export PKG_CONFIG=pkgconf
-[ -z "$STRIP" ] && export STRIP=strip
+export AR=${AR:-ar}
+export AS=${AS:-nasm}
+export CC=${CC:-clang}
+export CXX=${CXX:-clang++}
+export LD=${LD:-ld.lld}
+export NM=${NM:-nm}
+export OBJCOPY=${OBJCOPY:-objcopy}
+export OBJDUMP=${OBJDUMP:-objdump}
+export PKG_CONFIG=${PKG_CONFIG:-pkgconf}
+export STRIP=${STRIP:-strip}
+export YACC=${YACC:-byacc}
 
 #####################
 # Utility Functions #
@@ -238,17 +243,17 @@ source_spec() {
     [ -z "$SRC_FILENAME" ] && SRC_FILENAME=$(basename $SRC_URL)
 
     # Environmental Variables
-    [ -z "$TT_BINDIR" ] && TT_BINDIR=/bin
+    TT_BINDIR=${TT_BINDIR:-/bin}
     TT_BUILD=$(clang -dumpmachine)
-    [ -z "$TT_TARGET" ] && TT_TARGET=$TT_BUILD
-    [ -z "$TT_CONFDIR" ] && TT_CONFDIR=/etc
-    [ -z "$TT_DATADIR" ] && TT_DATADIR=/usr/share
-    [ -z "$TT_INCLUDEDIR" ] && TT_INCLUDEDIR=/usr/include
-    [ -z "$TT_LIBDIR" ] && TT_LIBDIR=/lib
-    [ -z "$TT_PREFIX" ] && TT_PREFIX=/
+    TT_TARGET=${TT_TARGET:-$TT_BUILD}
+    TT_CONFDIR=${TT_CONFDIR:-/etc}
+    TT_DATADIR=${TT_DATADIR:-/usr/share}
+    TT_INCLUDEDIR=${TT_INCLUDEDIR:-/usr/include}
+    TT_LIBDIR=${TT_LIBDIR:-/lib}
+    TT_PREFIX=${TT_PREFIX:-/}
     [ -z "$TT_PROCS" ] && TT_PROCS=$(nproc)
-    [ -z "$TT_RUNDIR" ] && TT_RUNDIR=/run
-    [ -z "$TT_STATEDIR" ] && TT_STATEDIR=/var
+    TT_RUNDIR=${TT_RUNDIR:-/run}
+    TT_STATEDIR=${TT_STATEDIR:-/var}
 
     # Attempt to guess TT_MICROARCH if it isn't defined
     TT_ARCH=$(echo $TT_TARGET | cut -d"-" -f1)

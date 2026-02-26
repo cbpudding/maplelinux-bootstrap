@@ -3,7 +3,6 @@
     - Build a partitioning tool (fdisk, parted, etc.)
     - Build a UEFI configuration tool (efibootmgr, etc.)
 - Complete a network stack
-    - Network configuration tool (iproute2, net-tools, etc.)
     - Firewall (nftables, etc.)
     - DHCP client (dhcpcd, sdhcp, etc.)
     - NTP client (chrony, ntpd, etc.)

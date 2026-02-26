@@ -28,14 +28,14 @@ Definitions:
 | `git`             | Yes        | Yes          |
 | `groff`           | Yes        | Yes          |
 | `gzip`            | Yes        | Yes          |
-| `iproute2`        |
+| `iproute2`        | Yes        | Yes          |
 | `kbd`             | Yes        | Yes          |
 | `kmod`            | Yes        | Yes          |
 | `less`            |
 | `libarchive`      | Yes        | Yes          |
 | `libcap2`         | Yes        | Yes          |
 | `libelf`          | Yes        | Yes          |
-| `libmnl`          |
+| `libmnl`          | Yes        | Yes          |
 | `libnftnl`        |
 | `libressl`        | Yes        | Yes          |
 | `libtool`         | Yes        | Yes          |
