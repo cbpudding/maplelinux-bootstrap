@@ -26,6 +26,9 @@ build() {
     #       it is the name of a real and virtual service simultaneously. ~ahill
     sed -i "s/agetty/getty/" $TT_INSTALLDIR$TT_CONFDIR/init.d/agetty
     sed -i "s|/sbin|/bin|" $TT_INSTALLDIR$TT_CONFDIR/init.d/agetty
+    # NOTE: Additionally, getty needs the *full* path, not just the port name.
+    #       ~ahill
+    sed -i "s|\${port}|/dev/\${port}|" $TT_INSTALLDIR$TT_CONFDIR/init.d/agetty
     ln -s agetty $TT_INSTALLDIR$TT_CONFDIR/init.d/agetty.tty1
     cp $TT_INSTALLDIR$TT_CONFDIR/conf.d/agetty $TT_INSTALLDIR$TT_CONFDIR/conf.d/agetty.tty1
     # NOTE: Toybox's sysctl implementation doesn't have --system, so we just
