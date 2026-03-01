@@ -238,6 +238,9 @@ cp $BOOTSTRAP/../scripts/maple-chroot $BOOTSTRAP/root/bin/
 cp $BOOTSTRAP/../scripts/mapleconf $BOOTSTRAP/root/bin/
 cp $TREETAP $BOOTSTRAP/root/bin/
 
+# Install databases
+cp $BOOTSTRAP/../etc/* $BOOTSTRAP/root/etc/
+
 # Prepare for chroot build
 mkdir -p $BOOTSTRAP/root/maple/
 cp $BOOTSTRAP/../scripts/rootbuild.sh $BOOTSTRAP/root/maple/
