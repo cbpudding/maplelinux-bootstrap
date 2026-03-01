@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/gzip-1.14.tar.xz"
 SRC_VERSION="1.14"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd gzip-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS

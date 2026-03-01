@@ -11,7 +11,7 @@ SRC_VERSION="0.3.0"
 SRC_FILENAME="tinyramfs-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd tinyramfs-$SRC_VERSION/
     # NOTE: We need to patch init.sh to point to /bin/init by default since
     #       there is no /sbin on Maple Linux. ~ahill

@@ -7,7 +7,7 @@ SRC_VERSION="0.1.8.1"
 SRC_FILENAME="mdevd-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd mdevd-v$SRC_VERSION/
     # NOTE: Just like with skalibs, this probably isn't autoconf. ~ahill
     ./configure --bindir=$TT_BINDIR \

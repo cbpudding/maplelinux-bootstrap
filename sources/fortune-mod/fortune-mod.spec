@@ -1,14 +1,14 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="1f387877254e95eab61f937257b42609f29b994ef0571531655bbfc3a2ac74ac"
+SRC_HASH="4b0706569e3016ac8099d4817430f14f16771d239f5316bdfaf73da6365934c0"
 SRC_NAME="fortune-mod"
 SRC_PATCHES="
 1dde7a66dcf9033227a4747b5e892cc1845a77f025d6c5d3c6f49c15dee7c239  maple
 "
-SRC_URL="https://github.com/shlomif/fortune-mod/releases/download/fortune-mod-3.24.0/fortune-mod-3.24.0.tar.xz"
-SRC_VERSION="3.24.0"
+SRC_URL="https://linux.maple.camp/git/mirror/fortune-mod/archive/fortune-mod-3.26.1.tar.gz"
+SRC_VERSION="3.26.1"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     # NOTE: There is no other way to prevent fortune from installing itself
     #       under /games, so we have to modify the CMakeLists in this case.
     #       ~ahill

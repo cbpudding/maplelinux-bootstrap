@@ -1,12 +1,11 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="38ef96b8dfe510d42707d9c781877914792541133e1870841463bfa73f883e32"
+SRC_HASH="bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16"
 SRC_NAME="zlib"
-SRC_REVISION=1
-SRC_URL="https://www.zlib.net/zlib-1.3.1.tar.xz"
-SRC_VERSION="1.3.1"
+SRC_URL="https://www.zlib.net/zlib-1.3.2.tar.gz"
+SRC_VERSION="1.3.2"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd zlib-$SRC_VERSION/
     # NOTE: The prefix is set to /usr because man pages are stored under the
     #       prefix whether you like it or not. ~ahill

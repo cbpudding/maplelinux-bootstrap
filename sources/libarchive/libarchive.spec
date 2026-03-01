@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="c7b847b57feacf5e182f4d14dd6cae545ac6843d55cb725f58e107cdf1c9ad73"
+SRC_HASH="d68068e74beee3a0ec0dd04aee9037d5757fcc651591a6dcf1b6d542fb15a703"
 SRC_NAME="libarchive"
-SRC_URL="https://libarchive.org/downloads/libarchive-3.8.4.tar.xz"
-SRC_VERSION="3.8.4"
+SRC_URL="https://libarchive.org/downloads/libarchive-3.8.5.tar.xz"
+SRC_VERSION="3.8.5"
 
 build() {
     tar xf ../$SRC_FILENAME

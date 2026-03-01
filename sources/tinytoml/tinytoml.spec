@@ -7,7 +7,7 @@ SRC_VERSION="1.0.0"
 SRC_FILENAME="tinytoml-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd tinytoml-$SRC_VERSION/
     mkdir -p $TT_INSTALLDIR$TT_DATADIR/lua/5.5
     cp tinytoml.lua $TT_INSTALLDIR$TT_DATADIR/lua/5.5/

@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/gettext-0.26.tar.gz"
 SRC_VERSION="0.26"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd gettext-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -O -j $TT_PROCS

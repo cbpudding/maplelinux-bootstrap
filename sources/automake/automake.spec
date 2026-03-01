@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/automake-1.18.1.tar.xz"
 SRC_VERSION="1.18.1"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd automake-*/
     ./configure $TT_AUTOCONF_COMMON
     make -j $TT_PROCS

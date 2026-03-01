@@ -5,7 +5,7 @@ SRC_URL="https://git.kernel.org/pub/scm/libs/libcap/libcap.git/snapshot/libcap-2
 SRC_VERSION="2.77"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd libcap-$SRC_VERSION/
     # NOTE: This Makefile assumes that GCC exists, which it doesn't here, so we
     #       need to tell it to respect the CC environment variable to prevent

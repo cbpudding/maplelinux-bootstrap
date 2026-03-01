@@ -6,7 +6,7 @@ SRC_URL="https://lua.org/ftp/lua-5.5.0.tar.gz"
 SRC_VERSION="5.5.0"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd lua-$SRC_VERSION/
     # NOTE: LUA_ROOT and LUA_CDIR default to paths outside of Maple Linux's
     #       filesystem heirarchy, so it is necessary to manually tweak

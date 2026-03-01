@@ -6,7 +6,7 @@ SRC_URL="https://www.cpan.org/src/5.0/perl-5.42.0.tar.gz"
 SRC_VERSION="5.42.0"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd perl-*/
     # NOTE: Not a Perl user, so I hope I don't screw this up. ~ahill
     ./Configure -des \

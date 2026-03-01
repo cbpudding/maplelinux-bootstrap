@@ -1,12 +1,13 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_FILENAME="libelf-0.193.tar.gz"
 SRC_HASH="6253395679c2bb2156d926b3d8b7e3b2bbeb40a56d2bea29e1c73e40ed9de4ba"
 SRC_NAME="libelf"
 SRC_URL="https://github.com/arachsys/libelf/archive/refs/tags/v0.193.tar.gz"
 SRC_VERSION="0.193"
 
+SRC_FILENAME="libelf-$SRC_VERSION.tar.gz"
+
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd libelf-$SRC_VERSION/
     # NOTE: This version of libelf was extracted from elfutils, which means a
     #       good chunk of the project is missing. We use this version instead of

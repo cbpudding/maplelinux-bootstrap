@@ -9,7 +9,7 @@ SRC_FILENAME="lua-date-$SRC_VERSION.tar.gz"
 # TODO: What is the best way to include documentation? ~ahill
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd date-version_$SRC_VERSION/
     mkdir -p $TT_INSTALLDIR$TT_DATADIR/lua/5.5
     cp src/date.lua $TT_INSTALLDIR$TT_DATADIR/lua/5.5/

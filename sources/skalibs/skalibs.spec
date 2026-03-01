@@ -7,7 +7,7 @@ SRC_VERSION="2.14.5.1"
 SRC_FILENAME="skalibs-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd skalibs-v$SRC_VERSION/
     # NOTE: This is another autoconf-like configure script, but it probably
     #       isn't safe to use TT_AUTOCONF_COMMON here. ~ahill

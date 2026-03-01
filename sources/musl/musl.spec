@@ -9,7 +9,7 @@ SRC_URL="https://musl.libc.org/releases/musl-1.2.5.tar.gz"
 SRC_VERSION="1.2.5"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd musl-*/
     # NOTE: CVE-2025-26519 patches are temporary and shouldn't be needed once
     #       1.2.6 or 1.3.0 is released. ~ahill

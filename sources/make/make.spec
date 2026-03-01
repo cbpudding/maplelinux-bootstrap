@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/make-4.4.1.tar.gz"
 SRC_VERSION="4.4.1"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd make-*/
     ./configure $TT_AUTOCONF_COMMON --enable-year2038
     make -O -j $TT_PROCS

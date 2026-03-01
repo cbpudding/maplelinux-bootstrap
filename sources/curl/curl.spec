@@ -5,7 +5,7 @@ SRC_URL="https://curl.se/download/curl-8.18.0.tar.xz"
 SRC_VERSION="8.18.0"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd curl-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON \
         --disable-libgcc \

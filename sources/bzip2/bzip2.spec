@@ -8,7 +8,7 @@ SRC_VERSION="1.0.8"
 # TODO: Install the man pages ~ahill
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd bzip2-*/
     # NOTE: bzip2 likes to hard-code CC, which won't work because gcc doesn't
     #       exist here. ~ahill

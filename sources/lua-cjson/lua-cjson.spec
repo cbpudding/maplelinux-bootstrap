@@ -7,7 +7,7 @@ SRC_VERSION="2.1.0.9"
 SRC_FILENAME="lua-cjson-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd lua-cjson-$SRC_VERSION/
     make -j $TT_PROCS
     mkdir -p $TT_INSTALLDIR$TT_LIBDIR/lua/5.5

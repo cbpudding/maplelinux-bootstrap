@@ -1,12 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="4633a23617fa31a3ea51242586ea7fb1da7140e426bd62fc164261fe036aa142"
+SRC_HASH="25d2e2adc4356d758405dd885fcfd6447bce82a90eb78b6b87ce0934bd077173"
 SRC_NAME="llvm"
-SRC_PATCHES="
-1e52d86c422498ed5d926ad90e0787e79b8a02cb33cc916b1897c2a6ebfef9fc  rtsan-127764.patch
-"
-SRC_REVISION=1
-SRC_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/llvm-project-21.1.8.src.tar.xz"
-SRC_VERSION="21.1.8"
+SRC_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.0/llvm-project-22.1.0.src.tar.xz"
+SRC_VERSION="22.1.0"
 
 # TODO: Figure out why libunwind installs headers at /include
 # TODO: Figure out why libc++ installs headers at /include
@@ -18,12 +14,8 @@ SRC_VERSION="21.1.8"
 # TODO: Should /usr/include/$TT_TARGET simply be a symlink to /usr/include?
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd llvm-project-$SRC_VERSION.src/
-    # NOTE: This version of LLVM has an issue where compiler-rt attempts to use
-    #       a header before it is has been built. This patch fixes it. ~ahill
-    # See also: https://github.com/llvm/llvm-project/issues/127764
-    patch -p1 < ../rtsan-127764.patch
     # NOTE: compiler-rt fails to build on musl because execinfo.h is missing.
     #       Disabling COMPILER_RT_BUILD_GWP_ASAN works. ~ahill
     # NOTE: LLVM_ENABLE_ZSTD is disabled because we don't have zstd in the

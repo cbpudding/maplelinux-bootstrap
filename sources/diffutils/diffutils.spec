@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/diffutils-3.12.tar.xz"
 SRC_VERSION="3.12"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd diffutils-$SRC_VERSION/
     # NOTE: GNU Diffutils 3.12 has a bug when cross-compiling, stating that it
     #       can't run a test because it is cross-compiling. Rather than ignore

@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/libtool-2.5.4.tar.xz"
 SRC_VERSION="2.5.4"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd libtool-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static
     make -j $TT_PROCS

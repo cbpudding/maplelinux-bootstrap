@@ -9,7 +9,7 @@ SRC_VERSION="4.2.1"
 #       a symlink for compatibility's sake. ~ahill
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd libressl-*/
     # TODO: What even is sharedstatedir and what should Maple Linux do with it?
     #       ~ahill

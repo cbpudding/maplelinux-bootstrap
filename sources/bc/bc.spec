@@ -1,11 +1,13 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="91eb74caed0ee6655b669711a4f350c25579778694df248e28363318e03c7fc4"
+SRC_HASH="1d46e5f752309b1709e6059a5243601f014580bc43e7ea5c6006e67c3f24d61c"
 SRC_NAME="bc"
-SRC_URL="https://github.com/gavinhoward/bc/releases/download/7.0.3/bc-7.0.3.tar.xz"
-SRC_VERSION="7.0.3"
+SRC_URL="https://linux.maple.camp/git/mirror/bc/archive/7.1.0.tar.gz"
+SRC_VERSION="7.1.0"
+
+SRC_FILENAME="bc-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xJf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd bc-$SRC_VERSION/
     # NOTE: This is another autoconf-like script that isn't actually using
     #       autoconf. Because of this, I am unable to use TT_AUTOCONF_COMMON
