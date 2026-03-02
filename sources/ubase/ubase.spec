@@ -39,6 +39,10 @@ build() {
 
     # NOTE: Basic system utilities should be statically linked anyways. ~ahill
     sed -E -i "/^(C|LD)FLAGS/s/$/ -static/" config.mk
-    make -e -j $TT_PROCS
+    # NOTE: When bootstrapping, the Makefile applies LDFLAGS to the compilation,
+    #       but not CFLAGS, resulting in it attempting to use the host's
+    #       libraries. Due to the nature of ubase, we can set LDFLAGS to CFLAGS.
+    #       ~ahill
+    make -e -j $TT_PROCS LDFLAGS="$CFLAGS"
     make -e -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
 }
