@@ -8,7 +8,7 @@ SRC_FILENAME="bc-$SRC_VERSION.tar.gz"
 
 build() {
     tar xzf ../$SRC_FILENAME
-    cd bc-$SRC_VERSION/
+    cd bc/
     # NOTE: This is another autoconf-like script that isn't actually using
     #       autoconf. Because of this, I am unable to use TT_AUTOCONF_COMMON
     #       here. ~ahill

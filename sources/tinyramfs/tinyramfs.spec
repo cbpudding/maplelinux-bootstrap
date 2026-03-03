@@ -1,9 +1,7 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="e4d4780d48c97e5b86235327c9867685d1f63d1babe6ee30e3e05d9f94b31786"
 SRC_NAME="tinyramfs"
-SRC_PATCHES="
-eea0d54594ace28cb53ffa76a70b153507d0aaacc1fcc528889ce769c36dcb70  config
-"
+SRC_PATCHES="eea0d54594ace28cb53ffa76a70b153507d0aaacc1fcc528889ce769c36dcb70  config"
 SRC_REVISION=1
 SRC_URL="https://github.com/illiliti/tinyramfs/archive/refs/tags/0.3.0.tar.gz"
 SRC_VERSION="0.3.0"

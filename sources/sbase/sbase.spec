@@ -23,8 +23,17 @@ build() {
     renice rev seq sha512-224sum sha512-256sum split sponge tail tee test \
     tftp tr true uname unexpand unlink uudecode which whoami xinstall yes"
 
+    # NOTE: Apparently, scripts/mkproto is bugged because it expects exactly
+    #       nine columns to properly create proto, which means we can't use ls
+    #       from sbase since it only outputs eight columns. Since the filename
+    #       is always the last column in both implementations, we can use $NF
+    #       instead of $9 to fix this. ~ahill
+    sed -i "s/\$9/\$NF/" scripts/mkproto
+
     # NOTE: Basic system utilities should be statically linked anyways. ~ahill
-    make -e -j $TT_PROCS CFLAGS="$CFLAGS -static" LDFLAGS="$LDFLAGS -static"
+    # NOTE: CFLAGS are used in place of LDFLAGS for the same reason it is used
+    #       in ubase: LDFLAGS is used to do more than just linking. ~ahill
+    make -e -j $TT_PROCS CFLAGS="$CFLAGS -static" LDFLAGS="$CFLAGS -static"
     make -e -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     ln -sf test "$TT_INSTALLDIR/bin/["
 
