@@ -19,6 +19,7 @@ build() {
     #       ~ahill
     sed -i "/#define __COLOR_H__ 1/a#include <linux/types.h>" include/color.h
     sed -i "/#define _JSON_PRINT_H_/a#include <linux/types.h>" include/json_print.h
+    sed -i "/#define _JSON_PRINT_H_/a#include <sys/types.h>" include/json_print.h
     # NOTE: Yet another Makefile ignoring environment variables... ~ahill
     make -j $TT_PROCS HOSTCC=$CC
     make -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
