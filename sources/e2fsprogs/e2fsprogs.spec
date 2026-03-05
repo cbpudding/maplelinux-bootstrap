@@ -4,6 +4,11 @@ SRC_NAME="e2fsprogs"
 SRC_URL="https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/snapshot/e2fsprogs-1.47.3.tar.gz"
 SRC_VERSION="1.47.3"
 
+# TODO: Remove blkid
+# TODO: Remove chattr
+# TODO: Remove lsattr
+# TODO: Remove uuidgen
+
 build() {
     tar xzf ../$SRC_FILENAME
     cd e2fsprogs-$SRC_VERSION/

@@ -1,8 +1,11 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
 SRC_HASH="01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6"
 SRC_NAME="gzip"
+SRC_REVISION=1
 SRC_URL="https://linux.maple.camp/mirror/gzip-1.14.tar.xz"
 SRC_VERSION="1.14"
+
+# TODO: Patch zcat to use /bin/sh instead of /bin/bash
 
 build() {
     tar xJf ../$SRC_FILENAME

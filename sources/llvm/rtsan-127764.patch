@@ -1,0 +1,22 @@
+---
+ compiler-rt/lib/rtsan/CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/compiler-rt/lib/rtsan/CMakeLists.txt b/compiler-rt/lib/rtsan/CMakeLists.txt
+index a4413d9992b6..40bcf7facad7 100644
+--- a/compiler-rt/lib/rtsan/CMakeLists.txt
++++ b/compiler-rt/lib/rtsan/CMakeLists.txt
+@@ -37,6 +37,11 @@ set(RTSAN_DYNAMIC_LIBS
+   ${SANITIZER_CXX_ABI_LIBRARIES}
+   ${SANITIZER_COMMON_LINK_LIBS})
+ 
++if(TARGET cxx-headers OR HAVE_LIBCXX)
++  # Rtsan uses C++ standard library headers.
++  set(RTSAN_DEPS cxx-headers)
++endif()
++
+ append_rtti_flag(OFF RTSAN_CFLAGS)
+ 
+ if(APPLE)
+-- 
+2.43.0
