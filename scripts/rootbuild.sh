@@ -11,34 +11,38 @@ export FORCE_UNSAFE_CONFIGURE=1
 
 # xz Build
 # NOTE: xz is needed to run "treetap build", so we manually build. ~ahill
-cd /maple
-XZ_VERSION=$(treetap variable /maple/sources/xz/xz.spec SRC_VERSION)
-echo -n "Bootstrapping xz... "
-cd .treetap/sources/xz/$XZ_VERSION
-mkdir -p $TT_MICROARCH
-cd $TT_MICROARCH
-tar xf ../xz-*.tar*
-cd xz-*/
-./configure $(treetap variable /maple/sources/xz/xz.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/xz.log 2>&1
-make -j $(nproc) >> /maple/xz.log 2>&1
-make -j $(nproc) install DESTDIR=/ > /maple/xz.log 2>&1
-echo "Done!"
+if ! which xz; then
+    cd /maple
+    XZ_VERSION=$(treetap variable /maple/sources/xz/xz.spec SRC_VERSION)
+    echo -n "Bootstrapping xz... "
+    cd .treetap/sources/xz/$XZ_VERSION
+    mkdir -p $TT_MICROARCH
+    cd $TT_MICROARCH
+    tar xf ../xz-*.tar*
+    cd xz-*/
+    ./configure $(treetap variable /maple/sources/xz/xz.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/xz.log 2>&1
+    make -j $(nproc) >> /maple/xz.log 2>&1
+    make -j $(nproc) install DESTDIR=/ > /maple/xz.log 2>&1
+    echo "Done!"
+fi
 
 # libarchive Build
 # NOTE: bsdcpio is needed to run "treetap build", so we manually build.
 #       ~ahill
-cd /maple
-LIBARCHIVE_VERSION=$(treetap variable /maple/sources/libarchive/libarchive.spec SRC_VERSION)
-echo -n "Bootstrapping libarchive... "
-cd .treetap/sources/libarchive/$LIBARCHIVE_VERSION
-mkdir -p $TT_MICROARCH
-cd $TT_MICROARCH
-tar xf ../libarchive-*.tar*
-cd libarchive-*/
-./configure $(treetap variable /maple/sources/libarchive/libarchive.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/libarchive.log 2>&1
-make -j $(nproc) > /maple/libarchive.log 2>&1
-make -j $(nproc) install DESTDIR=/ > /maple/libarchive.log 2>&1
-echo "Done!"
+if ! which bsdcpio; then
+    cd /maple
+    LIBARCHIVE_VERSION=$(treetap variable /maple/sources/libarchive/libarchive.spec SRC_VERSION)
+    echo -n "Bootstrapping libarchive... "
+    cd .treetap/sources/libarchive/$LIBARCHIVE_VERSION
+    mkdir -p $TT_MICROARCH
+    cd $TT_MICROARCH
+    tar xf ../libarchive-*.tar*
+    cd libarchive-*/
+    ./configure $(treetap variable /maple/sources/libarchive/libarchive.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/libarchive.log 2>&1
+    make -j $(nproc) > /maple/libarchive.log 2>&1
+    make -j $(nproc) install DESTDIR=/ > /maple/libarchive.log 2>&1
+    echo "Done!"
+fi
 
 # Now we can build stuff exclusively with treetap
 # NOTE: bzip2, xz, and zlib need to be built before libarchive or we will be

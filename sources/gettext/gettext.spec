@@ -1,11 +1,11 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="39acf4b0371e9b110b60005562aace5b3631fed9b1bb9ecccfc7f56e58bb1d7f"
+SRC_HASH="71132a3fb71e68245b8f2ac4e9e97137d3e5c02f415636eb508ae607bc01add7"
 SRC_NAME="gettext"
-SRC_URL="https://linux.maple.camp/mirror/gettext-0.26.tar.gz"
-SRC_VERSION="0.26"
+SRC_URL="https://ftp.gnu.org/gnu/gettext/gettext-1.0.tar.xz"
+SRC_VERSION="1.0"
 
 build() {
-    tar xzf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd gettext-$SRC_VERSION/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -O -j $TT_PROCS

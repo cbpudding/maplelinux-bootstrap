@@ -33,10 +33,11 @@ build() {
     # NOTE: Basic system utilities should be statically linked anyways. ~ahill
     # NOTE: CFLAGS are used in place of LDFLAGS for the same reason it is used
     #       in ubase: LDFLAGS is used to do more than just linking. ~ahill
-    # NOTE: -Wl,--dynamic-linker is removed because it interferes with building
-    #       static executables. ~ahill
-    BASEFLAGS=$(echo "$CFLAGS -static" | sed "s|-Wl,--dynamic-linker=.* ||")
-    make -e -j $TT_PROCS CFLAGS="$BASEFLAGS" LDFLAGS="$BASEFLAGS"
+    # NOTE: -Wl,--dynamic-linker is removed because it causes segmentation
+    #       faults at runtime when used with static executables. ~ahill
+    export CFLAGS=$(echo "$CFLAGS" | sed -E "s|-Wl,--dynamic-linker=[^ ]+ ?||")
+    echo "DEBUG: $CFLAGS"
+    make -e -j $TT_PROCS CFLAGS="$CFLAGS -static" LDFLAGS="$CFLAGS -static"
     make -e -j $TT_PROCS install DESTDIR=$TT_INSTALLDIR
     ln -sf test "$TT_INSTALLDIR/bin/["
 

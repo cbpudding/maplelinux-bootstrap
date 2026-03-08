@@ -1,8 +1,10 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="9286ee5471a8a5339a61eb952739e4614a5b1dbed79ca73a78f014885ce2ad53"
+SRC_HASH="254ef0e7f2a96c4d955a8038bf3f9944c9c73ae09c95848631f3ca6a2480ecb3"
 SRC_NAME="e2fsprogs"
-SRC_URL="https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/snapshot/e2fsprogs-1.47.3.tar.gz"
-SRC_VERSION="1.47.3"
+SRC_URL="https://linux.maple.camp/git/mirror/e2fsprogs/archive/v1.47.4.tar.gz"
+SRC_VERSION="1.47.4"
+
+SRC_FILENAME="e2fsprogs-$SRC_VERSION.tar.gz"
 
 # TODO: Remove blkid
 # TODO: Remove chattr
@@ -11,7 +13,7 @@ SRC_VERSION="1.47.3"
 
 build() {
     tar xzf ../$SRC_FILENAME
-    cd e2fsprogs-$SRC_VERSION/
+    cd e2fsprogs/
     ./configure $TT_AUTOCONF_COMMON \
         --enable-hardening \
         --enable-libuuid \

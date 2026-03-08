@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="d917804c03e3d8c27663cb5f6929a1ca0b20c382f7cf83e7b86bab9eb538af99"
+SRC_HASH="f7aa64ea69f956a54efc6fd15ddfbaab5ee0cc63395955318fab11e427c88e75"
 SRC_NAME="ncurses"
-SRC_URL="https://invisible-island.net/archives/ncurses/current/ncurses-6.6-20260221.tgz"
-SRC_VERSION="6.6-20260221"
+SRC_URL="https://invisible-island.net/archives/ncurses/current/ncurses-6.6-20260301.tgz"
+SRC_VERSION="6.6-20260301"
 
 build() {
     tar xzf ../$SRC_FILENAME

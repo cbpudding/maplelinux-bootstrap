@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="cb47be49366b596e4554eeeb7595b128feb261619c7675603e004b07c5ebbd5b"
+SRC_HASH="f31d23fe9d79374e1556c8a25c41a2754cde1cffcb154a6296f8078894b831e9"
 SRC_NAME="kmod"
-SRC_URL="https://github.com/kmod-project/kmod/archive/refs/tags/v34.tar.gz"
-SRC_VERSION="34"
+SRC_URL="https://linux.maple.camp/git/mirror/kmod/archive/v34.2.tar.gz"
+SRC_VERSION="34.2"
 
 SRC_FILENAME="kmod-$SRC_VERSION.tar.gz"
 
@@ -10,7 +10,7 @@ SRC_FILENAME="kmod-$SRC_VERSION.tar.gz"
 
 build() {
     tar xzf ../$SRC_FILENAME
-    cd kmod-$SRC_VERSION/
+    cd kmod/
     ./autogen.sh
     # NOTE: Building man pages requires scdoc. In an attempt to reduce the total
     #       number of dependencies, documentation is temporarily disabled.
