@@ -225,22 +225,12 @@ ln -sf clang++ $BOOTSTRAP/root/bin/c++
 cd ..
 
 # Build remaining software with treetap
-SOURCES=(dash diffutils gzip make mawk sbase toybox ubase)
+SOURCES=(dash diffutils gzip make maplelinux-tools mawk sbase toybox ubase)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
     $TREETAP install $($TREETAP variable $SPEC/$name/$name.spec TT_PACKAGE) $BOOTSTRAP/root
 done
-
-# Install Maple Linux Tools
-<<<<<<< HEAD
-cp $BOOTSTRAP/../tools/mapleconf $BOOTSTRAP/root/bin/
-=======
-cp $BOOTSTRAP/../scripts/fsck $BOOTSTRAP/root/bin/
-cp $BOOTSTRAP/../scripts/maple-chroot $BOOTSTRAP/root/bin/
-cp $BOOTSTRAP/../scripts/mapleconf $BOOTSTRAP/root/bin/
->>>>>>> bootable
-cp $TREETAP $BOOTSTRAP/root/bin/
 
 # Install databases
 cp $BOOTSTRAP/../etc/* $BOOTSTRAP/root/etc/
@@ -287,6 +277,7 @@ SOURCES=(
     luaposix
     m4
     make
+    maplelinux-tools
     mawk
     mdevd
     muon
