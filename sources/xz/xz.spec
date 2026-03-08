@@ -9,7 +9,7 @@ SRC_VERSION="5.8.2"
 #       xz-compressed archives until this software is built. ~ahill
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd xz-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -O -j $TT_PROCS

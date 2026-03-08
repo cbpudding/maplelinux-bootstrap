@@ -9,7 +9,7 @@ SRC_VERSION="3.9.25"
 # See also: https://peps.python.org/pep-0644/
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd Python-$SRC_VERSION/
     # NOTE: Python must do some clang-specific checks because it attempts to
     #       find and link with libclang_rt.profile.a, which unfortunately does

@@ -225,7 +225,7 @@ ln -sf clang++ $BOOTSTRAP/root/bin/c++
 cd ..
 
 # Build remaining software with treetap
-SOURCES=(coreutils dash diffutils findutils grep gzip make mawk patch sed tar)
+SOURCES=(dash diffutils gzip make mawk sbase toybox ubase)
 for name in $SOURCES; do
     $TREETAP fetch $SPEC/$name/$name.spec
     $TREETAP build $SPEC/$name/$name.spec
@@ -233,8 +233,17 @@ for name in $SOURCES; do
 done
 
 # Install Maple Linux Tools
+<<<<<<< HEAD
 cp $BOOTSTRAP/../tools/mapleconf $BOOTSTRAP/root/bin/
+=======
+cp $BOOTSTRAP/../scripts/fsck $BOOTSTRAP/root/bin/
+cp $BOOTSTRAP/../scripts/maple-chroot $BOOTSTRAP/root/bin/
+cp $BOOTSTRAP/../scripts/mapleconf $BOOTSTRAP/root/bin/
+>>>>>>> bootable
 cp $TREETAP $BOOTSTRAP/root/bin/
+
+# Install databases
+cp $BOOTSTRAP/../etc/* $BOOTSTRAP/root/etc/
 
 # Prepare for chroot build
 mkdir -p $BOOTSTRAP/root/maple/
@@ -247,47 +256,55 @@ SOURCES=(
     byacc
     bzip2
     cmake
-    coreutils
     curl
     dash
     diffutils
+    dosfstools
+    e2fsprogs
     expat
-    findutils
     flex
     fortune-mod
     gettext
     git
-    grep
     groff
     gzip
-    initramfs-tools
+    iproute2
+    kbd
     kmod
     libarchive
     libcap2
     libelf
+    libmnl
     libressl
     libtool
     limine
     linux
+    liquid-lua
     llvm
     lua
+    lua-cjson
+    lua-date
     luaposix
     m4
     make
     mawk
+    mdevd
     muon
     musl
     nano
     nasm
     ncurses
+    nilfs-utils
     openrc
-    patch
     perl
     pkgconf
     python
-    sed
-    tar
+    sbase
+    skalibs
+    tinyramfs
     tinytoml
+    toybox
+    ubase
     xz
     zlib
     zsh

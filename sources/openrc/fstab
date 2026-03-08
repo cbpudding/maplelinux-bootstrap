@@ -1,0 +1,8 @@
+# <identifier> <location> <type> <options> <dump> <fsck>
+{% for part in partition %}UUID={{part.uuid}} {{part.location}} {{part.type}} {% if part.options %}{{part.options | join: ","}}{% else %}defaults{% endif %} 0 {% if part.fsck %}{% if part.location == "/" %}1{% else %}2{% endif %}{% else %}0{% endif %}
+{% endfor %}proc     /proc    proc     nosuid,noexec,nodev 0 0
+sysfs    /sys     sysfs    nosuid,noexec,nodev 0 0
+devpts   /dev/pts devpts   gid=5,mode=620      0 0
+tmpfs    /run     tmpfs    defaults            0 0
+devtmpfs /dev     devtmpfs mode=0755,nosuid    0 0
+tmpfs    /dev/shm tmpfs    nosuid,nodev        0 0

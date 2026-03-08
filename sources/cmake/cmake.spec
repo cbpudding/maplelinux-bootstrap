@@ -1,11 +1,11 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="414aacfac54ba0e78e64a018720b64ed6bfca14b587047b8b3489f407a14a070"
+SRC_HASH="7efaccde8c5a6b2968bad6ce0fe60e19b6e10701a12fce948c2bf79bac8a11e9"
 SRC_NAME="cmake"
-SRC_URL="https://github.com/Kitware/CMake/releases/download/v4.2.1/cmake-4.2.1.tar.gz"
-SRC_VERSION="4.2.1"
+SRC_URL="https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3.tar.gz"
+SRC_VERSION="4.2.3"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd cmake-*/
     # NOTE: CMake's bootstrap script is autoconf-like, but we shouldn't use
     #       TT_AUTOCONF_COMMON here because it would be incompatible. ~ahill

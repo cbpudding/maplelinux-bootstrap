@@ -5,7 +5,7 @@ SRC_URL="https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.
 SRC_VERSION="2.6.4"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd flex-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static
     make -O -j $TT_PROCS

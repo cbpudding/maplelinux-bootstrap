@@ -5,7 +5,7 @@ SRC_URL="https://www.nasm.us/pub/nasm/releasebuilds/3.01/nasm-3.01.tar.xz"
 SRC_VERSION="3.01"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd nasm-$SRC_VERSION/
     ./autogen.sh
     ./configure $TT_AUTOCONF_COMMON --enable-suggestions --enable-year2038

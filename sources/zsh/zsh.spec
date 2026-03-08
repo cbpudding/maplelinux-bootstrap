@@ -6,7 +6,7 @@ SRC_URL="https://www.zsh.org/pub/zsh-5.9.tar.xz"
 SRC_VERSION="5.9"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd zsh-$SRC_VERSION/
     # NOTE: Zsh uses a lot of tests made of main functions that are missing a
     #       return type. Because of this, clang throws an error, causing the

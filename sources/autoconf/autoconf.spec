@@ -5,7 +5,7 @@ SRC_URL="https://linux.maple.camp/mirror/autoconf-2.72.tar.xz"
 SRC_VERSION="2.72"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd autoconf-*/
     ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS

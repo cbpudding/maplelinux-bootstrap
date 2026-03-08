@@ -1,0 +1,191 @@
+#!/bin/lua
+
+--[[ Copyright (c) 2026 Alexander Hill
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE. ]]
+
+local posix = require("posix")
+
+function contains(table, value)
+    for _, item in ipairs(table) do
+        if item == value then
+            return true
+        end
+    end
+    return false
+end
+
+function usage()
+    print("Usage: fsck [-AfpRT] [-C <fd>] [-t <type[,type[,...]]>] [blockdev [blockdev [...]]]")
+    print()
+    print("Options:")
+    print("    -A                     - Repair all filesystems listed in /etc/fstab")
+    print("    -C <fd>                - Redirect progress bars to the given file descriptor")
+    print("    -f                     - Force filesystem checking")
+    print("    -p                     - Fix only minor errors")
+    print("    -R                     - Skip the root filesystem when -A is used")
+    print("    -T                     - Don't show titles")
+    print("    -t <type[,type[,...]]> - Only check the listed filesystem types")
+    print()
+    print("Return Value:")
+    print("    0  - No errors detected")
+    print("    1  - Filesystem(s) repaired")
+    print("    2  - Reboot required")
+    print("    4  - Unable to repair")
+    print("    8  - Operational error")
+    print("    16 - Unrecoverable error")
+    print()
+    print("The return value may be a combination of error codes if multiple are present.")
+    os.exit(16)
+end
+
+-- ENTRY POINT
+
+local allowed = nil
+local blockdev = {}
+local fstab = false
+local fstab_root = true
+local preen = false
+local status = 0
+
+local force = false
+local progressfd = 1
+local title = true
+
+if #arg == 0 then
+    usage()
+end
+
+local cursor = 1
+
+for opt, optarg, optind in posix.unistd.getopt(arg, "AC:fpRTt:") do
+    cursor = optind
+    if opt == "A" then
+        fstab = true
+    elseif opt == "C" then
+        progressfd = tonumber(optarg)
+        if not progressfd then
+            usage()
+        end
+    elseif opt == "f" then
+        force = true
+    elseif opt == "p" then
+        preen = true
+    elseif opt == "R" then
+        fstab_root = false
+    elseif opt == "T" then
+        title = false
+    elseif opt == "t" then
+        allowed = {}
+        for type in optarg:gmatch("[^,]+") do
+            table.insert(allowed, type)
+        end
+    else
+        usage()
+    end
+end
+
+for n = cursor, #arg do
+    local handle = io.popen("blkid -o export " .. arg[n])
+    local type = nil
+
+    for line in handle:lines() do
+        if line:match("^TYPE=") then
+            type = line:sub(6)
+        end
+    end
+
+    handle:close()
+
+    if not type then
+        print("Unable to determine filesystem type of " .. arg[n])
+        status = status | 8
+    else
+        if allowed then
+            if contains(allowed, type) then
+                blockdev[arg[n]] = type
+            end
+        else
+            blockdev[arg[n]] = type
+        end
+    end
+end
+
+if fstab then
+    local tab = io.open("/etc/fstab")
+
+    for line in tab:lines() do
+        if line:sub(1, 1) ~= "#" and #line > 0 then
+            local record = {}
+
+            for token in line:gmatch("%S+") do
+                table.insert(record, token)
+            end
+
+            if record[6] ~= "0" then
+                if (record[2] == "/" and fstab_root) or record[2] ~= "/" then
+                    -- Is there a better way to do this? ~ahill
+                    local dev
+                    if record[1]:sub(1, 5) == "UUID=" then
+                        local handle = io.popen("blkid -U " .. record[1]:sub(6))
+                        dev = handle:read("*line")
+                        handle:close()
+                    else
+                        dev = record[1]
+                    end
+
+                    if allowed then
+                        if contains(allowed, record[3]) then
+                            blockdev[dev] = record[3]
+                        end
+                    else
+                        blockdev[dev] = record[3]
+                    end
+                end
+            end
+        end
+    end
+
+    tab:close()
+end
+
+for dev, type in pairs(blockdev) do
+    if type == "nilfs2" then
+        print("NILFS2 does not have an fsck program. Ignoring.")
+    else
+        local pid, error = posix.unistd.fork()
+        if pid == 0 then
+            local args = {}
+            if preen then
+                table.insert(args, "-p")
+            end
+            table.insert(args, dev)
+            local _, error = posix.unistd.execp("fsck." .. type, args)
+            print("Failed to run fsck." .. type .. ": " .. error)
+            os.exit(8)
+        elseif pid == nil then
+            print("Failed to run fsck." .. type .. ": " .. error)
+            status = status | 8
+        else
+            local id, error, code = posix.sys.wait.wait(pid)
+            if id then
+                status = status | code
+            else
+                print("Failed to run fsck." .. type .. ": " .. error)
+                status = status | 8
+            end
+        end
+    end
+end
+
+os.exit(status)

@@ -1,11 +1,11 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="192c2fae048d4e7f514ba451627f9c4e612765099f819c19191f9fde3e609673"
+SRC_HASH="b618c5fb44c2f5f048843db90f7d1b24f78f47b07913c8c7ba8c942d3eb24b00"
 SRC_NAME="byacc"
-SRC_URL="https://invisible-mirror.net/archives/byacc/byacc-20241231.tgz"
-SRC_VERSION="20241231"
+SRC_URL="https://invisible-mirror.net/archives/byacc/byacc-20260126.tgz"
+SRC_VERSION="20260126"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd byacc-*/
     ./configure $TT_AUTOCONF_COMMON
     make -O -j $TT_PROCS

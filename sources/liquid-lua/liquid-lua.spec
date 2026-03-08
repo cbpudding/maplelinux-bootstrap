@@ -7,7 +7,7 @@ SRC_VERSION="0.2.0"
 SRC_FILENAME="liquid-lua-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd liquid-lua-$SRC_VERSION/
     mkdir -p $TT_INSTALLDIR$TT_DATADIR/lua/5.5
     cp lib/liquid.lua $TT_INSTALLDIR$TT_DATADIR/lua/5.5/

@@ -5,7 +5,7 @@ SRC_URL="https://distfiles.dereferenced.org/pkgconf/pkgconf-2.5.1.tar.xz"
 SRC_VERSION="2.5.1"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xJf ../$SRC_FILENAME
     cd pkgconf-*/
     ./configure $TT_AUTOCONF_COMMON --disable-static --enable-year2038
     make -j $TT_PROCS

@@ -26,10 +26,28 @@ For more information about the software included in this project and its licensi
 
 ### Filesystem Hierarchy
 
-Maple Linux uses a slightly different filesystem hierarchy compared to most Linux systems, but it shouldn't be enough to become incompatible with existing software. The following are the notable changes:
+Maple Linux uses a different filesystem hierarchy compared to most Linux systems. It is designed to be recognizable to experienced users, while being simpler for new users to understand.
 
-- `/bin` - This is the canonical location for all system-level binaries. Paths such as `/sbin`, `/usr/bin`, and `/usr/sbin` should be considered legacy. See also: https://lists.busybox.net/pipermail/busybox/2010-December/074114.html
-- `/boot` - This is the mount point for the EFI System Partition
+- `/bin` - This is the canonical location for all system-level binaries. Paths such as `/sbin`, `/usr/bin`, and `/usr/sbin` should be considered legacy. See also: [https://lists.busybox.net/pipermail/busybox/2010-December/074114.html](https://lists.busybox.net/pipermail/busybox/2010-December/074114.html)
+- `/boot` - This is the mount point for the boot partition. On modern systems, this is the EFI System Partition.
+- `/dev` - This is the canonical location for device nodes available on the local system.
+- `/etc` - This is the canonical location for all system-level configuration, with the exception of the boot configuration, which is located under `/boot` for technical reasons.
+- `/home` - This is the canonical location for all user directories, with the exception of `root`.
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` and `/usr/libexec` should be considered legacy.
+- `/proc` - This is the canonical location for data about processes running on the local system. See also: [https://docs.kernel.org/filesystems/proc.html](https://docs.kernel.org/filesystems/proc.html)
+- `/run` - This is the canonical location for privileged, low-level inter-process communication, such as PID files and named pipes. See also: [https://unix.stackexchange.com/a/316166](https://unix.stackexchange.com/a/316166)
+- `/sys` - This is the canonical location for Linux kernel objects. See also: [https://docs.kernel.org/filesystems/sysfs.html](https://docs.kernel.org/filesystems/sysfs.html)
+- `/tmp` - This is the canonical location for temporary data. Sensitive information should not be stored here, as this data is accessible system-wide.
 
-Many of alternative paths are symlinked for compatibility's sake.
+TBD: `/usr` and `/var`
+
+### Inspirations
+
+The following is a list of sites and projects that influenced the direction Maple Linux has taken. This is not a comprehensive list, and I didn't discover many of these places until after I began work on Maple Linux. As I continue my research and learn more, this list of influences will grow.
+
+- [https://alpinelinux.org/](https://alpinelinux.org/)
+- [https://sta.li/filesystem/](https://sta.li/filesystem/)
+- [https://kisslinux.github.io/](https://kisslinux.github.io/)
+- [https://suckless.org/philosophy/](https://suckless.org/philosophy/)
+- [https://puppylinux-woof-ce.github.io/](https://puppylinux-woof-ce.github.io/)
+- [https://github.com/comfies/tldrlfs](https://github.com/comfies/tldrlfs)

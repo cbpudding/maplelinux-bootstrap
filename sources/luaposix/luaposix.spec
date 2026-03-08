@@ -7,7 +7,7 @@ SRC_VERSION="36.3"
 SRC_FILENAME="luaposix-$SRC_VERSION.tar.gz"
 
 build() {
-    tar xf ../$SRC_FILENAME
+    tar xzf ../$SRC_FILENAME
     cd luaposix-$SRC_VERSION/
     ./build-aux/luke
     ./build-aux/luke install PREFIX=$TT_INSTALLDIR

@@ -11,34 +11,38 @@ export FORCE_UNSAFE_CONFIGURE=1
 
 # xz Build
 # NOTE: xz is needed to run "treetap build", so we manually build. ~ahill
-cd /maple
-XZ_VERSION=$(treetap variable /maple/sources/xz/xz.spec SRC_VERSION)
-echo -n "Bootstrapping xz... "
-cd .treetap/sources/xz/$XZ_VERSION
-mkdir -p $TT_MICROARCH
-cd $TT_MICROARCH
-tar xf ../xz-*.tar*
-cd xz-*/
-./configure $(treetap variable /maple/sources/xz/xz.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/xz.log 2>&1
-make -j $(nproc) >> /maple/xz.log 2>&1
-make -j $(nproc) install DESTDIR=/ > /maple/xz.log 2>&1
-echo "Done!"
+if ! which xz; then
+    cd /maple
+    XZ_VERSION=$(treetap variable /maple/sources/xz/xz.spec SRC_VERSION)
+    echo -n "Bootstrapping xz... "
+    cd .treetap/sources/xz/$XZ_VERSION
+    mkdir -p $TT_MICROARCH
+    cd $TT_MICROARCH
+    tar xf ../xz-*.tar*
+    cd xz-*/
+    ./configure $(treetap variable /maple/sources/xz/xz.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/xz.log 2>&1
+    make -j $(nproc) >> /maple/xz.log 2>&1
+    make -j $(nproc) install DESTDIR=/ > /maple/xz.log 2>&1
+    echo "Done!"
+fi
 
 # libarchive Build
 # NOTE: bsdcpio is needed to run "treetap build", so we manually build.
 #       ~ahill
-cd /maple
-LIBARCHIVE_VERSION=$(treetap variable /maple/sources/libarchive/libarchive.spec SRC_VERSION)
-echo -n "Bootstrapping libarchive... "
-cd .treetap/sources/libarchive/$LIBARCHIVE_VERSION
-mkdir -p $TT_MICROARCH
-cd $TT_MICROARCH
-tar xf ../libarchive-*.tar*
-cd libarchive-*/
-./configure $(treetap variable /maple/sources/libarchive/libarchive.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/libarchive.log 2>&1
-make -j $(nproc) > /maple/libarchive.log 2>&1
-make -j $(nproc) install DESTDIR=/ > /maple/libarchive.log 2>&1
-echo "Done!"
+if ! which bsdcpio; then
+    cd /maple
+    LIBARCHIVE_VERSION=$(treetap variable /maple/sources/libarchive/libarchive.spec SRC_VERSION)
+    echo -n "Bootstrapping libarchive... "
+    cd .treetap/sources/libarchive/$LIBARCHIVE_VERSION
+    mkdir -p $TT_MICROARCH
+    cd $TT_MICROARCH
+    tar xf ../libarchive-*.tar*
+    cd libarchive-*/
+    ./configure $(treetap variable /maple/sources/libarchive/libarchive.spec TT_AUTOCONF_COMMON) --disable-static --enable-year2038 > /maple/libarchive.log 2>&1
+    make -j $(nproc) > /maple/libarchive.log 2>&1
+    make -j $(nproc) install DESTDIR=/ > /maple/libarchive.log 2>&1
+    echo "Done!"
+fi
 
 # Now we can build stuff exclusively with treetap
 # NOTE: bzip2, xz, and zlib need to be built before libarchive or we will be
@@ -64,10 +68,16 @@ echo "Done!"
 # NOTE: git requires curl, expat, and gettext to build. ~ahill
 # NOTE: Python requires bzip2, expat, LibreSSL, ncurses, xz, and zlib to build. ~ahill
 # NOTE: LLVM requires CMake and Python to build. ~ahill
+# NOTE: liquid-lua requires Lua to build. ~ahill
+# NOTE: mdevd requires skalibs to build. ~ahill
+# NOTE: iproute2 requires flex to build. ~ahill
+# NOTE: kbd requires pkgconf to build. ~ahill
+# NOTE: nilfs-utils requires autoconf and automake to build. ~ahill
+# NOTE: Toybox requires zsh to build. ~ahill
 cd /maple
-LAYER0="bc byacc bzip2 coreutils diffutils expat findutils grep gzip initramfs-tools libressl lua luaposix m4 make mawk muon musl ncurses patch perl pkgconf sed tar tinytoml xz zlib zsh"
-LAYER1="autoconf automake curl flex gettext groff libarchive libcap2 libelf libtool nano openrc python"
-LAYER2="cmake dash fortune-mod git kmod llvm nasm"
+LAYER0="bc byacc bzip2 diffutils dosfstools e2fsprogs expat gzip libmnl libressl lua lua-cjson lua-date luaposix m4 make mawk muon musl ncurses perl pkgconf sbase skalibs tinyramfs tinytoml ubase xz zlib zsh"
+LAYER1="autoconf automake curl flex gettext groff iproute2 kbd libarchive libcap2 libelf libtool liquid-lua mdevd nano nilfs-utils openrc python toybox"
+LAYER2="cmake dash git kmod llvm nasm"
 LAYER3="limine linux"
 PACKAGES="$LAYER0 $LAYER1 $LAYER2 $LAYER3"
 for pkg in $PACKAGES; do
