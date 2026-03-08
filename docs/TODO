@@ -1,4 +1,3 @@
-- Milestone: Successfully boot into Maple Linux
 - Complete a network stack
     - Firewall (nftables, etc.)
     - DHCP client (dhcpcd, ndhc, sdhcp, etc.)
