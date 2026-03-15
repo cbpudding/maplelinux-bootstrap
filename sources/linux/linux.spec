@@ -1,9 +1,9 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="4d9f3ff73214f68c0194ef02db9ca4b7ba713253ac1045441d4e9f352bc22e14"
+SRC_HASH="aada4722db8bcfa0b9732851856d405082b6a4fa2e3ab067be8db17cdd115b38"
 SRC_NAME="linux"
 SRC_PATCHES="5be339ea41c58a4b23affcca98d4ba618b8b17ebc25f6931769bbdbfecd211e3  linux.skylake.config"
-SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.6.tar.xz"
-SRC_VERSION="6.19.6"
+SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.8.tar.xz"
+SRC_VERSION="6.19.8"
 
 build() {
     tar xJf ../$SRC_FILENAME
@@ -34,5 +34,11 @@ build() {
     LLVM=1 make -j $TT_PROCS YACC=byacc
     make -j $TT_PROCS install INSTALL_PATH=$TT_INSTALLDIR/boot
     make -j $TT_PROCS modules_install INSTALL_MOD_PATH=$TT_INSTALLDIR
+    # NOTE: We don't use the built-in headers_install target because it requires
+    #       rsync for some reason. ~ahill
+    LLVM=1 make -j $TT_PROCS headers ARCH=$TT_ARCH
+    find usr/include -type f ! -name "*.h" -delete
+    mkdir -p $TT_INSTALLDIR/usr/include
+    cp -r usr/include/* $TT_INSTALLDIR/usr/include/
     # TODO: Run dtbs_install on non-x86 systems ~ahill
 }

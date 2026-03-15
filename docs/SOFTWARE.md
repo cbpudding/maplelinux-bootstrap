@@ -25,6 +25,7 @@
 | libcap                        | Andrew G. Morgan                                    | BSD 3-Clause License *or* GNU General Public License version 2                         | Slightly Copyleft  |
 | libelf                        | Various                                             | GNU General Public License version 2 *and* GNU Lesser General Public License version 3 | Copyleft           |
 | libmnl                        | Various                                             | GNU Lesser General Public License version 2.1                                          | Copyleft           |
+| libnftnl                      | Various                                             | GNU General Public License version 2                                                   | Copyleft           |
 | LibreSSL                      | Various                                             | Various                                                                                | Free               |
 | The GNU Portable Library Tool | Free Software Foundation, Inc.                      | GNU General Public License version 2                                                   | Copyleft           |
 | Limine                        | Mintsuki and Contributors                           | BSD 2-Clause License                                                                   | Free               |
