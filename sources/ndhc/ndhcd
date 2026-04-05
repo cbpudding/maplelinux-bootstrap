@@ -1,0 +1,14 @@
+#!/bin/openrc-run
+name="ndhc"
+command="/bin/ndhc"
+iface="${RC_SVCNAME#*.}"
+pidfile="/run/${RC_SVCNAME}.pid"
+command_args="-c /etc/ndhc/default.conf -i ${iface}"
+
+start_pre() {
+    if [ "$iface" = "$RC_SVCNAME" ]; then
+        eerror "${RC_SVCNAME} cannot be started directly. Please create a"
+        eerror "symbolic link to the service script to specify the interface."
+        return 1
+    fi
+}

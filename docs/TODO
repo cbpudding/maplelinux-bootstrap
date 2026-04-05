@@ -1,8 +1,8 @@
 - Complete a network stack
     - Firewall (nftables, etc.)
-    - DHCP client (dhcpcd, ndhc, sdhcp, etc.)
     - NTP client (chrony, ntpd, etc.)
     - Wi-Fi client (wpa_supplicant, etc.)
+    - Network configuration (bcnm, etc.)
 - Write an install script to install Maple Linux from a live environment
     - Build a partitioning tool (fdisk, parted, etc.)
     - Build a UEFI configuration tool (efibootmgr, etc.)
@@ -12,3 +12,7 @@
 - Build Flatpak
 - Milestone: Browse the web on Maple Linux
 - Milestone: Play some Steam games
+- Remove autoconf/automake/libtool
+- Remove CMake
+- Remove Python
+- Replace LLVM
