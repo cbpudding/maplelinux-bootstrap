@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="9e9cabb457c1e09de91db2706d8365645792638eb3be1f94dbb2149301086ac0"
+SRC_HASH="10b195ee78160a908388180a8fe3603d4e9a12f4755fbf5f3816b23a9d750da0"
 SRC_NAME="expat"
-SRC_URL="https://github.com/libexpat/libexpat/releases/download/R_2_7_4/expat-2.7.4.tar.xz"
-SRC_VERSION="2.7.4"
+SRC_URL="https://github.com/libexpat/libexpat/releases/download/R_2_8_1/expat-2.8.1.tar.xz"
+SRC_VERSION="2.8.1"
 
 build() {
     tar xJf ../$SRC_FILENAME

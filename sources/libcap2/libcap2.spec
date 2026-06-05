@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="5e339f5ab434bf5b7979f65437ca24942ddcd6e6a3e57347370cd791bc0ea51c"
+SRC_HASH="856e742e331bb53176231e1eae3588ab044e5564c811df3138bd2f1c7b953682"
 SRC_NAME="libcap2"
-SRC_URL="https://git.kernel.org/pub/scm/libs/libcap/libcap.git/snapshot/libcap-2.77.tar.gz"
-SRC_VERSION="2.77"
+SRC_URL="https://git.kernel.org/pub/scm/libs/libcap/libcap.git/snapshot/libcap-2.78.tar.gz"
+SRC_VERSION="2.78"
 
 build() {
     tar xzf ../$SRC_FILENAME

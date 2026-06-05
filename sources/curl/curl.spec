@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="40df79166e74aa20149365e11ee4c798a46ad57c34e4f68fd13100e2c9a91946"
+SRC_HASH="63fe2dc148ba0ceae89922ef838f7e5c946272c2e78b7c59fab4b79d3ce2b896"
 SRC_NAME="curl"
-SRC_URL="https://curl.se/download/curl-8.18.0.tar.xz"
-SRC_VERSION="8.18.0"
+SRC_URL="https://curl.se/download/curl-8.20.0.tar.xz"
+SRC_VERSION="8.20.0"
 
 build() {
     tar xJf ../$SRC_FILENAME

@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="abfc5626fd0bf7bff71e9d926ef9eb36cd3e0f953047411dbe8d63ba642b42d7"
+SRC_HASH="833a816906d7b94ca766c8730e33ea3315edd2c105bcee0fae279bb1298067a4"
 SRC_NAME="skalibs"
-SRC_URL="https://git.sr.ht/~skarnet/skalibs/archive/v2.14.5.1.tar.gz"
-SRC_VERSION="2.14.5.1"
+SRC_URL="https://git.sr.ht/~skarnet/skalibs/archive/v2.15.0.0.tar.gz"
+SRC_VERSION="2.15.0.0"
 
 SRC_FILENAME="skalibs-$SRC_VERSION.tar.gz"
 

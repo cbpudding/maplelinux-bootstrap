@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="5818bd7d80b061bbbdfec8a433d609dc8818a05991f731ffc4a561e2ca18c653"
+SRC_HASH="f689162364c10de79ef89aa8dbf48731eb057e34edbbd20aca510ce0154681a3"
 SRC_NAME="git"
-SRC_URL="https://www.kernel.org/pub/software/scm/git/git-2.53.0.tar.xz"
-SRC_VERSION="2.53.0"
+SRC_URL="https://www.kernel.org/pub/software/scm/git/git-2.54.0.tar.xz"
+SRC_VERSION="2.54.0"
 
 build() {
     tar xJf ../$SRC_FILENAME

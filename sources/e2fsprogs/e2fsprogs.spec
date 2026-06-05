@@ -2,10 +2,8 @@
 SRC_HASH="254ef0e7f2a96c4d955a8038bf3f9944c9c73ae09c95848631f3ca6a2480ecb3"
 SRC_NAME="e2fsprogs"
 SRC_REVISION=1
-SRC_URL="https://linux.maple.camp/git/mirror/e2fsprogs/archive/v1.47.4.tar.gz"
+SRC_URL="https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/snapshot/e2fsprogs-1.47.4.tar.gz"
 SRC_VERSION="1.47.4"
-
-SRC_FILENAME="e2fsprogs-$SRC_VERSION.tar.gz"
 
 build() {
     tar xzf ../$SRC_FILENAME

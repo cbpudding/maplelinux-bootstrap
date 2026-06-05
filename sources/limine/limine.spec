@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="edf0be66bddb0570694ba96cf224ebbd47342581135894fc76895034fff0780e"
+SRC_HASH="952d0f76cef83670a84ba03e05c61a9e18b1a6499d7b476bf8cc27d6d0ab5e88"
 SRC_NAME="limine"
-SRC_URL="https://codeberg.org/Limine/Limine/releases/download/v10.8.3/limine-10.8.3.tar.xz"
-SRC_VERSION="10.8.3"
+SRC_URL="https://github.com/Limine-Bootloader/Limine/releases/download/v12.3.2/limine-12.3.2.tar.xz"
+SRC_VERSION="12.3.2"
 
 SRC_PATCHES="e52e11abaded936c126247c02e6a0c66c8017a94c9df49a30832206d7094b5fb  limine.conf"
 

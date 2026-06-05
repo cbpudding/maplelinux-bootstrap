@@ -1,10 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="f31d23fe9d79374e1556c8a25c41a2754cde1cffcb154a6296f8078894b831e9"
+SRC_HASH="5a5d5073070cc7e0c7a7a3c6ec2a0e1780850c8b47b3e3892226b93ffcb9cb54"
 SRC_NAME="kmod"
-SRC_URL="https://linux.maple.camp/git/mirror/kmod/archive/v34.2.tar.gz"
+SRC_URL="https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-34.2.tar.xz"
 SRC_VERSION="34.2"
-
-SRC_FILENAME="kmod-$SRC_VERSION.tar.gz"
 
 # TODO: Fix pkgconfig directory (/usr/share/pkgconfig -> /lib/pkgconfig)
 

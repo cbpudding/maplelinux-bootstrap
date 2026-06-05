@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="52967ea2bcb598fd8729517ff1f8124c63c357f76e3c0575b34ca1f663a87a85"
+SRC_HASH="510062d471fc9c4cd87b367a7b879c7a5f2af70513d97708842d097614d96188"
 SRC_NAME="lua-cjson"
-SRC_URL="https://linux.maple.camp/git/mirror/lua-cjson/archive/2.1.0.16.tar.gz"
-SRC_VERSION="2.1.0.16"
+SRC_URL="https://github.com/openresty/lua-cjson/archive/refs/tags/2.1.0.17.tar.gz"
+SRC_VERSION="2.1.0.17"
 
 SRC_FILENAME="lua-cjson-$SRC_VERSION.tar.gz"
 

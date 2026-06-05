@@ -1,10 +1,9 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="1b661016bd8cd4189be83b441dd7062c967b641fdc00f741e359e22d06857df8"
+SRC_HASH="bb34e6de5cecfd97618bbccc2660d6d76291154cf822880e8011bf108418c7bc"
 SRC_NAME="openrc"
 SRC_PATCHES="67f08365cddf1eda8fdfafcf4ac4e6f222193c0d1a28db11014334d4e9cb7c5a  fstab"
-SRC_REVISION=2
-SRC_URL="https://github.com/OpenRC/openrc/archive/refs/tags/0.63.tar.gz"
-SRC_VERSION="0.63"
+SRC_URL="https://github.com/OpenRC/openrc/archive/refs/tags/0.63.1.tar.gz"
+SRC_VERSION="0.63.1"
 
 SRC_FILENAME="openrc-$SRC_VERSION.tar.gz"
 

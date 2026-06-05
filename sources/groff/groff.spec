@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="e79bbcd8ff3ed0200e7ac55d3962a15e118c1229990213025f2fc8b264727570"
+SRC_HASH="74e2819795b6aff431aeac983d63a9c8968eeaba2a2eba7df8ba4c7b41e7cfd8"
 SRC_NAME="groff"
-SRC_URL="https://ftp.gnu.org/gnu/groff/groff-1.24.0.tar.gz"
-SRC_VERSION="1.24.0"
+SRC_URL="https://ftp.gnu.org/gnu/groff/groff-1.24.1.tar.gz"
+SRC_VERSION="1.24.1"
 
 build() {
     tar xzf ../$SRC_FILENAME

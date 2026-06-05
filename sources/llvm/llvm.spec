@@ -1,9 +1,9 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="25d2e2adc4356d758405dd885fcfd6447bce82a90eb78b6b87ce0934bd077173"
+SRC_HASH="5cc4a3f12bba50b6bdfb4b61bdc852117a0ff2517807c3902fc13267fb93562e"
 SRC_NAME="llvm"
 SRC_PATCHES="1e52d86c422498ed5d926ad90e0787e79b8a02cb33cc916b1897c2a6ebfef9fc  rtsan-127764.patch"
-SRC_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.0/llvm-project-22.1.0.src.tar.xz"
-SRC_VERSION="22.1.0"
+SRC_URL="https://github.com/llvm/llvm-project/releases/download/llvmorg-22.1.7/llvm-project-22.1.7.src.tar.xz"
+SRC_VERSION="22.1.7"
 
 # TODO: Figure out why libunwind installs headers at /include
 # TODO: Figure out why libc++ installs headers at /include

@@ -1,10 +1,10 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="6f02ddf9b5839c6771adb6efe2eb2a1df93eb41bc964838b23e4f4057fcf1fad"
+SRC_HASH="e870fc3031efbf1204a8e55344933ed553134b9b605faec2d0ebcedb0e1a850d"
 SRC_NAME="ndhc"
 SRC_PATCHES="92f0e757af230d2e4af0ab605eafba669943b017434255377452331af44fccdf  default.conf
 06b7baf5622ec0dc65c404c9bc15b5fe0b91a6a848b719d0c56e75e22bbec31b  ndhcd"
-SRC_URL="https://linux.maple.camp/git/ahill/ndhc/archive/v2024-05-24.tar.gz"
-SRC_VERSION="2024-05-24"
+SRC_URL="https://github.com/niklata/ndhc/archive/refs/tags/v2026-04-02.tar.gz"
+SRC_VERSION="2026-04-02"
 
 SRC_FILENAME="ndhc-$SRC_VERSION.tar.gz"
 

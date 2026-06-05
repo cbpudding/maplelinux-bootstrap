@@ -1,9 +1,9 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="aada4722db8bcfa0b9732851856d405082b6a4fa2e3ab067be8db17cdd115b38"
+SRC_HASH="e56c8356dda01136a6041c6ef832bd0ec99bd2d35dff97832aa5ec10ed014304"
 SRC_NAME="linux"
 SRC_PATCHES="5be339ea41c58a4b23affcca98d4ba618b8b17ebc25f6931769bbdbfecd211e3  linux.skylake.config"
-SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.8.tar.xz"
-SRC_VERSION="6.19.8"
+SRC_URL="https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.0.11.tar.xz"
+SRC_VERSION="7.0.11"
 
 build() {
     tar xJf ../$SRC_FILENAME

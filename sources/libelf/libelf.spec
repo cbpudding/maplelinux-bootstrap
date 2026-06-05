@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="ac4c3f3cd01637a7196f68fb0b5b07ac0653312fe3da0e24130ebb5610b37f3b"
+SRC_HASH="7230aa671c991ab2576b9a7735b3bf6256185b0a23d3bb3fc1d44dd740a81343"
 SRC_NAME="libelf"
-SRC_URL="https://linux.maple.camp/git/mirror/libelf/archive/v0.194.tar.gz"
-SRC_VERSION="0.194"
+SRC_URL="https://github.com/arachsys/libelf/archive/refs/tags/v0.195.tar.gz"
+SRC_VERSION="0.195"
 
 SRC_FILENAME="libelf-$SRC_VERSION.tar.gz"
 

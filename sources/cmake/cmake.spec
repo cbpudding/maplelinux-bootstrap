@@ -1,8 +1,8 @@
 # Maintainer: Alexander Hill <ahill@breadpudding.dev>
-SRC_HASH="7efaccde8c5a6b2968bad6ce0fe60e19b6e10701a12fce948c2bf79bac8a11e9"
+SRC_HASH="cba4bb7a44edf2877bb6f059932896383babe435b3a8c3b5df48b4aa41c9bb85"
 SRC_NAME="cmake"
-SRC_URL="https://github.com/Kitware/CMake/releases/download/v4.2.3/cmake-4.2.3.tar.gz"
-SRC_VERSION="4.2.3"
+SRC_URL="https://github.com/Kitware/CMake/releases/download/v4.3.3/cmake-4.3.3.tar.gz"
+SRC_VERSION="4.3.3"
 
 build() {
     tar xzf ../$SRC_FILENAME

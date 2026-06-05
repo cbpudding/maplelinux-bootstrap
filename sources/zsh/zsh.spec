@@ -1,9 +1,8 @@
 # Maintainer: Alexander Hill
-SRC_HASH="9b8d1ecedd5b5e81fbf1918e876752a7dd948e05c1a0dba10ab863842d45acd5"
+SRC_HASH="5d20bec03f981dc4e9a09ec245e7415388ff641f79c5c5c416b5042e58d8280d"
 SRC_NAME="zsh"
-SRC_REVISION=1
-SRC_URL="https://www.zsh.org/pub/zsh-5.9.tar.xz"
-SRC_VERSION="5.9"
+SRC_URL="https://www.zsh.org/pub/zsh-5.9.1.tar.xz"
+SRC_VERSION="5.9.1"
 
 build() {
     tar xJf ../$SRC_FILENAME
