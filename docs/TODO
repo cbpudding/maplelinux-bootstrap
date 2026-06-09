@@ -1,3 +1,4 @@
+- Replace nilfs2
 - Complete a network stack
     - Firewall (nftables, etc.)
     - NTP client (chrony, ntpd, etc.)

@@ -28,18 +28,22 @@ For more information about the software included in this project and its licensi
 
 Maple Linux uses a different filesystem hierarchy compared to most Linux systems. It is designed to be recognizable to experienced users, while being simpler for new users to understand.
 
-- `/bin` - This is the canonical location for all system-level binaries. Paths such as `/sbin`, `/usr/bin`, and `/usr/sbin` should be considered legacy. See also: [https://lists.busybox.net/pipermail/busybox/2010-December/074114.html](https://lists.busybox.net/pipermail/busybox/2010-December/074114.html)
-- `/boot` - This is the mount point for the boot partition. On modern systems, this is the EFI System Partition.
+- `/bin` - This is the canonical location for all system-level executables. Paths such as `/sbin`, `/usr/bin`, and `/usr/sbin` should be considered legacy. See also: [https://lists.busybox.net/pipermail/busybox/2010-December/074114.html](https://lists.busybox.net/pipermail/busybox/2010-December/074114.html)
+- `/boot` - This is the mount point for the boot partition. On modern x86_64 systems, this is the EFI System Partition.
+- `/cache` - This is the canonical location for temporary data that should persist reboots. Paths such as `/var/cache` and `/var/tmp` should be considered legacy.
 - `/dev` - This is the canonical location for device nodes available on the local system.
 - `/etc` - This is the canonical location for all system-level configuration, with the exception of the boot configuration, which is located under `/boot` for technical reasons.
-- `/home` - This is the canonical location for all user directories, with the exception of `root`.
+- `/home` - This is the canonical location for all user directories, including `root`. Paths such as `/root` should be considered legacy.
+- `/include` - This is the canonical location for C header files. Paths such as `/usr/include` should be considered legacy.
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` and `/usr/libexec` should be considered legacy.
+- `/log` - This is the canonical location for system-level log files. Paths such as `/var/crash` and `/var/log` should be considered legacy.
 - `/proc` - This is the canonical location for data about processes running on the local system. See also: [https://docs.kernel.org/filesystems/proc.html](https://docs.kernel.org/filesystems/proc.html)
-- `/run` - This is the canonical location for privileged, low-level inter-process communication, such as PID files and named pipes. See also: [https://unix.stackexchange.com/a/316166](https://unix.stackexchange.com/a/316166)
+- `/run` - This is the canonical location for privileged, low-level inter-process communication, such as PID files and named pipes. Paths such as `/var/lock` and `/var/run` should be considered legacy. See also: [https://unix.stackexchange.com/a/316166](https://unix.stackexchange.com/a/316166)
+- `/share` - This is the canonical location for non-executable data. Paths such as `/usr/share` should be considered legacy.
+- `/state` - This is the canonical location for persistent application states, such as databases. Paths such as `/var/db`, `/var/lib`, and `/var/spool` should be considered legacy.
+- `/src` - This is the canonical location for system source code. Paths such as `/usr/src` should be considered legacy.
 - `/sys` - This is the canonical location for Linux kernel objects. See also: [https://docs.kernel.org/filesystems/sysfs.html](https://docs.kernel.org/filesystems/sysfs.html)
 - `/tmp` - This is the canonical location for temporary data. Sensitive information should not be stored here, as this data is accessible system-wide.
-
-TBD: `/usr` and `/var`
 
 ### Inspirations
 
@@ -48,6 +52,7 @@ The following is a list of sites and projects that influenced the direction Mapl
 - [https://alpinelinux.org/](https://alpinelinux.org/)
 - [https://sta.li/filesystem/](https://sta.li/filesystem/)
 - [https://kisslinux.github.io/](https://kisslinux.github.io/)
+- [https://git.sr.ht/~mcf/oasis](https://git.sr.ht/~mcf/oasis)
 - [https://suckless.org/philosophy/](https://suckless.org/philosophy/)
 - [https://puppylinux-woof-ce.github.io/](https://puppylinux-woof-ce.github.io/)
 - [https://github.com/comfies/tldrlfs](https://github.com/comfies/tldrlfs)
