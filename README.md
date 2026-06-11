@@ -38,12 +38,10 @@ Maple Linux uses a different filesystem hierarchy compared to most Linux systems
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` and `/usr/libexec` should be considered legacy.
 - `/log` - This is the canonical location for system-level log files. Paths such as `/var/crash` and `/var/log` should be considered legacy.
 - `/proc` - This is the canonical location for data about processes running on the local system. See also: [https://docs.kernel.org/filesystems/proc.html](https://docs.kernel.org/filesystems/proc.html)
-- `/run` - This is the canonical location for privileged, low-level inter-process communication, such as PID files and named pipes. Paths such as `/var/lock` and `/var/run` should be considered legacy. See also: [https://unix.stackexchange.com/a/316166](https://unix.stackexchange.com/a/316166)
-- `/share` - This is the canonical location for non-executable data. Paths such as `/usr/share` should be considered legacy.
+- `/share` - This is the canonical location for non-executable, read-only data. Paths such as `/usr/share` should be considered legacy.
 - `/state` - This is the canonical location for persistent application states, such as databases. Paths such as `/var/db`, `/var/lib`, and `/var/spool` should be considered legacy.
-- `/src` - This is the canonical location for system source code. Paths such as `/usr/src` should be considered legacy.
 - `/sys` - This is the canonical location for Linux kernel objects. See also: [https://docs.kernel.org/filesystems/sysfs.html](https://docs.kernel.org/filesystems/sysfs.html)
-- `/tmp` - This is the canonical location for temporary data. Sensitive information should not be stored here, as this data is accessible system-wide.
+- `/tmp` - This is the canonical location for temporary data, such as buffer files, PID files, and named pipes. Paths such as `/run`, `/var/lock`, and `/var/run` should be considered legacy.
 
 ### Inspirations
 
