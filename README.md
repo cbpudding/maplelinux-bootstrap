@@ -30,16 +30,14 @@ Maple Linux uses a different filesystem hierarchy compared to most Linux systems
 
 - `/bin` - This is the canonical location for all system-level executables. Paths such as `/sbin`, `/usr/bin`, and `/usr/sbin` should be considered legacy. See also: [https://lists.busybox.net/pipermail/busybox/2010-December/074114.html](https://lists.busybox.net/pipermail/busybox/2010-December/074114.html)
 - `/boot` - This is the mount point for the boot partition. On modern x86_64 systems, this is the EFI System Partition.
-- `/cache` - This is the canonical location for temporary data that should persist reboots. Paths such as `/var/cache` and `/var/tmp` should be considered legacy.
+- `/cache` - This is the canonical location for temporary data that should persist across reboots, such as generated data and log files. Paths such as `/var/cache`, `/var/crash`, `/var/log`, and `/var/tmp` should be considered legacy.
+- `/data` - This is the canonical location for persistent application data, such as configuration files or databases. Paths such as `/etc`, `/var/db`, `/var/lib`, and `/var/spool` should be considered legacy.
 - `/dev` - This is the canonical location for device nodes available on the local system.
-- `/etc` - This is the canonical location for all system-level configuration, with the exception of the boot configuration, which is located under `/boot` for technical reasons.
 - `/home` - This is the canonical location for all user directories, including `root`. Paths such as `/root` should be considered legacy.
 - `/include` - This is the canonical location for C header files. Paths such as `/usr/include` should be considered legacy.
 - `/lib` - This is the canonical location for all system-level libraries. Paths such as `/usr/lib` and `/usr/libexec` should be considered legacy.
-- `/log` - This is the canonical location for system-level log files. Paths such as `/var/crash` and `/var/log` should be considered legacy.
 - `/proc` - This is the canonical location for data about processes running on the local system. See also: [https://docs.kernel.org/filesystems/proc.html](https://docs.kernel.org/filesystems/proc.html)
 - `/share` - This is the canonical location for non-executable, read-only data. Paths such as `/usr/share` should be considered legacy.
-- `/state` - This is the canonical location for persistent application states, such as databases. Paths such as `/var/db`, `/var/lib`, and `/var/spool` should be considered legacy.
 - `/sys` - This is the canonical location for Linux kernel objects. See also: [https://docs.kernel.org/filesystems/sysfs.html](https://docs.kernel.org/filesystems/sysfs.html)
 - `/tmp` - This is the canonical location for temporary data, such as buffer files, PID files, and named pipes. Paths such as `/run`, `/var/lock`, and `/var/run` should be considered legacy.
 
